@@ -1,28 +1,44 @@
-# Angular specific
-dist
-out-tsc
-tmp
-coverage
-e2etest-output
-.angular
-.angular
+node_modules/
+npm-debug.log*
+yarn-error.log*
+pnpm-debug.log*
 
-# Node modules and dependency files
-node_modules
-package-lock.json
-yarn.lock
+.angular/cache/
 
-# Environment files
-.env
+dist/
+www/
 
-# Angular CLI and build artefacts
-.angular-cli.json
-.ng
+*.log
+logs
+*.tmp
 
-# TypeScript cache
-.tsbuildinfo
+.vscode/*
+!.vscode/settings.json
+!.vscode/tasks.json
+!.vscode/launch.json
+!.vscode/extensions.json
+*.code-workspace
 
-# Logs
-npm-debug.log
-yarn-debug.log
-yarn-error.log
+.idea/
+
+*.sublime-project
+*.sublime-workspace
+
+.atom/
+
+.DS_Store
+.AppleDouble
+.LSOverride
+._*
+.Spotlight-V100
+.Trashes
+
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+
+coverage/
+/src/out-tsc/
+/out-tsc/
+
+documentation/
