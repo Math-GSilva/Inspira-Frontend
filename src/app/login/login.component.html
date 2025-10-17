@@ -1,0 +1,26 @@
+<div class="auth-card">
+  <h1 class="auth-title">Inspira</h1>
+  <p class="auth-subtitle">Bem-vindo(a) de volta!</p>
+  
+  <form [formGroup]="loginForm" (ngSubmit)="onSubmit()" novalidate>
+    <div class="input-group">
+      <label for="login-username">Nome de Usuário</label>
+      <input type="text" id="login-username" formControlName="Username" class="input-field" placeholder="Usuário">
+    </div>
+
+    <div class="input-group">
+      <label for="login-password">Senha</label>
+      <input type="password" id="login-password" formControlName="Password" class="input-field" placeholder="Senha">
+    </div>
+
+    <div *ngIf="errorMessage" class="error-message">
+        {{ errorMessage }}
+    </div>
+
+    <button type="submit" class="btn-submit" [disabled]="loginForm.invalid">Entrar</button>
+  </form>
+
+  <p class="switch-form-link">
+    Não tem uma conta? <a routerLink="/auth/register">Cadastre-se</a>
+  </p>
+</div>
