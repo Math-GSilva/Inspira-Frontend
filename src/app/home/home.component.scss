@@ -1,0 +1,32 @@
+// Definindo variáveis de layout para consistência
+$gap-size: 24px;
+$sidebar-width: 250px;
+$profile-width: 300px;
+$main-content-max-width: 800px;
+
+.home-container {
+  display: flex;
+  justify-content: center; // Centraliza as colunas na página
+  gap: $gap-size; // Espaçamento entre as colunas
+  padding: $gap-size;
+  max-width: 1400px; // Largura máxima para o layout não esticar demais em telas grandes
+  margin: 0 auto; // Centraliza o container na página
+}
+
+.column {
+  height: fit-content; // Para que as colunas não se estiquem desnecessariamente
+}
+
+.left-column {
+  flex: 0 0 $sidebar-width; // Não cresce, não encolhe, base de 250px
+}
+
+.main-column {
+  flex: 1 1 $main-content-max-width; // Cresce e encolhe, com uma base ideal de 800px
+  max-width: $main-content-max-width; // Garante que a timeline não fique excessivamente larga
+  min-width: 300px; // Largura mínima antes de quebrar o layout
+}
+
+.right-column {
+  flex: 0 0 $profile-width;
+}

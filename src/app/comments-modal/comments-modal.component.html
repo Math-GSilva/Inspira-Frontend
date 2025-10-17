@@ -1,0 +1,25 @@
+<div class="modal-overlay" (click)="closeModal()">
+  <div class="modal-card" (click)="$event.stopPropagation()">
+    <header class="modal-header">
+      <h2>Comentários</h2>
+      <button class="close-button" (click)="closeModal()">&times;</button>
+    </header>
+    <main class="modal-body">
+      <!-- Usamos o async pipe para mostrar os comentários quando chegarem -->
+      <ng-container *ngIf="comments$ | async as comments; else loading">
+        <ul *ngIf="comments.length > 0; else empty" class="comments-list">
+          <li *ngFor="let comment of comments" class="comment-item">
+            <strong class="comment-author">{{ comment.autorUsername }}</strong>
+            <p class="comment-text">{{ comment.conteudo }}</p>
+          </li>
+        </ul>
+        <ng-template #empty>
+          <p class="empty-state">Ainda não há comentários. Seja o primeiro a comentar!</p>
+        </ng-template>
+      </ng-container>
+      <ng-template #loading>
+        <p class="loading-state">A carregar comentários...</p>
+      </ng-template>
+    </main>
+  </div>
+</div>
