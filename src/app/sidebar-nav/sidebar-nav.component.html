@@ -1,0 +1,20 @@
+<nav class="sidebar-nav">
+  <div class="logo">
+    Inspira
+  </div>
+  <ul>
+    <li *ngFor="let link of navLinks" [class.active]="link.name === activeLink">
+      <a href="#">
+        <span class="icon-placeholder"></span>
+        <span>{{ link.name }}</span>
+      </a>
+    </li>
+  </ul>
+
+  <button class="btn-new-post" (click)="openNewPostModal()">
+    Publicar Nova Obra
+  </button>
+</nav>
+
+<app-new-post-modal *ngIf="isModalOpen" (close)="closeNewPostModal()"></app-new-post-modal>
+

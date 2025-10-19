@@ -1,0 +1,65 @@
+<section class="timeline-feed">
+  <!-- Agora iteramos sobre o array 'artworks' simples, não mais um Observable -->
+  <article *ngFor="let artwork of artworks" class="artwork-card">
+    <header class="card-header">
+      <img 
+        [src]="'https://placehold.co/50x50/76A5AF/FFFFFF?text=' + artwork.autorUsername.charAt(0).toUpperCase()" 
+        [alt]="'Avatar de ' + artwork.autorUsername" 
+        class="author-avatar">
+      <span class="author-name">{{ artwork.autorUsername }}</span>
+    </header>
+
+    <div class="card-image-container">
+      <img *ngIf="artwork.url" [src]="artwork.url" [alt]="artwork.titulo" class="artwork-image">
+    </div>
+
+    <footer class="card-footer">
+      <div class="actions">
+        <!-- O botão agora chama toggleLike() e tem uma classe dinâmica 'liked' -->
+        <button class="action-btn"
+                (click)="toggleLike(artwork)"
+                [class.liked]="artwork.curtidoPeloUsuario">
+          Gostei
+        </button>
+        <!-- O botão agora chama toggleCommentBox() -->
+        <button class="action-btn" (click)="toggleCommentBox(artwork)">
+          Comentar
+        </button>
+      </div>
+
+      <div class="likes">{{ artwork.totalCurtidas }} curtidas</div>
+
+      <p class="description">
+        <strong>{{ artwork.autorUsername }}</strong> {{ artwork.descricao }}
+      </p>
+      
+      <!-- Este link agora chama openCommentsModal() -->
+      <div class="comments" (click)="openCommentsModal(artwork.id)">
+        Ver todos os comentários
+      </div>
+      
+      <!-- A caixa para digitar o comentário, visível apenas se 'showCommentBox' for true -->
+      <div *ngIf="artwork.showCommentBox" class="comment-box">
+        <!-- O formulário está ligado a uma instância específica do nosso Map de formulários -->
+        <form [formGroup]="commentForms.get(artwork.id)!" (ngSubmit)="submitComment(artwork)">
+          <input type="text" formControlName="texto" placeholder="Adicione um comentário..." autofocus>
+          <button type="submit" [disabled]="commentForms.get(artwork.id)?.invalid">Publicar</button>
+        </form>
+      </div>
+
+    </footer>
+  </article>
+
+  <div *ngIf="isLoading" class="loading-state">
+    <p>A carregar as obras de arte...</p>
+    <!-- Adicione um spinner aqui se desejar -->
+  </div>
+</section>
+
+<!-- O Modal de Comentários, fora do loop *ngFor. Controlado pelas nossas variáveis de estado -->
+<app-comments-modal 
+  *ngIf="isCommentsModalOpen && selectedArtworkIdForModal" 
+  [obraDeArteId]="selectedArtworkIdForModal"
+  (close)="closeCommentsModal()">
+</app-comments-modal>
+

@@ -1,0 +1,81 @@
+@import 'variables';
+
+// Estilos do Modal (semelhantes ao NewPostModal para consistência)
+:host {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 1000;
+}
+
+.modal-overlay {
+  width: 100%;
+  height: 100%;
+  background-color: rgba($black, 0.6);
+  backdrop-filter: blur(5px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.modal-card {
+  background: $white;
+  border-radius: $border-radius-large;
+  box-shadow: 0 10px 30px rgba($black, 0.2);
+  width: 90%;
+  max-width: 500px;
+  max-height: 80vh;
+  display: flex;
+  flex-direction: column;
+}
+
+.modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1.25rem 1.5rem;
+  border-bottom: 1px solid $border-color;
+  h2 { margin: 0; }
+}
+
+.close-button {
+  background: none;
+  border: none;
+  font-size: 2rem;
+  cursor: pointer;
+  color: $sec-text-color;
+  &:hover { color: $primary-color; }
+}
+
+.modal-body {
+  padding: 1.5rem;
+  overflow-y: auto;
+}
+
+.comments-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.comment-item {
+  margin-bottom: 1rem;
+  line-height: 1.4;
+  
+  .comment-author {
+    font-weight: 600;
+    margin-right: 0.5rem;
+  }
+  .comment-text {
+    display: inline;
+    margin: 0;
+  }
+}
+
+.empty-state, .loading-state {
+  text-align: center;
+  color: $sec-text-color;
+  padding: 2rem;
+}

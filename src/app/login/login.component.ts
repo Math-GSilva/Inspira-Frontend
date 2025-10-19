@@ -43,6 +43,7 @@ export class LoginComponent implements OnInit {
 
     this.authService.login(this.loginForm.value).subscribe({
       next: (response) => {
+        this.router.navigate(['home']);
       },
       error: (err) => {
         console.error('Erro ao fazer login:', err);

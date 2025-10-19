@@ -1,0 +1,79 @@
+<!-- O overlay que cobre a página inteira. Clicar nele fecha o modal. -->
+<div class="modal-overlay" (click)="closeModal()">
+  
+  <!-- O cartão do modal. (click)="$event.stopPropagation()" impede que o clique se propague para o overlay. -->
+  <div class="modal-card" (click)="$event.stopPropagation()">
+    
+    <!-- Loading Spinner Overlay -->
+    <div *ngIf="isLoading" class="loading-overlay">
+      <div class="spinner"></div>
+    </div>
+
+    <!-- Cabeçalho do Modal -->
+    <div class="modal-header">
+      <h2>Nova Publicação</h2>
+      <button class="close-button" (click)="closeModal()" aria-label="Fechar">&times;</button>
+    </div>
+
+    <!-- Corpo do Modal com o Formulário -->
+    <div class="modal-body">
+      <form [formGroup]="postForm" (ngSubmit)="onSubmit()" novalidate>
+        
+        <!-- Campo Título -->
+        <div class="form-group">
+          <label for="titulo">Título</label>
+          <input type="text" id="titulo" formControlName="Titulo" class="input-field" placeholder="Dê um título à sua obra">
+        </div>
+
+        <!-- Campo Descrição -->
+        <div class="form-group">
+          <label for="descricao">Descrição</label>
+          <textarea id="descricao" formControlName="Descricao" class="textarea-field" rows="4" placeholder="Conte-nos sobre a sua arte..."></textarea>
+        </div>
+
+        <!-- Campo Categoria -->
+        <div class="form-group">
+            <label for="categoria">Categoria</label>
+            <select id="categoria" formControlName="CategoriaId" class="select-field">
+              <option value="" disabled>Selecione uma categoria</option>
+              <!-- O pipe 'async' trata da subscrição ao observable de categorias -->
+              <option *ngFor="let category of categories$ | async" [value]="category.id">
+                {{ category.nome }}
+              </option>
+            </select>
+        </div>
+
+        <!-- Campo de Upload de Mídia -->
+        <div class="form-group">
+          <label>Mídia (Imagem ou Vídeo)</label>
+          <div class="file-upload-wrapper">
+            <!-- Label estilizado que aciona o input escondido -->
+            <label for="midia" class="file-upload-label">
+              <span *ngIf="!selectedFile">Escolher Ficheiro</span>
+              <span *ngIf="selectedFile">{{ selectedFile.name }}</span>
+            </label>
+            <!-- O input de ficheiro real, que fica escondido -->
+            <input type="file" id="midia" (change)="onFileSelected($event)" accept="image/*,video/*" hidden>
+          </div>
+        </div>
+
+        <!-- Pré-visualização da Imagem -->
+        <div *ngIf="previewUrl" class="image-preview">
+            <img [src]="previewUrl" alt="Pré-visualização da mídia selecionada">
+        </div>
+
+        <!-- Mensagem de Erro -->
+        <div *ngIf="errorMessage" class="error-message">
+          {{ errorMessage }}
+        </div>
+
+        <!-- Botões de Ação -->
+        <div class="modal-actions">
+          <button type="button" class="btn btn-secondary" (click)="closeModal()">Cancelar</button>
+          <button type="submit" class="btn btn-primary" [disabled]="postForm.invalid || isLoading">Publicar</button>
+        </div>
+
+      </form>
+    </div>
+  </div>
+</div>
