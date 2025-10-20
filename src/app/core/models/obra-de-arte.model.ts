@@ -7,7 +7,7 @@ export interface ObraDeArte {
   categoriaNome: string;
   url?: string;
   totalCurtidas: number;
-  curtidoPeloUsuario?: boolean;
+  curtidaPeloUsuario?: boolean;
   showCommentBox?: boolean;
 }
 export interface UpdateObraDeArteDto {

@@ -1,5 +1,12 @@
 @import '../../styles/variables';
 
+// --- ANIMAÇÃO DO CORAÇÃO ---
+@keyframes heart-pop {
+  0% { transform: scale(0); }
+  50% { transform: scale(1.2); }
+  100% { transform: scale(1); }
+}
+
 .timeline-feed {
   display: flex;
   flex-direction: column;
@@ -10,7 +17,7 @@
   background-color: $card-bg-color;
   border: 1px solid $border-color;
   border-radius: $border-radius-md;
-  overflow: hidden; // Garante que a imagem não ultrapasse as bordas arredondadas
+  overflow: hidden;
 }
 
 .card-header {
@@ -25,18 +32,15 @@
     margin-right: 0.8rem;
     object-fit: cover;
   }
-
   .author-name {
     font-weight: 500;
   }
 }
 
-.card-image-container {
-  .artwork-image {
-    width: 100%;
-    height: auto;
-    display: block; // Remove espaço extra abaixo da imagem
-  }
+.card-image-container .artwork-image {
+  width: 100%;
+  height: auto;
+  display: block;
 }
 
 .card-footer {
@@ -45,6 +49,9 @@
 
   .actions {
     margin-bottom: 0.8rem;
+    display: flex;
+    align-items: center;
+
     .action-btn {
       background: none;
       border: none;
@@ -52,7 +59,42 @@
       margin-right: 1rem;
       font-size: 0.9rem;
       color: $sec-text-color;
-      &:hover { color: $text-color; }
+      display: flex;
+      align-items: center;
+      gap: 0.3rem;
+      padding: 0;
+      transition: color 0.2s ease;
+
+      &:hover {
+        color: $text-color;
+      }
+
+      // --- ESTILOS DO ÍCONE E DO TEXTO DO BOTÃO GOSTEI ---
+      .icon-heart::before {
+        content: '🤍'; // Coração vazio por defeito
+        font-size: 1.4rem;
+        line-height: 1;
+        transition: all 0.2s ease;
+      }
+
+      // --- CORREÇÃO APLICADA AQUI ---
+      // Usamos '&.liked' para garantir que os estilos são aplicados
+      // quando o botão tem a classe .liked
+      &.liked {
+        .icon-heart::before {
+          content: '❤️'; // Coração preenchido
+          animation: heart-pop 0.4s ease-in-out;
+        }
+        
+        .btn-text {
+          font-weight: 600;
+          // Truque para aplicar gradiente no texto
+          background: linear-gradient(90deg, #ff0000, #fb7676);
+          -webkit-background-clip: text;
+          background-clip: text;
+          -webkit-text-fill-color: transparent;
+        }
+      }
     }
   }
 
@@ -63,71 +105,51 @@
 
   .description {
     margin-bottom: 0.5rem;
-    strong { margin-right: 0.3rem; }
+    strong {
+      margin-right: 0.3rem;
+    }
   }
 
   .comments {
     color: $sec-text-color;
     cursor: pointer;
+    transition: color 0.2s ease;
+    &:hover {
+      color: $text-color;
+    }
   }
 }
 
-.action-btn.liked {
-  color: #e74c3c;      // Um vermelho vivo para indicar a curtida
-  font-weight: 600;     // Damos mais destaque ao botão
-  
-  // Opcional: Adicionar um ícone de coração preenchido
-  // &::before {
-  //   content: '❤️ '; 
-  // }
-}
-
-// Estilos para o link "Ver todos os comentários"
-.comments {
-  cursor: pointer;      // Muda o cursor para indicar que é clicável
-  color: $sec-text-color;
-  font-size: 0.9rem;
-  margin-top: $spacing-sm;
-  transition: color 0.2s ease;
-
-  &:hover {
-    color: $text-color; // Escurece um pouco ao passar o rato
-  }
-}
-
-// Estilos para a caixa de novo comentário que aparece
+// Estilos para a caixa de novo comentário
 .comment-box {
   margin-top: $spacing-md;
   padding-top: $spacing-md;
-  border-top: 1px solid $border-color; // Um separador visual limpo
+  border-top: 1px solid $border-color;
   
   form {
     display: flex;
     gap: $spacing-sm;
     align-items: center;
     
-    // O campo de texto para o comentário
     input[type="text"] {
-      flex-grow: 1;           // Faz o input ocupar todo o espaço disponível
+      flex-grow: 1;
       border: none;
       background: none;
       outline: none;
       padding: $spacing-sm 0;
       font-size: 0.9rem;
-      font-family: inherit;     // Garante que usa a mesma fonte da página
+      font-family: inherit;
     }
     
-    // O botão "Publicar"
     button {
       background: none;
       border: none;
-      color: #0095f6;         // Um azul vivo, típico para ações de "publicar"
+      color: #0095f6;
       font-weight: 600;
       cursor: pointer;
       padding: $spacing-sm;
       transition: opacity 0.2s ease;
       
-      // Estilo para quando o botão está desativado (sem texto no input)
       &:disabled {
         opacity: 0.5;
         cursor: not-allowed;
@@ -142,5 +164,4 @@
   padding: $spacing-xl;
   color: $sec-text-color;
 }
-
 
