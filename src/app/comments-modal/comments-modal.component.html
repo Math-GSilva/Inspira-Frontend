@@ -9,8 +9,22 @@
       <ng-container *ngIf="comments$ | async as comments; else loading">
         <ul *ngIf="comments.length > 0; else empty" class="comments-list">
           <li *ngFor="let comment of comments" class="comment-item">
-            <strong class="comment-author">{{ comment.autorUsername }}</strong>
-            <p class="comment-text">{{ comment.conteudo }}</p>
+            <!-- Foto de Perfil do Autor -->
+            <img 
+              [src]="comment.urlFotoPerfil || 'https://placehold.co/40x40/76A5AF/FFFFFF?text=' + (comment.autorUsername || 'U').charAt(0).toUpperCase()" 
+              [alt]="'Foto de ' + comment.autorUsername" 
+              class="comment-avatar">
+            
+            <div class="comment-content">
+              <div class="comment-header">
+                <!-- Nome de Usuário do Autor -->
+                <strong class="comment-author">{{ comment.autorUsername }}</strong>
+                <!-- Data do Comentário (formatada) -->
+                <span class="comment-date">{{ comment.dataComentario | date:'dd/MM/yyyy HH:mm' }}</span>
+              </div>
+              <!-- Conteúdo do Comentário -->
+              <p class="comment-text">{{ comment.conteudo }}</p>
+            </div>
           </li>
         </ul>
         <ng-template #empty>

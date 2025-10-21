@@ -3,8 +3,12 @@
     Inspira
   </div>
   <ul>
-    <li *ngFor="let link of navLinks" [class.active]="link.name === activeLink">
-      <a href="#">
+    <li *ngFor="let link of navLinks" routerLinkActive="active">
+      <a *ngIf="link.route" [routerLink]="link.route">
+        <span class="icon-placeholder"></span>
+        <span>{{ link.name }}</span>
+      </a>
+      <a *ngIf="!link.route" (click)="openSearcModal()" href="javascript:void(0);">
         <span class="icon-placeholder"></span>
         <span>{{ link.name }}</span>
       </a>
@@ -16,5 +20,5 @@
   </button>
 </nav>
 
-<app-new-post-modal *ngIf="isModalOpen" (close)="closeNewPostModal()"></app-new-post-modal>
-
+<app-new-post-modal *ngIf="isNewPostModalOpen" (close)="closeNewPostModal()"></app-new-post-modal>
+<app-search *ngIf="isSearchModalOpen" (close)="closeSearchModal()"></app-search>

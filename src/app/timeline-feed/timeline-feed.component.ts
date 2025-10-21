@@ -52,7 +52,6 @@ export class TimelineFeedComponent implements OnInit {
       .pipe(finalize(() => this.isLoading = false))
       .subscribe(data => {
         this.artworks = data;
-        // Para cada obra de arte, cria e armazena um formulário de comentário
         this.artworks.forEach(art => {
           this.commentForms.set(art.id, this.fb.group({
             texto: ['', Validators.required]
@@ -61,17 +60,15 @@ export class TimelineFeedComponent implements OnInit {
       });
   }
 
-  // Lógica para curtir/descurtir
   toggleLike(artwork: ObraDeArte): void {
-    // Determina qual ação tomar (curtir ou descurtir)
-    const action = artwork.curtidoPeloUsuario 
+    const action = artwork.curtidaPeloUsuario 
       ? this.curtidaService.descurtir(artwork.id)
       : this.curtidaService.curtir(artwork.id);
 
     action.subscribe(response => {
-      // ATUALIZAÇÃO IMEDIATA: Modificamos o objeto local para o feedback ser instantâneo
+      console.log(response)
       artwork.totalCurtidas = response.totalCurtidas;
-      artwork.curtidoPeloUsuario = response.curtidoPeloUsuario;
+      artwork.curtidaPeloUsuario = response.curtiu;
     });
   }
   

@@ -15,13 +15,12 @@
 
     <footer class="card-footer">
       <div class="actions">
-        <!-- O botão agora chama toggleLike() e tem uma classe dinâmica 'liked' -->
         <button class="action-btn"
                 (click)="toggleLike(artwork)"
-                [class.liked]="artwork.curtidoPeloUsuario">
-          Gostei
+                [class.liked]="artwork.curtidaPeloUsuario">
+          <span class="icon-heart"></span>
+          <span class="btn-text">Gostei</span>
         </button>
-        <!-- O botão agora chama toggleCommentBox() -->
         <button class="action-btn" (click)="toggleCommentBox(artwork)">
           Comentar
         </button>
