@@ -1,0 +1,210 @@
+@import '../../styles/variables';
+
+:host {
+  display: block;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 1000;
+}
+
+.search-overlay {
+  width: 100%;
+  height: 100%;
+  background-color: rgba($black, 0.6);
+  backdrop-filter: blur(5px);
+  -webkit-backdrop-filter: blur(5px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  animation: fadeIn 0.3s ease-out;
+}
+
+.search-card {
+  background: $white;
+  color: $text-color;
+  border-radius: $border-radius-large;
+  box-shadow: 0 10px 30px rgba($black, 0.2);
+  width: 90%;
+  max-width: 500px;
+  max-height: 80vh;
+  display: flex;
+  flex-direction: column;
+  animation: slideUp 0.4s ease-out;
+}
+
+.search-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: $spacing-md $spacing-lg;
+  border-bottom: 1px solid $border-color;
+
+  h2 {
+    margin: 0;
+    font-size: 1.3rem;
+    font-weight: 600;
+  }
+}
+
+.close-button {
+  background: none;
+  border: none;
+  font-size: 2rem;
+  line-height: 1;
+  color: $sec-text-color;
+  cursor: pointer;
+  transition: color 0.2s ease;
+
+  &:hover {
+    color: $primary-color;
+  }
+}
+
+.search-body {
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+.search-input-wrapper {
+  padding: $spacing-md $spacing-lg;
+  border-bottom: 1px solid $border-color;
+}
+
+.search-input {
+  width: 100%;
+  padding: 0.8rem 1rem;
+  border: 1px solid $border-color;
+  border-radius: $border-radius-full;
+  font-size: 1rem;
+  transition: border-color 0.2s, box-shadow 0.2s;
+
+  &:focus {
+    outline: none;
+    border-color: $primary-color;
+    box-shadow: 0 0 0 3px rgba($primary-color, 0.2);
+  }
+}
+
+.results-container {
+  flex-grow: 1;
+  overflow-y: auto;
+  padding: $spacing-sm 0;
+  // --- A SOLUÇÃO ESTÁ AQUI ---
+  // 1. Define uma altura mínima para evitar que o card "pisque" ao carregar.
+  min-height: 300px;
+  // 2. Garante que as mensagens de estado usem o espaço para se centralizarem verticalmente.
+  display: flex;
+  flex-direction: column;
+}
+
+.state-message {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: $spacing-xl;
+  color: $sec-text-color;
+  text-align: center;
+  // 3. Faz com que a mensagem ocupe todo o espaço vertical disponível no container.
+  flex-grow: 1;
+
+  .spinner {
+    margin-bottom: $spacing-md;
+  }
+}
+
+.results-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.result-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: $spacing-sm $spacing-lg;
+  transition: background-color 0.2s ease;
+
+  &:hover {
+    background-color: lighten($primary-light-color, 2%);
+  }
+}
+
+.user-info {
+  display: flex;
+  align-items: center;
+  gap: $spacing-md;
+  cursor: pointer;
+}
+
+.user-avatar {
+  width: 45px;
+  height: 45px;
+  border-radius: 50%;
+  object-fit: cover;
+}
+
+.user-details {
+  display: flex;
+  flex-direction: column;
+}
+
+.user-username {
+  font-weight: 600;
+}
+
+.user-fullname {
+  color: $sec-text-color;
+  font-size: 0.9rem;
+}
+
+.follow-btn {
+  border: 1px solid $primary-color;
+  border-radius: $border-radius-full;
+  padding: 6px 16px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  
+  // Estilo padrão ("Seguir")
+  background-color: $primary-color;
+  color: $white;
+
+  // Estilo para quando está a seguir
+  &.following {
+    background-color: transparent;
+    color: $text-color;
+    border-color: $border-color;
+  }
+}
+
+
+// Animações (reutilizadas de outros componentes)
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes slideUp {
+  from { transform: translateY(20px); opacity: 0; }
+  to { transform: translateY(0); opacity: 1; }
+}
+
+.spinner {
+  border: 4px solid rgba($black, 0.1);
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  border-left-color: $primary-color;
+  animation: spin 1s ease infinite;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}

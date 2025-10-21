@@ -1,16 +1,16 @@
-// src/app/services/auth.service.ts
-
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { BehaviorSubject, Observable, tap } from 'rxjs';
 import { Router } from '@angular/router';
 import { DecodedToken } from './decoded-token.model';
+import { jwtDecode } from 'jwt-decode';
 
 @Injectable({
   providedIn: 'root'
 })
 export class AuthService {
   private baseUrl = 'http://localhost:8000/api/auth';
+  private readonly TOKEN_KEY = 'authToken'; // Centralizando a chave do token
 
   private currentUserSubject = new BehaviorSubject<DecodedToken | null>(null);
   
@@ -28,17 +28,17 @@ export class AuthService {
     return this.http.post<any>(`${this.baseUrl}/login`, credentials).pipe(
       tap(response => {
         if (response && response.token) {
-          this.saveAuthData(response.token, null); // userInfo pode ser removido se o JWT tem tudo
-          this.decodeAndNotify(); // <-- 4. Descodifica e notifica os subscritores após o login
+          this.saveAuthData(response.token, null);
+          this.decodeAndNotify();
         }
       })
     );
   }
 
   logout(): void {
-    localStorage.removeItem('authToken');
+    localStorage.removeItem(this.TOKEN_KEY);
     this.currentUserSubject.next(null);
-    this.router.navigate(['/auth/login']);
+    this.router.navigate(['/auth/login']); // ou '/login' dependendo da sua rota
   }
 
   register(userData: any): Observable<any> {
@@ -46,33 +46,63 @@ export class AuthService {
   }
 
   getToken(): string | null {
-    return localStorage.getItem('authToken');
+    return localStorage.getItem(this.TOKEN_KEY);
   }
 
+  /**
+   * NOVO MÉTODO: Verifica se o usuário está autenticado de forma segura,
+   * checando a validade e a data de expiração do token.
+   * Este método é o que deve ser usado pelos Route Guards.
+   * @returns `true` se o token existir e não estiver expirado.
+   */
+  isAuthenticated(): boolean {
+    const token = this.getToken();
+
+    if (!token) {
+      return false; // Não há token
+    }
+
+    try {
+      const decodedToken: DecodedToken = jwtDecode(token);
+      
+      // O campo 'exp' do JWT está em segundos, Date.now() está em milissegundos.
+      const expirationDate = decodedToken.exp * 1000;
+      const now = Date.now();
+
+      // Se a data de expiração for maior que a data atual, o token é válido.
+      return expirationDate > now;
+
+    } catch (error) {
+      console.error("Token inválido ou corrompido:", error);
+      return false; // Erro na decodificação significa que o token não é válido
+    }
+  }
+
+  /**
+   * MÉTODO ANTIGO ATUALIZADO:
+   * Agora usa a lógica correta de 'isAuthenticated'.
+   * @deprecated Use isAuthenticated() para mais clareza.
+   */
   isLoggedIn(): boolean {
-    return !!this.getToken();
+    return this.isAuthenticated();
   }
 
   private decodeAndNotify(): void {
-    const token = localStorage.getItem('authToken');
+    const token = this.getToken();
 
-    if (!token) {
+    if (!token || !this.isAuthenticated()) { // Adicionada verificação de validade
       this.currentUserSubject.next(null);
       return;
     }
 
     try {
-      // O payload é a segunda parte do token (entre os dois '.')
-      const payloadBase64 = token.split('.')[1];
-      // atob() descodifica uma string Base64
-      const decodedPayload = JSON.parse(atob(payloadBase64));
+      // Usando a biblioteca para mais segurança na decodificação
+      const decodedPayload: any = jwtDecode(token);
 
-      // 6. Mapear os claims do token para o nosso interface DecodedToken
       const userData: DecodedToken = {
         sub: decodedPayload.sub,
         email: decodedPayload.email,
         nameid: decodedPayload.nameid,
-        // Usamos a notação de brackets para aceder à chave com caracteres especiais
         role: decodedPayload['http://schemas.microsoft.com/ws/2008/06/identity/claims/role'],
         exp: decodedPayload.exp
       };
@@ -80,15 +110,16 @@ export class AuthService {
       this.currentUserSubject.next(userData);
 
     } catch (error) {
-      console.error("Erro ao descodificar o token JWT:", error);
+      console.error("Erro ao decodificar o token JWT:", error);
       this.currentUserSubject.next(null);
     }
   }
 
   private saveAuthData(token: string, userInfo: any): void {
-    localStorage.setItem('authToken', token);
+    localStorage.setItem(this.TOKEN_KEY, token);
     if (userInfo) {
       localStorage.setItem('userInfo', JSON.stringify(userInfo));
     }
   }
 }
+
