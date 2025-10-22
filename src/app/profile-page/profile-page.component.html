@@ -1,0 +1,86 @@
+<!-- Contentor principal que cria o layout de colunas -->
+<div class="profile-page-layout">
+  <!-- A barra de navegação à esquerda -->
+  <app-sidebar-nav class="column left-column"></app-sidebar-nav>
+
+  <!-- O conteúdo principal do perfil à direita -->
+  <main class="column right-column">
+    <!-- Mostra um estado de 'loading' enquanto os dados são carregados -->
+    <div *ngIf="isLoading" class="loading-state">
+      <p>A carregar o perfil...</p>
+      <!-- Pode adicionar um spinner aqui -->
+    </div>
+
+    <!-- 
+      Quando os dados chegarem, o *ngIf com 'async as data' irá renderizar este bloco.
+      A variável 'data' contém o objeto { profile, artworks, isMyProfile }.
+    -->
+    <ng-container *ngIf="profileData$ | async as data">
+      <header class="profile-header">
+        <div class="avatar-container">
+          <img 
+            class="profile-avatar"
+            [src]="data.profile.urlFotoPerfil || 'https://placehold.co/150x150/d1568e/FFFFFF?text=' + data.profile.username.charAt(0).toUpperCase()" 
+            [alt]="'Foto de perfil de ' + data.profile.username">
+        </div>
+        
+        <div class="profile-info">
+          <div class="info-top">
+            <h2 class="username">{{ data.profile.username }}</h2>
+            
+            <!-- Botões de Ação -->
+            <div class="action-buttons">
+              <!-- Se for o meu perfil, mostra 'Editar Perfil' -->
+              <button *ngIf="data.isMyProfile" class="btn btn-secondary">
+                Editar Perfil
+              </button>
+              
+              <!-- Se não for o meu perfil, mostra 'Seguir' ou 'A Deixar de Seguir' -->
+              <ng-container *ngIf="!data.isMyProfile">
+                <button 
+                  *ngIf="!data.profile.seguidoPeloUsuarioAtual" 
+                  class="btn btn-primary"
+                  (click)="toggleFollow(data)">
+                  Seguir
+                </button>
+                <button 
+                  *ngIf="data.profile.seguidoPeloUsuarioAtual" 
+                  class="btn btn-secondary"
+                  (click)="toggleFollow(data)">
+                  A Seguir
+                </button>
+              </ng-container>
+            </div>
+          </div>
+          
+          <div class="stats">
+            <span><strong>{{ data.artworks.length }}</strong> publicações</span>
+            <span><strong>{{ data.profile.contagemSeguidores }}</strong> seguidores</span>
+            <span><strong>{{ data.profile.contagemSeguindo }}</strong> a seguir</span>
+          </div>
+
+          <div class="profile-details">
+            <p class="full-name">{{ data.profile.nomeCompleto }}</p>
+            <p class="bio">{{ data.profile.bio }}</p>
+          </div>
+        </div>
+      </header>
+
+      <hr class="separator">
+
+      <section class="artwork-gallery">
+        <!-- Se não houver obras, mostra uma mensagem -->
+        <div *ngIf="data.artworks.length === 0" class="no-artworks-message">
+          <p>Ainda não há publicações.</p>
+        </div>
+        
+        <!-- Itera sobre as obras de arte e exibe cada uma -->
+        <div *ngFor="let artwork of data.artworks" class="gallery-item">
+          <img [src]="artwork.url" [alt]="artwork.titulo">
+        </div>
+      </section>
+
+    </ng-container>
+  </main>
+</div>
+
