@@ -34,4 +34,32 @@ export class UsuarioService {
     return this.http.delete(`${this.apiUrl}/${userId}/follow`);
   }
 
+  updateMyProfile(
+    // O seu DTO de TS agora só precisa dos campos de texto
+    textData: { nomeCompleto: string; bio?: string },
+    fotoPerfil: File | null
+  ): Observable<UsuarioProfile> {
+    
+    // Criamos um FormData, que é o formato para enviar ficheiros
+    const formData = new FormData();
+
+    // Adiciona os campos de texto ao FormData
+    formData.append('NomeCompleto', textData.nomeCompleto);
+    
+    // Verificamos se a 'bio' não é nula ou indefinida antes de adicionar
+    if (textData.bio) {
+      formData.append('Bio', textData.bio);
+    }
+
+    // Adiciona o ficheiro (se o utilizador selecionou um)
+    // O nome 'FotoPerfil' DEVE ser igual ao da propriedade no seu DTO C#
+    if (fotoPerfil) {
+      formData.append('FotoPerfil', fotoPerfil, fotoPerfil.name);
+    }
+
+    // A requisição agora é um PUT com FormData. 
+    // O Angular (e o interceptor) tratará dos headers (multipart/form-data).
+    return this.http.put<UsuarioProfile>(`${this.apiUrl}/me`, formData);
+  }
+
 }

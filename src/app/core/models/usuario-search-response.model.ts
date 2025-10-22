@@ -1,7 +1,7 @@
 export interface UsuarioSearchResultDto {
   id: string;
   nomeCompleto: string;
-  nomeUsuario: string;
-  fotoPerfilUrl?: string; 
+  username: string;
+  urlFotoPerfil?: string; 
   seguidoPeloUsuarioAtual: boolean;
 }

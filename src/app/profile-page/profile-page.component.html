@@ -31,7 +31,8 @@
             <!-- Botões de Ação -->
             <div class="action-buttons">
               <!-- Se for o meu perfil, mostra 'Editar Perfil' -->
-              <button *ngIf="data.isMyProfile" class="btn btn-secondary">
+              <!-- 1. Ligar o evento (click) -->
+              <button *ngIf="data.isMyProfile" class="btn btn-secondary" (click)="openEditModal()">
                 Editar Perfil
               </button>
               
@@ -47,7 +48,7 @@
                   *ngIf="data.profile.seguidoPeloUsuarioAtual" 
                   class="btn btn-secondary"
                   (click)="toggleFollow(data)">
-                  A Seguir
+                  Seguindo
                 </button>
               </ng-container>
             </div>
@@ -56,7 +57,7 @@
           <div class="stats">
             <span><strong>{{ data.artworks.length }}</strong> publicações</span>
             <span><strong>{{ data.profile.contagemSeguidores }}</strong> seguidores</span>
-            <span><strong>{{ data.profile.contagemSeguindo }}</strong> a seguir</span>
+            <span><strong>{{ data.profile.contagemSeguindo }}</strong> seguindo</span>
           </div>
 
           <div class="profile-details">
@@ -76,9 +77,21 @@
         
         <!-- Itera sobre as obras de arte e exibe cada uma -->
         <div *ngFor="let artwork of data.artworks" class="gallery-item">
+          <!-- TODO: Adicionar um [routerLink] aqui para um modal de detalhe da obra -->
           <img [src]="artwork.url" [alt]="artwork.titulo">
         </div>
       </section>
+
+      <!-- 
+        2. Adicionar o componente do modal aqui, dentro do *ngIf principal.
+           Ele fica escondido por defeito (*ngIf="isEditModalOpen")
+      -->
+      <app-edit-profile-modal
+        *ngIf="isEditModalOpen"
+        [userProfile]="data.profile"
+        (close)="closeEditModal()"
+        (profileUpdated)="onProfileUpdated($event)">
+      </app-edit-profile-modal>
 
     </ng-container>
   </main>

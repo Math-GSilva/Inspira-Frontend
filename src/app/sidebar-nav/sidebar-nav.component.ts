@@ -17,7 +17,6 @@ export class SidebarNavComponent {
   navLinks = [
     { name: 'Início', icon: 'home', route: '/home' },
     { name: 'Pesquisar', icon: 'search'},
-    { name: 'Notificações', icon: 'notifications', route: '/notifications' },
   ];
 
   isNewPostModalOpen = false;

@@ -1,7 +1,7 @@
 <aside *ngIf="currentUser$ | async as user" class="user-profile-card">
 
   <img 
-    src="https://placehold.co/80x80/d1568e/FFFFFF?text={{ user.nameid.charAt(0).toUpperCase() }}" 
+    [src]="user.urlPerfil || 'https://placehold.co/80x80/d1568e/FFFFFF?text=' + user.nameid.charAt(0).toUpperCase()" 
     [alt]="'Foto de perfil de ' + user.nameid" 
     class="profile-avatar">
 

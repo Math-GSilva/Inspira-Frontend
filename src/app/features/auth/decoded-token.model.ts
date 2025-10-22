@@ -5,5 +5,6 @@ export interface DecodedToken {
   role: string;
   exp: number;
   iss?: string;
-  aud?: string
+  aud?: string;
+  urlPerfil: string;
 }
