@@ -11,6 +11,7 @@
 }
 
 .search-overlay {
+  // ... (sem alterações)
   width: 100%;
   height: 100%;
   background-color: rgba($black, 0.6);
@@ -23,12 +24,13 @@
 }
 
 .search-card {
+  // ... (sem alterações)
   background: $white;
   color: $text-color;
   border-radius: $border-radius-large;
   box-shadow: 0 10px 30px rgba($black, 0.2);
   width: 90%;
-  max-width: 500px;
+  max-width: 650px;
   max-height: 80vh;
   display: flex;
   flex-direction: column;
@@ -36,6 +38,7 @@
 }
 
 .search-header {
+  // ... (sem alterações)
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -50,6 +53,7 @@
 }
 
 .close-button {
+  // ... (sem alterações)
   background: none;
   border: none;
   font-size: 2rem;
@@ -64,23 +68,30 @@
 }
 
 .search-body {
+  // ... (sem alterações)
   display: flex;
   flex-direction: column;
   overflow: hidden;
 }
 
-.search-input-wrapper {
+.search-filters {
+  display: flex;
+  align-items: center; // Alinha o input e o mat-select
+  gap: 1rem;
   padding: $spacing-md $spacing-lg;
   border-bottom: 1px solid $border-color;
 }
 
 .search-input {
+  // ESTE É O NOSSO ALVO
+  flex-grow: 1;
   width: 100%;
-  padding: 0.8rem 1rem;
-  border: 1px solid $border-color;
+  padding: 0.8rem 1rem; // Total V-Padding: 1.6rem
+  border: 1px solid $border-color; // Total V-Border: 2px
   border-radius: $border-radius-full;
-  font-size: 1rem;
+  font-size: 1rem; // Total V-Font: 1rem (line-height)
   transition: border-color 0.2s, box-shadow 0.2s;
+  // ALTURA TOTAL = calc(1.6rem + 1rem + 2px) = calc(2.6rem + 2px)
 
   &:focus {
     outline: none;
@@ -89,19 +100,115 @@
   }
 }
 
+/* ATUALIZAÇÃO DRÁSTICA NO .category-select-container
+  Aqui forçamos a altura do mat-form-field para ser 
+  exatamente igual ao .search-input
+*/
+.category-select-container {
+  width: 180px; 
+  flex-shrink: 0;
+  // NOVO: Garante que a fonte base é a mesma do input
+  font-size: 1rem;
+
+  // Remove o espaço extra inferior (de erros)
+  ::ng-deep .mat-mdc-form-field-subscript-wrapper {
+    display: none;
+  }
+
+  // --- AJUSTE DE ALTURA ---
+  // Força o container flex interno a ter a mesma altura do .search-input
+  ::ng-deep .mat-mdc-form-field-flex {
+    // A altura do input é: 1rem (font) + 1.6rem (padding V) + 2px (border V)
+    // Vamos forçar essa altura e centralizar o conteúdo.
+    height: calc(2.6rem + 2px); 
+    min-height: calc(2.6rem + 2px); // NOVO: Override do min-height do Material
+    padding: 0; // ALTERADO: Reseta o padding do flex
+    align-items: center; // Centraliza o conteúdo (label/valor)
+  }
+  
+  // Ajusta o container do label/valor
+  ::ng-deep .mat-mdc-form-field-infix {
+    padding-top: 0;
+    padding-bottom: 0;
+    // Adiciona o padding horizontal que o input tem
+    padding-left: 1rem; 
+    // Remove o min-height do infix
+    min-height: 0;
+  }
+
+  // NOVO: Adiciona o padding à direita para a seta
+  ::ng-deep .mat-mdc-select-arrow-wrapper {
+    padding-right: 1rem;
+  }
+  
+  // Remove padding do valor selecionado
+  ::ng-deep .mat-mdc-select-value {
+    padding: 0;
+  }
+  
+  // --- AJUSTE DE CANTOS ARREDONDADOS (Pill-shape) ---
+  // Este código estava correto, mas só funciona com a altura certa.
+  ::ng-deep .mdc-notched-outline > * {
+    border-radius: 0; // Reseta os cantos individuais
+  }
+  ::ng-deep .mdc-notched-outline__leading {
+    border-top-left-radius: $border-radius-full;
+    border-bottom-left-radius: $border-radius-full;
+  }
+  ::ng-deep .mdc-notched-outline__trailing {
+    border-top-right-radius: $border-radius-full;
+    border-bottom-right-radius: $border-radius-full;
+  }
+  /* NOTA: A parte do meio (mdc-notched-outline__notch) onde o label
+    flutua, *sempre* será reta. Esse é o comportamento do 'outline'.
+    Pode ser isso que você achava "esquisito", mas é assim que o 
+    componente funciona.
+  */
+
+
+  // --- CORES PADRÃO (Estado "parado") ---
+  ::ng-deep .mdc-notched-outline > * {
+    border-color: $border-color !important; // Borda padrão
+  }
+  ::ng-deep .mat-mdc-select-arrow svg,
+  ::ng-deep .mat-mdc-floating-label {
+    color: $sec-text-color; // Cor do label e da seta
+  }
+  ::ng-deep .mat-mdc-select-value {
+    color: $text-color; // Cor do texto selecionado
+  }
+
+  // --- CORES E SOMBRA (Estado "focado") ---
+  &.mat-focused {
+    // Label flutuante
+    ::ng-deep .mat-mdc-floating-label {
+      color: $primary-color;
+    }
+    // Borda
+    ::ng-deep .mdc-notched-outline > * {
+      border-width: 1px !important; // Evita que a borda engrosse
+      border-color: $primary-color !important;
+    }
+    // Sombra (igual ao .search-input:focus)
+    ::ng-deep .mdc-notched-outline {
+        box-shadow: 0 0 0 3px rgba($primary-color, 0.2);
+    }
+  }
+}
+
+
 .results-container {
+  // ... (sem alterações)
   flex-grow: 1;
   overflow-y: auto;
   padding: $spacing-sm 0;
-  // --- A SOLUÇÃO ESTÁ AQUI ---
-  // 1. Define uma altura mínima para evitar que o card "pisque" ao carregar.
   min-height: 300px;
-  // 2. Garante que as mensagens de estado usem o espaço para se centralizarem verticalmente.
   display: flex;
   flex-direction: column;
 }
 
 .state-message {
+  // ... (sem alterações)
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -109,7 +216,6 @@
   padding: $spacing-xl;
   color: $sec-text-color;
   text-align: center;
-  // 3. Faz com que a mensagem ocupe todo o espaço vertical disponível no container.
   flex-grow: 1;
 
   .spinner {
@@ -118,12 +224,14 @@
 }
 
 .results-list {
+  // ... (sem alterações)
   list-style: none;
   padding: 0;
   margin: 0;
 }
 
 .result-item {
+  // ... (sem alterações)
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -136,6 +244,7 @@
 }
 
 .user-info {
+  // ... (sem alterações)
   display: flex;
   align-items: center;
   gap: $spacing-md;
@@ -143,6 +252,7 @@
 }
 
 .user-avatar {
+  // ... (sem alterações)
   width: 45px;
   height: 45px;
   border-radius: 50%;
@@ -150,20 +260,24 @@
 }
 
 .user-details {
+  // ... (sem alterações)
   display: flex;
   flex-direction: column;
 }
 
 .user-username {
+  // ... (sem alterações)
   font-weight: 600;
 }
 
 .user-fullname {
+  // ... (sem alterações)
   color: $sec-text-color;
   font-size: 0.9rem;
 }
 
 .follow-btn {
+  // ... (sem alterações)
   border: 1px solid $primary-color;
   border-radius: $border-radius-full;
   padding: 6px 16px;
@@ -171,11 +285,9 @@
   cursor: pointer;
   transition: all 0.2s ease;
   
-  // Estilo padrão ("Seguir")
   background-color: $primary-color;
   color: $white;
 
-  // Estilo para quando está a seguir
   &.following {
     background-color: transparent;
     color: $text-color;
@@ -183,19 +295,20 @@
   }
 }
 
-
-// Animações (reutilizadas de outros componentes)
 @keyframes fadeIn {
+  // ... (sem alterações)
   from { opacity: 0; }
   to { opacity: 1; }
 }
 
 @keyframes slideUp {
+  // ... (sem alterações)
   from { transform: translateY(20px); opacity: 0; }
   to { transform: translateY(0); opacity: 1; }
 }
 
 .spinner {
+  // ... (sem alterações)
   border: 4px solid rgba($black, 0.1);
   width: 36px;
   height: 36px;
@@ -205,6 +318,7 @@
 }
 
 @keyframes spin {
+  // ... (sem alterações)
   0% { transform: rotate(0deg); }
   100% { transform: rotate(360deg); }
 }

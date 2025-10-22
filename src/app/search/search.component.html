@@ -1,34 +1,46 @@
-<!-- O overlay que cobre a tela inteira. Clicar nele fecha o modal. -->
 <div class="search-overlay" (click)="closeModal()">
-  <!-- Usamos (click)="$event.stopPropagation()" para evitar que o clique no card feche o modal -->
   <div class="search-card" (click)="$event.stopPropagation()">
     
     <header class="search-header">
-      <h2>Pesquisar Usuários</h2>
+      <h2>Pesquisar Utilizadores</h2>
       <button class="close-button" (click)="closeModal()">×</button>
     </header>
 
     <div class="search-body">
-      <div class="search-input-wrapper">
+      <div class="search-filters">
         <input type="text" 
                [formControl]="searchControl"
-               placeholder="Digite o user..." 
+               placeholder="Digite nome ou user..." 
                class="search-input"
                autofocus>
+        
+        <mat-form-field appearance="outline" class="category-select-container">
+          <mat-select [formControl]="categoryControl">
+            <!-- Alterado o valor padrão para o número 0 -->
+            <mat-option [value]="''">Categorias</mat-option>
+            
+            <!-- Alterado o valor de cada opção para o ID da categoria -->
+            <mat-option *ngFor="let category of (categories$ | async)" [value]="category.id">
+              {{ category.nome }}
+            </mat-option>
+          </mat-select>
+        </mat-form-field>
+        
       </div>
 
       <div *ngIf="results$ | async as results" class="results-container">
-        
+        <div *ngIf="isLoading" class="state-message">
+          <div class="spinner"></div>
+          <p>A pesquisar...</p>
+        </div>
 
-        <!-- Estado Inicial ou Sem Resultados -->
         <div *ngIf="!isLoading && hasSearched && results.length === 0" class="state-message">
           <p>Nenhum resultado encontrado.</p>
         </div>
         <div *ngIf="!isLoading && !hasSearched" class="state-message">
-          <p>Digite pelo menos 2 caracteres para começar a pesquisar.</p>
+          <p>Use os filtros acima para pesquisar.</p>
         </div>
 
-        <!-- Lista de Resultados -->
         <ul *ngIf="!isLoading && results.length > 0" class="results-list">
           <li *ngFor="let user of results" class="result-item">
             <div class="user-info" (click)="goToProfile(user.nomeUsuario)">
