@@ -4,6 +4,7 @@ export interface ObraDeArte {
   descricao: string;
   dataPublicacao: string;
   autorUsername: string;
+  urlFotoPerfilAutor: string;
   categoriaNome: string;
   url?: string;
   totalCurtidas: number;

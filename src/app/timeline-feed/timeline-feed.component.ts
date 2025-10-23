@@ -10,14 +10,16 @@ import { ObraDeArteService } from '../features/obras-de-arte/obra-de-arte.servic
 import { CurtidaService } from '../features/curtidas/curtida.service';
 import { ComentarioService } from '../features/comentarios/comentario.service';
 import { CreateComentarioDto } from '../core/models/comentario.model';
+import { RouterLink } from '@angular/router';
 
 @Component({
   selector: 'app-timeline-feed',
   standalone: true,
   imports: [
     CommonModule,
-    ReactiveFormsModule,      // Importar para o formulário de comentário
-    CommentsModalComponent    // Importar o novo modal de comentários
+    ReactiveFormsModule,     
+    CommentsModalComponent,
+    RouterLink
   ],
   templateUrl: './timeline-feed.component.html',
   styleUrl: './timeline-feed.component.scss'

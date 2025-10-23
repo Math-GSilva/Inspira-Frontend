@@ -108,7 +108,10 @@ export class SearchComponent implements OnInit {
   }
 
   goToProfile(username: string): void {
-    this.router.navigate(['/profile', username]);
-    this.closeModal();
+    console.log(username)
+    this.router.navigate([`profile/${username}`]).then(() => {
+      // O modal só é fechado DEPOIS de a navegação ter sido concluída
+      this.closeModal();
+    });
   }
 }

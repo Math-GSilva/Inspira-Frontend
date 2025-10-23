@@ -104,7 +104,8 @@ export class AuthService {
         email: decodedPayload.email,
         nameid: decodedPayload.nameid,
         role: decodedPayload['http://schemas.microsoft.com/ws/2008/06/identity/claims/role'],
-        exp: decodedPayload.exp
+        exp: decodedPayload.exp,
+        urlPerfil: decodedPayload.urlPerfil
       };
       
       this.currentUserSubject.next(userData);

@@ -2,11 +2,15 @@
   <!-- Agora iteramos sobre o array 'artworks' simples, não mais um Observable -->
   <article *ngFor="let artwork of artworks" class="artwork-card">
     <header class="card-header">
+      <a [routerLink]="['/profile/' + artwork.autorUsername]" class="author-link">
       <img 
-        [src]="'https://placehold.co/50x50/76A5AF/FFFFFF?text=' + artwork.autorUsername.charAt(0).toUpperCase()" 
+        [src]="artwork.urlFotoPerfilAutor 
+        ? artwork.urlFotoPerfilAutor 
+        : 'https://placehold.co/50x50/76A5AF/FFFFFF?text=' + artwork.autorUsername.charAt(0).toUpperCase()" 
         [alt]="'Avatar de ' + artwork.autorUsername" 
         class="author-avatar">
       <span class="author-name">{{ artwork.autorUsername }}</span>
+  </a>
     </header>
 
     <div class="card-image-container">

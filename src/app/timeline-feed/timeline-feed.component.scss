@@ -35,6 +35,18 @@
   .author-name {
     font-weight: 500;
   }
+
+  .author-link {
+    display: flex;            // Alinha a imagem e o nome horizontalmente
+    align-items: center;      // Alinha verticalmente
+    text-decoration: none;    // Remove o sublinhado azul
+    color: inherit;           // Faz o link herdar a cor do texto normal
+    transition: opacity 0.2s ease;
+
+    &:hover {
+      opacity: 0.8; // Adiciona um pequeno feedback visual
+    }
+  }
 }
 
 .card-image-container .artwork-image {

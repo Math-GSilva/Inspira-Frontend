@@ -43,12 +43,12 @@
 
         <ul *ngIf="!isLoading && results.length > 0" class="results-list">
           <li *ngFor="let user of results" class="result-item">
-            <div class="user-info" (click)="goToProfile(user.nomeUsuario)">
-              <img [src]="user.fotoPerfilUrl || 'https://placehold.co/50x50/76A5AF/FFFFFF?text=' + user.nomeCompleto.charAt(0).toUpperCase()" 
+            <div class="user-info" (click)="goToProfile(user.username)">
+              <img [src]="user.urlFotoPerfil || 'https://placehold.co/50x50/76A5AF/FFFFFF?text=' + user.nomeCompleto.charAt(0).toUpperCase()" 
                    [alt]="'Foto de ' + user.nomeCompleto" 
                    class="user-avatar">
               <div class="user-details">
-                <span class="user-username">{{ user.nomeUsuario }}</span>
+                <span class="user-username">{{ user.username }}</span>
                 <span class="user-fullname">{{ user.nomeCompleto }}</span>
               </div>
             </div>

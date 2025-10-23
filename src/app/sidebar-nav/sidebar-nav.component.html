@@ -1,7 +1,9 @@
 <nav class="sidebar-nav">
-  <div class="logo">
-    Inspira
-  </div>
+  <a [routerLink]="'/home'" class="linkLogo">
+    <div class="logo">
+      Inspira
+    </div>
+  </a>
   <ul>
     <li *ngFor="let link of navLinks" routerLinkActive="active">
       <a *ngIf="link.route" [routerLink]="link.route">
