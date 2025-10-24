@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpParams } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { ObraDeArte, UpdateObraDeArteDto } from '../../core/models/obra-de-arte.model';
 
@@ -22,8 +22,31 @@ export class ObraDeArteService {
   /**
    * Busca todas as obras de arte. Corresponde ao endpoint [HttpGet].
    */
-  getAllObras(): Observable<ObraDeArte[]> {
-    return this.http.get<ObraDeArte[]>(this.apiUrl);
+  getAll(
+    categoryId: string | null = "", // Renomeado para seguir o padrão
+    username: string | null = null,   // Adicionado para perfil
+    cursor: string | null = null,
+    pageSize: number = 10
+  ): Observable<ObraDeArte[]> { // Atualizado para retornar PaginatedResponseDto
+    
+    let params = new HttpParams(); // Adiciona o tamanho da página
+
+    // Adiciona o parâmetro de categoria à query se ele existir
+    if (categoryId) {
+      params = params.set('categoriaId', categoryId);
+    }
+    // // Adiciona o parâmetro de username à query se ele existir
+    // if (username) {
+    //   params = params.set('username', username);
+    // }
+    // // Adiciona o cursor à query se ele existir
+    // if (cursor) {
+    //     params = params.set('cursor', cursor);
+    // }
+
+    // Envia a requisição GET com os parâmetros
+    // Espera receber a estrutura PaginatedResponseDto<ObraDeArte>
+    return this.http.get<ObraDeArte[]>(this.apiUrl, { params });
   }
 
   /**

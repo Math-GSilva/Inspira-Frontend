@@ -1,0 +1,46 @@
+@import '../../styles/variables'; // Ajuste o caminho
+
+.category-filter-container {
+  background-color: $card-bg-color;
+  border: 1px solid $border-color;
+  border-radius: $border-radius-md;
+  padding: $spacing-md;
+  margin-top: $spacing-lg; // Espaço acima do filtro
+
+  h4 {
+    margin: 0 0 $spacing-md;
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: $text-color;
+  }
+}
+
+.category-buttons {
+  display: flex;
+  flex-wrap: wrap; // Permite que os botões quebrem linha
+  gap: $spacing-sm; // Espaço entre os botões
+}
+
+.category-btn {
+  background-color: $background-color;
+  border: 1px solid $border-color;
+  border-radius: $border-radius-full;
+  padding: $spacing-xs $spacing-md;
+  font-size: 0.85rem;
+  font-weight: 500;
+  color: $sec-text-color;
+  cursor: pointer;
+  transition: all 0.2s ease;
+
+  &:hover {
+    border-color: darken($border-color, 10%);
+    background-color: #f0f0f0;
+  }
+
+  // Estilo do botão ativo
+  &.active {
+    background-color: $primary-color;
+    border-color: $primary-color;
+    color: $white;
+  }
+}

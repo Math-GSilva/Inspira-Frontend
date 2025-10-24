@@ -53,7 +53,7 @@ export class ProfilePageComponent implements OnInit {
 
         this.isLoading = true; // Ligar o loading no início de cada nova busca
         const profile$ = this.usuarioService.getProfile(username);
-        const artworks$ = this.obraDeArteService.getAllObras();
+        const artworks$ = this.obraDeArteService.getAll();
         const myUsername$ = this.authService.currentUser$.pipe(map(user => user?.nameid));
 
         return combineLatest([profile$, artworks$, myUsername$]).pipe(

@@ -66,4 +66,20 @@
       background-color: darken($primary-color, 10%);
     }
   }
+
+  .btn-admin-action {
+    @extend .btn-new-post; // Herda todos os estilos do botão principal
+    
+    // Sobrescreve os estilos para uma aparência "outline"
+    background: none;
+    border: 2px solid $primary-color;
+    color: $primary-color;
+    margin-top: 1rem; // Um pouco menos de espaço que o botão principal
+
+    &:hover {
+      background-color: $primary-light-color; // Fundo rosa claro no hover
+      color: darken($primary-color, 10%);
+      border-color: darken($primary-color, 10%);
+    }
+  }
 }

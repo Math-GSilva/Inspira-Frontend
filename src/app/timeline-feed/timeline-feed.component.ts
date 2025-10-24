@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, Input, OnInit, SimpleChanges } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { finalize } from 'rxjs';
@@ -25,7 +25,8 @@ import { RouterLink } from '@angular/router';
   styleUrl: './timeline-feed.component.scss'
 })
 export class TimelineFeedComponent implements OnInit {
-  // Usaremos um array simples para facilitar a manipulação do estado
+  @Input() categoryId: string | null = "";
+
   artworks: ObraDeArte[] = [];
   isLoading = true;
 
@@ -46,14 +47,28 @@ export class TimelineFeedComponent implements OnInit {
   ngOnInit(): void {
     this.loadArtworks();
   }
+  // --- 6. Adicionar ngOnChanges para reagir a mudanças no filtro ---
+  /**
+   * Chamado pelo Angular sempre que um Input (@Input) do componente muda.
+   * @param changes Um objeto que contém as propriedades que mudaram.
+   */
+  ngOnChanges(changes: SimpleChanges): void {
+    // Verificamos se a propriedade 'categoryId' mudou E se não é a primeira mudança
+    // (a primeira mudança acontece durante a inicialização, já tratada pelo ngOnInit)
+    if (changes['categoryId'] && !changes['categoryId'].firstChange) {
+      this.loadArtworks(); // Recarrega as obras com o novo filtro
+    }
+  }
 
-  // Busca os dados e preenche o nosso array local
+  // --- 7. Modificar loadArtworks para usar o categoryId ---
   loadArtworks(): void {
     this.isLoading = true;
-    this.obraDeArteService.getAllObras()
+    // Passamos o this.categoryId (que pode ser null) para o serviço
+    this.obraDeArteService.getAll(this.categoryId) // Assumindo que o serviço foi atualizado (ver Passo 4)
       .pipe(finalize(() => this.isLoading = false))
       .subscribe(data => {
         this.artworks = data;
+        this.commentForms.clear(); // Limpa formulários antigos
         this.artworks.forEach(art => {
           this.commentForms.set(art.id, this.fb.group({
             texto: ['', Validators.required]
