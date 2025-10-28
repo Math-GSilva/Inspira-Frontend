@@ -1,11 +1,14 @@
-@import '../../styles/variables';
+@import '../../styles/variables'; // Supondo que suas variáveis ($primary-color, etc.) estejam aqui
+@import 'plyr/dist/plyr.css';    // Mantenha a importação do CSS base do Plyr
 
-// --- ANIMAÇÃO DO CORAÇÃO ---
+// --- ANIMAÇÃO DO CORAÇÃO (sem mudanças) ---
+// ... (seu keyframes heart-pop) ...
 @keyframes heart-pop {
   0% { transform: scale(0); }
   50% { transform: scale(1.2); }
   100% { transform: scale(1); }
 }
+
 
 .timeline-feed {
   display: flex;
@@ -14,6 +17,7 @@
 }
 
 .artwork-card {
+  // ... (sem mudanças) ...
   background-color: $card-bg-color;
   border: 1px solid $border-color;
   border-radius: $border-radius-md;
@@ -37,112 +41,146 @@
   }
 
   .author-link {
-    display: flex;            // Alinha a imagem e o nome horizontalmente
-    align-items: center;      // Alinha verticalmente
-    text-decoration: none;    // Remove o sublinhado azul
-    color: inherit;           // Faz o link herdar a cor do texto normal
+    display: flex;
+    align-items: center;
+    text-decoration: none;
+    color: inherit;
     transition: opacity 0.2s ease;
 
     &:hover {
-      opacity: 0.8; // Adiciona um pequeno feedback visual
+      opacity: 0.8;
     }
   }
 }
 
-.card-image-container .artwork-image {
-  width: 100%;
-  height: auto;
-  display: block;
+// --- CONTAINER DE MÍDIA AJUSTADO ---
+.card-media-container {
+  position: relative; // Necessário para alguns posicionamentos internos do Plyr
+  line-height: 0; // Remove espaço extra sob os elementos
+
+  // Garante que a imagem ocupe todo o espaço
+  .artwork-image {
+    display: block;   // Remove espaço extra abaixo
+    width: 100%;      // Ocupa toda a largura
+    height: auto;     // Mantém a proporção
+    max-height: 80vh; // Limita a altura máxima para imagens muito altas (opcional, ajuste o valor)
+  }
+
+  // Estilos aplicados ao componente <plyr>
+  plyr {
+    display: block; // Garante que ocupe a largura
+    width: 100%;    // Ocupa toda a largura
+
+    // Ajuste fino para garantir que o vídeo dentro do plyr também ocupe o espaço
+    // ::ng-deep é necessário para estilizar componentes internos do Plyr
+    ::ng-deep .plyr__video-wrapper {
+        // Tenta remover padding/margin interno se houver
+        padding-bottom: 0 !important;
+        height: auto; // Deixa o vídeo definir a altura
+        position: relative; // Ou 'static' se causar problemas
+    }
+    ::ng-deep video {
+        display: block; // Remove espaço extra
+        width: 100%;
+        height: auto; // Mantém proporção do vídeo
+        max-height: 80vh; // Limita altura máxima (opcional, igual à imagem)
+    }
+
+     // Customização básica do Player (Opcional)
+    --plyr-color-main: #{$primary-color}; // Exemplo: Usa sua cor primária
+  }
+
+  // Padding apenas para o player de áudio
+  .audio-player-wrapper {
+    padding: $spacing-md;
+  }
 }
+
 
 .card-footer {
-  padding: 1rem;
-  font-size: 0.9rem;
+  // ... (Estilos do rodapé - sem mudanças) ...
+   padding: 1rem;
+   font-size: 0.9rem;
 
-  .actions {
-    margin-bottom: 0.8rem;
-    display: flex;
-    align-items: center;
+   .actions {
+     margin-bottom: 0.8rem;
+     display: flex;
+     align-items: center;
 
-    .action-btn {
-      background: none;
-      border: none;
-      cursor: pointer;
-      margin-right: 1rem;
-      font-size: 0.9rem;
-      color: $sec-text-color;
-      display: flex;
-      align-items: center;
-      gap: 0.3rem;
-      padding: 0;
-      transition: color 0.2s ease;
+     .action-btn {
+       background: none;
+       border: none;
+       cursor: pointer;
+       margin-right: 1rem;
+       font-size: 0.9rem;
+       color: $sec-text-color;
+       display: flex;
+       align-items: center;
+       gap: 0.3rem;
+       padding: 0;
+       transition: color 0.2s ease;
 
-      &:hover {
-        color: $text-color;
-      }
+       &:hover {
+         color: $text-color;
+       }
 
-      // --- ESTILOS DO ÍCONE E DO TEXTO DO BOTÃO GOSTEI ---
-      .icon-heart::before {
-        content: '🤍'; // Coração vazio por defeito
-        font-size: 1.4rem;
-        line-height: 1;
-        transition: all 0.2s ease;
-      }
+       .icon-heart::before {
+         content: '🤍';
+         font-size: 1.4rem;
+         line-height: 1;
+         transition: all 0.2s ease;
+       }
 
-      // --- CORREÇÃO APLICADA AQUI ---
-      // Usamos '&.liked' para garantir que os estilos são aplicados
-      // quando o botão tem a classe .liked
-      &.liked {
-        .icon-heart::before {
-          content: '❤️'; // Coração preenchido
-          animation: heart-pop 0.4s ease-in-out;
-        }
-        
-        .btn-text {
-          font-weight: 600;
-          // Truque para aplicar gradiente no texto
-          background: linear-gradient(90deg, #ff0000, #fb7676);
-          -webkit-background-clip: text;
-          background-clip: text;
-          -webkit-text-fill-color: transparent;
-        }
-      }
-    }
-  }
+       &.liked {
+         .icon-heart::before {
+           content: '❤️';
+           animation: heart-pop 0.4s ease-in-out;
+         }
 
-  .likes {
-    font-weight: bold;
-    margin-bottom: 0.5rem;
-  }
+         .btn-text {
+           font-weight: 600;
+           background: linear-gradient(90deg, #ff0000, #fb7676);
+           -webkit-background-clip: text;
+           background-clip: text;
+           -webkit-text-fill-color: transparent;
+         }
+       }
+     }
+   }
 
-  .description {
-    margin-bottom: 0.5rem;
-    strong {
-      margin-right: 0.3rem;
-    }
-  }
+   .likes {
+     font-weight: bold;
+     margin-bottom: 0.5rem;
+   }
 
-  .comments {
-    color: $sec-text-color;
-    cursor: pointer;
-    transition: color 0.2s ease;
-    &:hover {
-      color: $text-color;
-    }
-  }
+   .description {
+     margin-bottom: 0.5rem;
+     strong {
+       margin-right: 0.3rem;
+     }
+   }
+
+   .comments {
+     color: $sec-text-color;
+     cursor: pointer;
+     transition: color 0.2s ease;
+     &:hover {
+       color: $text-color;
+     }
+   }
 }
 
-// Estilos para a caixa de novo comentário
+// ... (Estilos do .comment-box e .loading-state - sem mudanças) ...
 .comment-box {
   margin-top: $spacing-md;
   padding-top: $spacing-md;
   border-top: 1px solid $border-color;
-  
+
   form {
     display: flex;
     gap: $spacing-sm;
     align-items: center;
-    
+
     input[type="text"] {
       flex-grow: 1;
       border: none;
@@ -152,16 +190,16 @@
       font-size: 0.9rem;
       font-family: inherit;
     }
-    
+
     button {
       background: none;
       border: none;
-      color: #0095f6;
+      color: #0095f6; // Cor padrão do Instagram, pode ajustar
       font-weight: 600;
       cursor: pointer;
       padding: $spacing-sm;
       transition: opacity 0.2s ease;
-      
+
       &:disabled {
         opacity: 0.5;
         cursor: not-allowed;
@@ -170,10 +208,8 @@
   }
 }
 
-// Estado de loading
 .loading-state {
   text-align: center;
   padding: $spacing-xl;
   color: $sec-text-color;
 }
-
