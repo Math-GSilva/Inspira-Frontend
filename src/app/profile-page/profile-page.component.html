@@ -1,20 +1,11 @@
-<!-- Contentor principal que cria o layout de colunas -->
 <div class="profile-page-layout">
-  <!-- A barra de navegação à esquerda -->
   <app-sidebar-nav class="column left-column"></app-sidebar-nav>
 
-  <!-- O conteúdo principal do perfil à direita -->
   <main class="column right-column">
-    <!-- Mostra um estado de 'loading' enquanto os dados são carregados -->
-    <div *ngIf="isLoading" class="loading-state">
+    <div *ngIf="isLoading && !(profileData$ | async)" class="loading-state">
       <p>A carregar o perfil...</p>
-      <!-- Pode adicionar um spinner aqui -->
     </div>
 
-    <!-- 
-      Quando os dados chegarem, o *ngIf com 'async as data' irá renderizar este bloco.
-      A variável 'data' contém o objeto { profile, artworks, isMyProfile }.
-    -->
     <ng-container *ngIf="profileData$ | async as data">
       <header class="profile-header">
         <div class="avatar-container">
@@ -27,16 +18,10 @@
         <div class="profile-info">
           <div class="info-top">
             <h2 class="username">{{ data.profile.username }}</h2>
-            
-            <!-- Botões de Ação -->
             <div class="action-buttons">
-              <!-- Se for o meu perfil, mostra 'Editar Perfil' -->
-              <!-- 1. Ligar o evento (click) -->
               <button *ngIf="data.isMyProfile" class="btn btn-secondary" (click)="openEditModal()">
                 Editar Perfil
               </button>
-              
-              <!-- Se não for o meu perfil, mostra 'Seguir' ou 'A Deixar de Seguir' -->
               <ng-container *ngIf="!data.isMyProfile">
                 <button 
                   *ngIf="!data.profile.seguidoPeloUsuarioAtual" 
@@ -63,29 +48,88 @@
           <div class="profile-details">
             <p class="full-name">{{ data.profile.nomeCompleto }}</p>
             <p class="bio">{{ data.profile.bio }}</p>
-          </div>
+
+            <div class="social-links">
+              
+              <a *ngIf="data.profile.urlPortifolio" 
+                 [href]="data.profile.urlPortifolio" 
+                 target="_blank" rel="noopener noreferrer" class="social-link">
+                Portfólio
+              </a>
+              
+              <a *ngIf="data.profile.urlInstagram" 
+                 [href]="data.profile.urlInstagram" 
+                 target="_blank" rel="noopener noreferrer" class="social-link">
+                Instagram
+              </a>
+
+              <a *ngIf="data.profile.urlLinkedin" 
+                 [href]="data.profile.urlLinkedin" 
+                 target="_blank" rel="noopener noreferrer" class="social-link">
+                LinkedIn
+              </a>
+            </div>
+            </div>
         </div>
       </header>
 
       <hr class="separator">
 
-      <section class="artwork-gallery">
-        <!-- Se não houver obras, mostra uma mensagem -->
-        <div *ngIf="data.artworks.length === 0" class="no-artworks-message">
+      <section class="timeline-feed">
+        <div *ngIf="data.artworks.length === 0 && !isLoading" class="no-artworks-message">
           <p>Ainda não há publicações.</p>
         </div>
         
-        <!-- Itera sobre as obras de arte e exibe cada uma -->
-        <div *ngFor="let artwork of data.artworks" class="gallery-item">
-          <!-- TODO: Adicionar um [routerLink] aqui para um modal de detalhe da obra -->
-          <img [src]="artwork.url" [alt]="artwork.titulo">
+        <article *ngFor="let artwork of data.artworks" class="artwork-card">
+          <header class="card-header">
+             <a [routerLink]="['/profile/' + artwork.autorUsername]" class="author-link">
+              <img
+                [src]="artwork.urlFotoPerfilAutor
+                ? artwork.urlFotoPerfilAutor
+                : 'https://placehold.co/50x50/76A5AF/FFFFFF?text=' + artwork.autorUsername.charAt(0).toUpperCase()"
+                [alt]="'Avatar de ' + artwork.autorUsername"
+                class="author-avatar">
+              <span class="author-name">{{ artwork.autorUsername }}</span>
+            </a>
+          </header>
+          <div *ngIf="artwork.url" class="card-media-container" [ngSwitch]="artwork.calculatedMediaType">
+            <img *ngSwitchCase="'imagem'"
+                 [src]="artwork.url"
+                 [alt]="artwork.titulo"
+                 class="artwork-image">
+            <plyr *ngSwitchDefault
+                  class="plyr-container"
+                  [class.audio-player-wrapper]="artwork.calculatedMediaType === 'audio'"
+                  plyrTitle="{{ artwork.titulo }}"
+                  [plyrSources]="artwork.plyrSourcesArray"
+                  [plyrType]="artwork.plyrMediaTypeValue">   </plyr>
+          </div>
+          <footer class="card-footer">
+             <div class="actions">
+              <button class="action-btn" (click)="toggleLike(artwork)" [class.liked]="artwork.curtidaPeloUsuario">
+                <span class="icon-heart"></span> <span class="btn-text">Gostei</span>
+              </button>
+              <button class="action-btn" (click)="toggleCommentBox(artwork)">Comentar</button>
+            </div>
+            <div class="likes">{{ artwork.totalCurtidas }} curtidas</div>
+            <p class="description">
+              <strong>{{ artwork.autorUsername }}</strong> {{ artwork.descricao }}
+            </p>
+            <div class="comments" (click)="openCommentsModal(artwork.id)">Ver todos os comentários</div>
+            <div *ngIf="artwork.showCommentBox" class="comment-box">
+              <form [formGroup]="commentForms.get(artwork.id)!" (ngSubmit)="submitComment(artwork)">
+                <input type="text" formControlName="texto" placeholder="Adicione um comentário..." autofocus>
+                <button type="submit" [disabled]="commentForms.get(artwork.id)?.invalid">Publicar</button>
+              </form>
+            </div>
+          </footer>
+        </article>
+
+        <div *ngIf="isLoading" class="loading-state">
+          <p>A carregar as obras de arte...</p>
         </div>
       </section>
 
-      <!-- 
-        2. Adicionar o componente do modal aqui, dentro do *ngIf principal.
-           Ele fica escondido por defeito (*ngIf="isEditModalOpen")
-      -->
       <app-edit-profile-modal
         *ngIf="isEditModalOpen"
         [userProfile]="data.profile"
@@ -93,7 +137,12 @@
         (profileUpdated)="onProfileUpdated($event)">
       </app-edit-profile-modal>
 
+      <app-comments-modal
+        *ngIf="isCommentsModalOpen && selectedArtworkIdForModal"
+        [obraDeArteId]="selectedArtworkIdForModal"
+        (close)="closeCommentsModal()">
+      </app-comments-modal>
+
     </ng-container>
   </main>
 </div>
-

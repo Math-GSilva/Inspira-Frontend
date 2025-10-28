@@ -23,7 +23,9 @@ export class UsuarioService {
   }
 
   getProfile(username: string): Observable<UsuarioProfile> {
-    return this.http.get<UsuarioProfile>(`${this.apiUrl}/${username}`);
+    let retorno = this.http.get<UsuarioProfile>(`${this.apiUrl}/${username}`);
+    retorno.forEach(u => console.log(u))
+    return retorno;
   }
 
   followUser(userId: string): Observable<any> {

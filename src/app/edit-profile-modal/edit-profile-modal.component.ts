@@ -16,18 +16,14 @@ import { UsuarioService } from '../features/usuarios-search/usuario.service';
   styleUrls: ['./edit-profile-modal.component.scss']
 })
 export class EditProfileModalComponent implements OnInit {
-  // Recebe o perfil atual do componente pai (profile-page)
   @Input() userProfile!: UsuarioProfile;
-  
-  // Emite eventos para o componente pai
   @Output() close = new EventEmitter<void>();
   @Output() profileUpdated = new EventEmitter<UsuarioProfile>();
 
-  editForm!: FormGroup; // O '!' diz ao TypeScript que vamos inicializá-lo no ngOnInit
+  editForm!: FormGroup;
   isLoading = false;
   errorMessage: string | null = null;
   
-  // Variáveis para gerir o upload do ficheiro
   selectedFile: File | null = null;
   previewUrl: string | null = null;
 
@@ -37,25 +33,25 @@ export class EditProfileModalComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
-    // Inicializa o formulário reativo APENAS com os campos de texto
+    // Inicializa o formulário reativo com TODOS os campos de texto
     this.editForm = this.fb.group({
       nomeCompleto: [this.userProfile.nomeCompleto, [Validators.required, Validators.maxLength(200)]],
       bio: [this.userProfile.bio || '', [Validators.maxLength(500)]],
-      // O campo de ficheiro não é um FormControl, pois é gerido separadamente
+      
+      // --- CAMPOS ADICIONADOS ---
+      // Usamos || '' para garantir que o valor nunca seja 'null', o que o Angular Forms não gosta
+      UrlPortifolio: [this.userProfile.urlPortifolio || ''],
+      UrlLinkedin: [this.userProfile.urlLinkedin || ''],
+      UrlInstagram: [this.userProfile.urlInstagram || '']
     });
   }
 
-  /**
-   * Chamado quando um ficheiro é selecionado no input.
-   */
   onFileSelected(event: Event): void {
     const element = event.target as HTMLInputElement;
     const file = element.files?.[0];
 
     if (file) {
       this.selectedFile = file;
-
-      // Cria uma URL de pré-visualização para a imagem selecionada
       const reader = new FileReader();
       reader.onload = () => {
         this.previewUrl = reader.result as string;
@@ -64,9 +60,6 @@ export class EditProfileModalComponent implements OnInit {
     }
   }
 
-  /**
-   * Chamado quando o formulário é enviado.
-   */
   onSubmit(): void {
     if (this.editForm.invalid) {
       this.editForm.markAllAsTouched();
@@ -79,7 +72,13 @@ export class EditProfileModalComponent implements OnInit {
     // Prepara os dados de texto do formulário
     const textData = {
       nomeCompleto: this.editForm.value.nomeCompleto,
-      bio: this.editForm.value.bio
+      bio: this.editForm.value.bio,
+
+      // --- CAMPOS ADICIONADOS ---
+      // Enviamos os valores do formulário (que podem ser strings vazias)
+      UrlPortifolio: this.editForm.value.UrlPortifolio,
+      UrlLinkedin: this.editForm.value.UrlLinkedin,
+      UrlInstagram: this.editForm.value.UrlInstagram
     };
 
     // Chama o serviço de atualização, passando os dados de texto E o ficheiro
@@ -87,21 +86,15 @@ export class EditProfileModalComponent implements OnInit {
       finalize(() => this.isLoading = false)
     ).subscribe({
       next: (updatedProfile) => {
-        // Sucesso! Emite o perfil atualizado para o componente pai
         this.profileUpdated.emit(updatedProfile);
       },
       error: (err) => {
-        // Lida com erros da API
         this.errorMessage = err.error?.message || 'Não foi possível atualizar o perfil. Tente novamente.';
       }
     });
   }
 
-  /**
-   * Emite o evento para fechar o modal.
-   */
   closeModal(): void {
     this.close.emit();
   }
 }
-

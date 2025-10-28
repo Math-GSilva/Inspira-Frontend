@@ -1,6 +1,7 @@
 @import '../../styles/variables';
+@import 'plyr/dist/plyr.css'; // <-- ADICIONADO: Importa CSS do Plyr
 
-// Layout principal da página
+// Layout principal da página (Sem mudanças)
 .profile-page-layout {
   display: flex;
   max-width: 1200px;
@@ -8,27 +9,18 @@
   padding: $spacing-xl;
   gap: $spacing-xl;
 }
-
 .column {
-  &.left-column {
-    flex: 0 0 250px; // A barra de navegação tem uma largura fixa de 250px
-  }
-  &.right-column {
-    flex: 1; // O conteúdo principal ocupa o resto do espaço
-  }
+  &.left-column { flex: 0 0 250px; }
+  &.right-column { flex: 1; }
 }
 
-// Cabeçalho do Perfil
+// Cabeçalho do Perfil (Sem mudanças)
 .profile-header {
   display: flex;
   gap: $spacing-xl * 2;
   margin-bottom: $spacing-xl;
 }
-
-.avatar-container {
-  flex: 0 0 150px;
-}
-
+.avatar-container { flex: 0 0 150px; }
 .profile-avatar {
   width: 150px;
   height: 150px;
@@ -36,28 +28,24 @@
   object-fit: cover;
   border: 2px solid $border-color;
 }
-
 .profile-info {
   flex: 1;
   display: flex;
   flex-direction: column;
   gap: $spacing-lg;
 }
-
 .info-top {
   display: flex;
   align-items: center;
   gap: $spacing-lg;
-
   .username {
     font-size: 1.8rem;
     font-weight: 300;
     margin: 0;
   }
 }
-
-// Botões de Ação (Seguir, Editar, etc.)
 .action-buttons {
+  // ... (estilos .btn sem mudanças) ...
   .btn {
     padding: $spacing-sm $spacing-md;
     border-radius: $border-radius-md;
@@ -79,18 +67,12 @@
     }
   }
 }
-
-
 .stats {
   display: flex;
   gap: $spacing-xl;
   font-size: 1rem;
-
-  strong {
-    font-weight: 600;
-  }
+  strong { font-weight: 600; }
 }
-
 .profile-details {
   .full-name {
     font-weight: 600;
@@ -101,47 +83,38 @@
     line-height: 1.5;
     color: $sec-text-color;
   }
-}
+  .social-links {
+    display: flex;
+    flex-wrap: wrap; // Permite que os links quebrem a linha se não couberem
+    gap: $spacing-sm; // Espaço entre os links
+    margin-top: $spacing-md; // Espaço acima dos links (abaixo da bio)
+  }
 
+  .social-link {
+    text-decoration: none;
+    font-weight: 500;
+    font-size: 0.85rem;
+    color: $primary-color; // Cor primária para destaque
+    background-color: #f0f5ff; // Um fundo bem leve (ajuste a cor)
+    padding: $spacing-xs $spacing-sm;
+    border-radius: $border-radius-md;
+    border: 1px solid #d6e4ff; // Borda sutil
+    transition: all 0.2s ease;
+
+    &:hover {
+      color: $white;
+      background-color: $primary-color;
+      border-color: $primary-color;
+      box-shadow: 0 2px 5px rgba(darken($primary-color, 10%), 0.2);
+    }
+  }
+}
 .separator {
   border: 0;
   height: 1px;
   background-color: $border-color;
   margin: $spacing-lg 0;
 }
-
-// Galeria de Obras de Arte
-.artwork-gallery {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
-  gap: $spacing-lg;
-}
-
-.gallery-item {
-  position: relative;
-  aspect-ratio: 1 / 1; // Garante que os itens são quadrados
-  cursor: pointer;
-
-  img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    border-radius: $border-radius-sm;
-    transition: opacity 0.2s ease;
-  }
-
-  &:hover img {
-    opacity: 0.8;
-  }
-}
-
-.no-artworks-message {
-  grid-column: 1 / -1; // Faz a mensagem ocupar todas as colunas
-  text-align: center;
-  padding: $spacing-xl * 2;
-  color: $sec-text-color;
-}
-
 .loading-state {
   width: 100%;
   text-align: center;
@@ -149,3 +122,217 @@
   color: $sec-text-color;
 }
 
+// --- ESTILOS ANTIGOS REMOVIDOS ---
+// .artwork-gallery { ... }
+// .gallery-item { ... }
+
+
+// ### INÍCIO DOS ESTILOS (copiado do timeline-feed.component.scss) ###
+
+// --- ANIMAÇÃO DO CORAÇÃO ---
+@keyframes heart-pop {
+  0% { transform: scale(0); }
+  50% { transform: scale(1.2); }
+  100% { transform: scale(1); }
+}
+
+// Usamos a mesma classe para o <section>
+.timeline-feed {
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+  
+  // Ajuste para o feed não ficar absurdamente largo no perfil
+  // Opcional, mas recomendado
+  max-width: 600px; 
+  margin: 0 auto; // Centraliza o feed
+}
+
+.artwork-card {
+  background-color: $card-bg-color;
+  border: 1px solid $border-color;
+  border-radius: $border-radius-md;
+  overflow: hidden;
+}
+
+.card-header {
+  display: flex;
+  align-items: center;
+  padding: 1rem;
+
+  .author-avatar {
+    width: 40px;
+    height: 40px;
+    border-radius: $border-radius-full;
+    margin-right: 0.8rem;
+    object-fit: cover;
+  }
+  .author-name {
+    font-weight: 500;
+  }
+
+  .author-link {
+    display: flex;
+    align-items: center;
+    text-decoration: none;
+    color: inherit;
+    transition: opacity 0.2s ease;
+
+    &:hover {
+      opacity: 0.8;
+    }
+  }
+}
+
+.card-media-container {
+  position: relative;
+  line-height: 0; 
+
+  .artwork-image {
+    display: block;
+    width: 100%;
+    height: auto;
+    max-height: 80vh; 
+  }
+
+  plyr {
+    display: block;
+    width: 100%;
+
+    ::ng-deep .plyr__video-wrapper {
+        padding-bottom: 0 !important;
+        height: auto;
+        position: relative;
+    }
+    ::ng-deep video {
+        display: block;
+        width: 100%;
+        height: auto;
+        max-height: 80vh;
+    }
+    --plyr-color-main: #{$primary-color};
+  }
+
+  .audio-player-wrapper {
+    padding: $spacing-md;
+  }
+}
+
+.card-footer {
+   padding: 1rem;
+   font-size: 0.9rem;
+
+   .actions {
+     margin-bottom: 0.8rem;
+     display: flex;
+     align-items: center;
+
+     .action-btn {
+       background: none;
+       border: none;
+       cursor: pointer;
+       margin-right: 1rem;
+       font-size: 0.9rem;
+       color: $sec-text-color;
+       display: flex;
+       align-items: center;
+       gap: 0.3rem;
+       padding: 0;
+       transition: color 0.2s ease;
+
+       &:hover {
+         color: $text-color;
+       }
+
+       .icon-heart::before {
+         content: '🤍';
+         font-size: 1.4rem;
+         line-height: 1;
+         transition: all 0.2s ease;
+       }
+
+       &.liked {
+         .icon-heart::before {
+           content: '❤️';
+           animation: heart-pop 0.4s ease-in-out;
+         }
+
+         .btn-text {
+           font-weight: 600;
+           background: linear-gradient(90deg, #ff0000, #fb7676);
+           -webkit-background-clip: text;
+           background-clip: text;
+           -webkit-text-fill-color: transparent;
+         }
+       }
+     }
+   }
+
+   .likes {
+     font-weight: bold;
+     margin-bottom: 0.5rem;
+   }
+
+   .description {
+     margin-bottom: 0.5rem;
+     strong {
+       margin-right: 0.3rem;
+     }
+   }
+
+   .comments {
+     color: $sec-text-color;
+     cursor: pointer;
+     transition: color 0.2s ease;
+     &:hover {
+       color: $text-color;
+     }
+   }
+}
+
+.comment-box {
+  margin-top: $spacing-md;
+  padding-top: $spacing-md;
+  border-top: 1px solid $border-color;
+
+  form {
+    display: flex;
+    gap: $spacing-sm;
+    align-items: center;
+
+    input[type="text"] {
+      flex-grow: 1;
+      border: none;
+      background: none;
+      outline: none;
+      padding: $spacing-sm 0;
+      font-size: 0.9rem;
+      font-family: inherit;
+    }
+
+    button {
+      background: none;
+      border: none;
+      color: #0095f6;
+      font-weight: 600;
+      cursor: pointer;
+      padding: $spacing-sm;
+      transition: opacity 0.2s ease;
+
+      &:disabled {
+        opacity: 0.5;
+        cursor: not-allowed;
+      }
+    }
+  }
+}
+
+// Estilo para a mensagem de "sem publicações"
+.no-artworks-message {
+  //grid-column: 1 / -1; // Removido
+  text-align: center;
+  padding: $spacing-xl * 2;
+  color: $sec-text-color;
+}
+
+// ### FIM DOS ESTILOS COPIADOS ###

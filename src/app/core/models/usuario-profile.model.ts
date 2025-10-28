@@ -7,4 +7,8 @@ export interface UsuarioProfile {
   contagemSeguidores: number;
   contagemSeguindo: number;
   seguidoPeloUsuarioAtual: boolean;
+
+  urlPortifolio?: string | null;
+  urlLinkedin?: string | null;
+  urlInstagram?: string | null;
 }
