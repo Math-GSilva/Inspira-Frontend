@@ -49,6 +49,14 @@ export class ObraDeArteService {
     return this.http.get<ObraDeArte[]>(this.apiUrl, { params });
   }
 
+  getAllByUser(
+    userId: string, // Renomeado para seguir o padrão
+    cursor: string | null = null,
+    pageSize: number = 10
+  ): Observable<ObraDeArte[]> { // Atualizado para retornar PaginatedResponseDto
+    return this.http.get<ObraDeArte[]>(`${this.apiUrl}/user/${userId}`);
+  }
+
   /**
    * Busca uma obra de arte específica pelo seu ID. Corresponde ao [HttpGet("{id}")].
    */

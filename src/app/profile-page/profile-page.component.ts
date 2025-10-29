@@ -80,43 +80,50 @@ export class ProfilePageComponent implements OnInit {
         this.isLoading = true;
         this.commentForms.clear(); // Limpa forms antigos
 
+        // 1. Busca o perfil primeiro
         const profile$ = this.usuarioService.getProfile(username);
-        // NOTA: Idealmente, você teria um endpoint como `getArtworksByUsername(username)`
-        // Mas vamos filtrar a partir de getAll() como no seu código original
-        const artworks$ = this.obraDeArteService.getAll(); 
+        // 2. Busca o usuário logado (para o botão "Editar")
         const myUsername$ = this.authService.currentUser$.pipe(map(user => user?.nameid));
 
-        return combineLatest([profile$, artworks$, myUsername$]).pipe(
-          map(([profile, allArtworks, myUsername]) => {
-            
-            // --- 1. FILTRAR ARTES PARA ESTE PERFIL ---
-            const profileArtworks = allArtworks;
+        // 3. Usa switchMap para "esperar" o perfil ser carregado
+        return profile$.pipe(
+          switchMap(profile => {
+            // 4. AGORA temos o profile.id. Podemos buscar as obras.
+            const artworks$ = this.obraDeArteService.getAllByUser(profile.id);
 
-            // --- 2. TRANSFORMAR ARTES (lógica do timeline-feed) ---
-            const calculatedArtworks = profileArtworks.map(art => {
-              const calculatedType = this.calculateMediaTypeFromMime(art.tipoConteudoMidia);
-              const plyrSources = this.calculatePlyrSources(art.url, calculatedType, art.tipoConteudoMidia);
-              const plyrType = this.calculatePlyrMediaType(calculatedType);
+            // 5. Combina as obras (que dependiam do profile) com o usuário logado
+            return combineLatest([artworks$, myUsername$]).pipe(
+              map(([profileArtworks, myUsername]) => {
+                
+                // 6. Transforma as artes (lógica do timeline-feed)
+                const calculatedArtworks = profileArtworks.map(art => {
+                  const calculatedType = this.calculateMediaTypeFromMime(art.tipoConteudoMidia);
+                  const plyrSources = this.calculatePlyrSources(art.url, calculatedType, art.tipoConteudoMidia);
+                  const plyrType = this.calculatePlyrMediaType(calculatedType);
 
-              // 3. INICIALIZAR FORM DE COMENTÁRIO
-              this.commentForms.set(art.id, this.fb.group({
-                texto: ['', Validators.required]
-              }));
+                  // 7. INICIALIZAR FORM DE COMENTÁRIO
+                  this.commentForms.set(art.id, this.fb.group({
+                    texto: ['', Validators.required]
+                  }));
 
-              return {
-                ...art,
-                calculatedMediaType: calculatedType,
-                plyrSourcesArray: plyrSources,
-                plyrMediaTypeValue: plyrType
-              };
-            });
-            
-            this.isLoading = false;
-            return {
-              profile,
-              artworks: calculatedArtworks, // Retorna as artes filtradas e transformadas
-              isMyProfile: profile.username === myUsername
-            };
+                  return {
+                    ...art,
+                    calculatedMediaType: calculatedType,
+                    plyrSourcesArray: plyrSources,
+                    plyrMediaTypeValue: plyrType
+                  };
+                });
+                
+                this.isLoading = false;
+                
+                // 8. Retorna o objeto completo
+                return {
+                  profile, // O perfil do 'switchMap' exterior
+                  artworks: calculatedArtworks,
+                  isMyProfile: profile.username === myUsername
+                };
+              })
+            );
           })
         );
       })

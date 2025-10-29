@@ -53,28 +53,43 @@
                  formControlName="UrlPortifolio"
                  class="input-field"
                  placeholder="https://seu-portfolio.com">
-          <small class="form-text">Insira a URL completa (com https://)</small>
+          <small class="form-text">Insira a URL completa (ex: Behance, ArtStation, site pessoal).</small>
         </div>
 
         <div class="form-group">
-          <label for="UrlInstagram">Instagram</label>
-          <input type="url" 
-                 id="UrlInstagram"
-                 formControlName="UrlInstagram"
-                 class="input-field"
-                 placeholder="https://instagram.com/seu_usuario">
-          <small class="form-text">Insira a URL completa do seu perfil</small>
+          <label for="linkedinHandle">LinkedIn</label>
+          <div class="input-group" [class.is-invalid]="editForm.get('linkedinHandle')?.touched && editForm.get('linkedinHandle')?.errors">
+            <span class="input-prefix">{{ linkedInPrefix }}</span>
+            <input type="text"
+                   id="linkedinHandle"
+                   formControlName="linkedinHandle"
+                   class="input-field prefixed"
+                   placeholder="seu-perfil-aqui"
+                   (paste)="handleSocialPaste($event, 'linkedinHandle')">
+          </div>
+          <small class="form-text">Insira seu nome de usuário ou cole o link completo.</small>
+          <div *ngIf="editForm.get('linkedinHandle')?.touched && editForm.get('linkedinHandle')?.errors?.['pattern']" class="error-message-inline">
+            Use apenas letras, números, - ou _
+          </div>
         </div>
 
         <div class="form-group">
-          <label for="UrlLinkedin">LinkedIn</label>
-          <input type="url" 
-                 id="UrlLinkedin"
-                 formControlName="UrlLinkedin"
-                 class="input-field"
-                 placeholder="https://linkedin.com/in/seu_perfil">
-          <small class="form-text">Insira a URL completa do seu perfil</small>
+          <label for="instagramHandle">Instagram</label>
+          <div class="input-group" [class.is-invalid]="editForm.get('instagramHandle')?.touched && editForm.get('instagramHandle')?.errors">
+            <span class="input-prefix">{{ instagramPrefix }}</span>
+            <input type="text"
+                   id="instagramHandle"
+                   formControlName="instagramHandle"
+                   class="input-field prefixed"
+                   placeholder="seu.usuario"
+                   (paste)="handleSocialPaste($event, 'instagramHandle')">
+          </div>
+          <small class="form-text">Insira seu nome de usuário ou cole o link completo.</small>
+          <div *ngIf="editForm.get('instagramHandle')?.touched && editForm.get('instagramHandle')?.errors?.['pattern']" class="error-message-inline">
+            Use apenas letras, números, . ou _
+          </div>
         </div>
+        
         <div class="form-group" style="margin-top: 1.5rem;">
           <label for="fotoPerfil">Foto de Perfil</label>
           
@@ -99,7 +114,7 @@
           <button type="button" class="btn btn-secondary" (click)="closeModal()">
             Cancelar
           </button>
-          <button type="submit" class="btn btn-primary" [disabled]="isLoading">
+          <button type="submit" class="btn btn-primary" [disabled]="editForm.invalid || isLoading">
             <span *ngIf="!isLoading">Guardar Alterações</span>
             <span *ngIf="isLoading">A guardar...</span>
           </button>
