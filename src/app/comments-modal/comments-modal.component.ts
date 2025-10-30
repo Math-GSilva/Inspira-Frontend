@@ -22,7 +22,6 @@ export class CommentsModalComponent implements OnInit {
   ngOnInit(): void {
     // Busca os comentários assim que o modal é inicializado
     this.comments$ = this.comentarioService.getComentarios(this.obraDeArteId);
-    console.log(this.comments$);
   }
 
   closeModal(): void {

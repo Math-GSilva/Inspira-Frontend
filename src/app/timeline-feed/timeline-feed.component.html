@@ -10,7 +10,20 @@
           class="author-avatar">
         <span class="author-name">{{ artwork.autorUsername }}</span>
       </a>
-    </header>
+
+      <div class="options-container" *ngIf="artwork.canDelete || artwork.canEdit">
+        
+        <button class="options-btn" (click)="toggleOptionsMenu(artwork)">
+          &hellip; 
+        </button>
+
+        <div class="options-menu" *ngIf="artwork.isOptionsMenuOpen">
+          <button *ngIf="artwork.canEdit" (click)="onEditPost(artwork)">Editar</button>
+          
+          <button *ngIf="artwork.canDelete" (click)="onDeletePost(artwork)" class="delete-option">Remover</button>
+        </div>
+      </div>
+      </header>
 
     <div *ngIf="artwork.url" class="card-media-container" [ngSwitch]="artwork.calculatedMediaType">
 
@@ -23,7 +36,9 @@
             class="plyr-container"
             [class.audio-player-wrapper]="artwork.calculatedMediaType === 'audio'"
             plyrTitle="{{ artwork.titulo }}"
-            [plyrSources]="artwork.plyrSourcesArray"   [plyrType]="artwork.plyrMediaTypeValue">   </plyr>
+            [plyrSources]="artwork.plyrSourcesArray"
+            [plyrType]="artwork.plyrMediaTypeValue">
+      </plyr>
 
     </div>
 
@@ -48,8 +63,14 @@
     </footer>
   </article>
 
+  <div #scrollSentinel class="scroll-sentinel"></div>
+
   <div *ngIf="isLoading" class="loading-state">
-    <p>A carregar as obras de arte...</p>
+    <p>A carregar...</p>
+  </div>
+
+  <div *ngIf="!hasMoreItems && artworks.length > 0 && !isLoading" class="loading-state">
+     <p>Você chegou ao fim.</p>
   </div>
 </section>
 
@@ -58,3 +79,20 @@
   [obraDeArteId]="selectedArtworkIdForModal"
   (close)="closeCommentsModal()">
 </app-comments-modal>
+
+<app-confirmation-modal
+  [isOpen]="isConfirmModalOpen"
+  title="Confirmar Exclusão"
+  message="Tem certeza que deseja remover este post? Esta ação não pode ser desfeita."
+  confirmButtonText="Remover"
+  confirmButtonClass="danger" 
+  (confirm)="handleConfirmDelete()"
+  (close)="handleCloseConfirmModal()">
+</app-confirmation-modal>
+
+<app-edit-post-modal
+  *ngIf="isEditModalOpen"
+  [artwork]="artworkToEdit"
+  (close)="isEditModalOpen = false"
+  (saveSuccess)="handleUpdateSuccess($event)">
+</app-edit-post-modal>

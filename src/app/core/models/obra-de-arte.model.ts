@@ -15,5 +15,4 @@ export interface ObraDeArte {
 export interface UpdateObraDeArteDto {
   titulo: string;
   descricao: string;
-  categoriaId: string;
 }

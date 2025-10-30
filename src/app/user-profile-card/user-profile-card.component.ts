@@ -3,11 +3,12 @@ import { CommonModule } from '@angular/common';
 import { Observable } from 'rxjs';
 import { AuthService } from '../features/auth/auth.service';
 import { DecodedToken } from '../features/auth/decoded-token.model';
+import { RouterLink } from '@angular/router';
 
 @Component({
   selector: 'app-user-profile-card',
   standalone: true,
-  imports: [CommonModule],
+  imports: [CommonModule, RouterLink],
   templateUrl: './user-profile-card.component.html',
   styleUrl: './user-profile-card.component.scss'
 })

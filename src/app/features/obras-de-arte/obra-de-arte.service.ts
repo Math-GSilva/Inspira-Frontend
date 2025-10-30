@@ -2,88 +2,78 @@ import { Injectable } from '@angular/core';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { ObraDeArte, UpdateObraDeArteDto } from '../../core/models/obra-de-arte.model';
+// --- ADICIONADO ---
+import { PaginatedResponse } from '../../core/models/paginated-response.model';
 
 @Injectable({
   providedIn: 'root'
 })
 export class ObraDeArteService {
-  private readonly apiUrl = `http://localhost:8000/api/ObrasDeArte`; // Ex: 'http://localhost:8000/api/ObrasDeArte'
+  private readonly apiUrl = `http://localhost:8000/api/ObrasDeArte`;
 
   constructor(private http: HttpClient) { }
 
   /**
    * Cria uma nova obra de arte. Corresponde ao endpoint [HttpPost].
-   * @param formData - Os dados do formulário, incluindo o ficheiro de mídia.
    */
   createObra(formData: FormData): Observable<ObraDeArte> {
     return this.http.post<ObraDeArte>(this.apiUrl, formData);
   }
 
   /**
-   * Busca todas as obras de arte. Corresponde ao endpoint [HttpGet].
+   * Busca todas as obras de arte de forma paginada.
    */
   getAll(
-    categoryId: string | null = "", // Renomeado para seguir o padrão
-    username: string | null = null,   // Adicionado para perfil
+    categoryId: string | null = "",
+    username: string | null = null,   
     cursor: string | null = null,
     pageSize: number = 10
-  ): Observable<ObraDeArte[]> { // Atualizado para retornar PaginatedResponseDto
+  ): Observable<PaginatedResponse<ObraDeArte>> { // <-- 1. TIPO DE RETORNO ATUALIZADO
     
-    let params = new HttpParams(); // Adiciona o tamanho da página
+    console.log("entrou")
+    let params = new HttpParams();
+    params = params.set('pageSize', pageSize.toString()); // <-- 2. PARÂMETRO ADICIONADO
 
-    // Adiciona o parâmetro de categoria à query se ele existir
     if (categoryId) {
       params = params.set('categoriaId', categoryId);
     }
-    // // Adiciona o parâmetro de username à query se ele existir
-    // if (username) {
-    //   params = params.set('username', username);
-    // }
-    // // Adiciona o cursor à query se ele existir
-    // if (cursor) {
-    //     params = params.set('cursor', cursor);
-    // }
+ 
+    if (cursor) {
+        params = params.set('cursor', cursor); // O back-end espera um DateTime string
+    }
 
-    // Envia a requisição GET com os parâmetros
-    // Espera receber a estrutura PaginatedResponseDto<ObraDeArte>
-    return this.http.get<ObraDeArte[]>(this.apiUrl, { params });
+    let retorno = this.http.get<PaginatedResponse<ObraDeArte>>(this.apiUrl, { params });
+    console.log(retorno)
+    return retorno;
   }
 
+  // ... (método getAllByUser - pode ser atualizado da mesma forma depois) ...
   getAllByUser(
-    userId: string, // Renomeado para seguir o padrão
+    userId: string,
     cursor: string | null = null,
     pageSize: number = 10
-  ): Observable<ObraDeArte[]> { // Atualizado para retornar PaginatedResponseDto
+  ): Observable<ObraDeArte[]> {
     return this.http.get<ObraDeArte[]>(`${this.apiUrl}/user/${userId}`);
   }
 
   /**
-   * Busca uma obra de arte específica pelo seu ID. Corresponde ao [HttpGet("{id}")].
+   * Busca uma obra de arte específica pelo seu ID.
    */
   getObraById(id: string): Observable<ObraDeArte> {
     return this.http.get<ObraDeArte>(`${this.apiUrl}/${id}`);
   }
 
   /**
-   * Busca o ficheiro de mídia (imagem/vídeo) de uma obra. Corresponde ao [HttpGet("{id}/midia")].
-   * Retorna um Blob, que pode ser convertido numa URL para ser usado em tags <img> ou <video>.
-   */
-  getMidia(id: string): Observable<Blob> {
-    return this.http.get(`${this.apiUrl}/${id}/midia`, { responseType: 'blob' });
-  }
-
-  /**
-   * Atualiza uma obra de arte. Corresponde ao [HttpPut("{id}")].
+   * Atualiza uma obra de arte.
    */
   updateObra(id: string, dto: UpdateObraDeArteDto): Observable<ObraDeArte> {
     return this.http.put<ObraDeArte>(`${this.apiUrl}/${id}`, dto);
   }
 
   /**
-   * Apaga uma obra de arte. Corresponde ao [HttpDelete("{id}")].
+   * Apaga uma obra de arte.
    */
   deleteObra(id: string): Observable<void> {
-    // A API retorna NoContent (204), então o tipo de retorno é 'void'.
     return this.http.delete<void>(`${this.apiUrl}/${id}`);
   }
 }

@@ -5,6 +5,8 @@ import { finalize, Observable } from "rxjs";
 import { ObraDeArteService } from "../features/obras-de-arte/obra-de-arte.service";
 import { CategoriaService } from "../features/categorias/categoria.service";
 import { Categoria } from "../core/models/categoria.model";
+import { PostStateService } from "../features/obras-de-arte/post-state.service";
+import { ObraDeArte } from "../core/models/obra-de-arte.model";
 
 @Component({
   selector: 'app-new-post-modal',
@@ -27,7 +29,8 @@ export class NewPostModalComponent implements OnInit {
   constructor(
     private fb: FormBuilder,
     private categoriaService: CategoriaService,
-    private obraDeArteService: ObraDeArteService
+    private obraDeArteService: ObraDeArteService,
+    private postStateService: PostStateService
   ) {}
 
   ngOnInit(): void {
@@ -72,8 +75,9 @@ export class NewPostModalComponent implements OnInit {
     this.obraDeArteService.createObra(formData)
       .pipe(finalize(() => this.isLoading = false))
       .subscribe({
-        next: () => {
+        next: (newPost: ObraDeArte) => {
           console.log('Post criado com sucesso!');
+          this.postStateService.announceNewPost(newPost); // Anuncia o novo post
           this.closeModal();
         },
         error: (err: any) => {
