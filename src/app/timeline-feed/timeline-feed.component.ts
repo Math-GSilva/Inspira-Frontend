@@ -94,7 +94,6 @@ export class TimelineFeedComponent implements OnInit, OnChanges, AfterViewInit, 
   }
 
   ngAfterViewInit(): void {
-    // Configura o IntersectionObserver para observar o "sentinela"
     this.setupIntersectionObserver();
   }
 
@@ -156,7 +155,7 @@ export class TimelineFeedComponent implements OnInit, OnChanges, AfterViewInit, 
 
   ngOnChanges(changes: SimpleChanges): void {
     if (changes['categoryId'] && !changes['categoryId'].firstChange) {
-      this.loadArtworks();
+      this.loadArtworks(true);
     }
   }
 

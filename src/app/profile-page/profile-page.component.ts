@@ -57,6 +57,9 @@ export class ProfilePageComponent implements OnInit {
   selectedArtworkIdForModal: string | null = null;
   // --------------------------------------------------------
 
+  currentUserRole: string | null = null;
+
+
   constructor(
     private route: ActivatedRoute,
     private usuarioService: UsuarioService,
@@ -78,30 +81,27 @@ export class ProfilePageComponent implements OnInit {
         }
 
         this.isLoading = true;
-        this.commentForms.clear(); // Limpa forms antigos
+        this.commentForms.clear(); 
 
-        // 1. Busca o perfil primeiro
+        // 2. ATUALIZADO: Busca o objeto currentUser COMPLETO
         const profile$ = this.usuarioService.getProfile(username);
-        // 2. Busca o usuário logado (para o botão "Editar")
-        const myUsername$ = this.authService.currentUser$.pipe(map(user => user?.nameid));
+        const currentUser$ = this.authService.currentUser$; // <-- MUDANÇA (era .pipe(map...)) [cite: 17, line 85]
 
-        // 3. Usa switchMap para "esperar" o perfil ser carregado
         return profile$.pipe(
           switchMap(profile => {
-            // 4. AGORA temos o profile.id. Podemos buscar as obras.
+
             const artworks$ = this.obraDeArteService.getAllByUser(profile.id);
 
-            // 5. Combina as obras (que dependiam do profile) com o usuário logado
-            return combineLatest([artworks$, myUsername$]).pipe(
-              map(([profileArtworks, myUsername]) => {
+            // 3. ATUALIZADO: Combina com o objeto currentUser completo
+            return combineLatest([artworks$, currentUser$]).pipe( // <-- MUDANÇA (era myUsername$) [cite: 17, line 90]
+              map(([profileArtworks, currentUser]) => { // <-- MUDANÇA (era myUsername) [cite: 17, line 91]
                 
-                // 6. Transforma as artes (lógica do timeline-feed)
                 const calculatedArtworks = profileArtworks.map(art => {
+                  // ... (lógica de 'calculatedArtworks') ... [cite: 17, lines 94-114]
                   const calculatedType = this.calculateMediaTypeFromMime(art.tipoConteudoMidia);
                   const plyrSources = this.calculatePlyrSources(art.url, calculatedType, art.tipoConteudoMidia);
                   const plyrType = this.calculatePlyrMediaType(calculatedType);
 
-                  // 7. INICIALIZAR FORM DE COMENTÁRIO
                   this.commentForms.set(art.id, this.fb.group({
                     texto: ['', Validators.required]
                   }));
@@ -116,11 +116,13 @@ export class ProfilePageComponent implements OnInit {
                 
                 this.isLoading = false;
                 
-                // 8. Retorna o objeto completo
+                this.currentUserRole = currentUser?.role || null;
+                
                 return {
-                  profile, // O perfil do 'switchMap' exterior
+                  profile, 
                   artworks: calculatedArtworks,
-                  isMyProfile: profile.username === myUsername
+                  // 5. ATUALIZADO: Compara com o 'nameid' do usuário
+                  isMyProfile: profile.username === currentUser?.nameid
                 };
               })
             );
@@ -245,6 +247,7 @@ export class ProfilePageComponent implements OnInit {
         profile: updatedProfile
       }))
     );
+    this.authService.updateCurrentUserProfilePhoto(updatedProfile.urlFotoPerfil)
     this.closeEditModal();
   }
 }

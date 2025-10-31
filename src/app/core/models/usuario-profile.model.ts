@@ -1,4 +1,6 @@
 export interface UsuarioProfile {
+  categoriaPrincipalNome: string;
+  categoriaPrincipalId: string;
   id: string;
   username: string;
   nomeCompleto: string;

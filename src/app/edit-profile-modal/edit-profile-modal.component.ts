@@ -1,24 +1,31 @@
-import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import { Component, EventEmitter, Input, OnDestroy, OnInit, Output } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
-import { finalize } from 'rxjs';
+import { finalize, Observable } from 'rxjs';
 import { UsuarioProfile } from '../core/models/usuario-profile.model';
 import { UsuarioService } from '../features/usuarios-search/usuario.service';
+import { CategoriaService } from '../features/categorias/categoria.service';
+import { Categoria } from '../core/models/categoria.model';
+import { NgSelectModule } from '@ng-select/ng-select';
 
 @Component({
   selector: 'app-edit-profile-modal',
   standalone: true,
   imports: [
     CommonModule,
-    ReactiveFormsModule
+    ReactiveFormsModule,
+    NgSelectModule
   ],
   templateUrl: './edit-profile-modal.component.html',
-  styleUrls: ['./edit-profile-modal.component.scss']
+  styleUrls: ['./edit-profile-modal.component.scss'],
+  providers: [CategoriaService]
 })
-export class EditProfileModalComponent implements OnInit {
+export class EditProfileModalComponent implements OnInit, OnDestroy {
   @Input() userProfile!: UsuarioProfile;
   @Output() close = new EventEmitter<void>();
   @Output() profileUpdated = new EventEmitter<UsuarioProfile>();
+
+  @Input() userRole: string | null = null;
 
   editForm!: FormGroup;
   isLoading = false;
@@ -32,15 +39,29 @@ export class EditProfileModalComponent implements OnInit {
   public readonly linkedInPrefix = 'https://www.linkedin.com/in/';
   public readonly instagramPrefix = 'https://www.instagram.com/';
 
+  private urlRegex = /^(https?:\/\/)?([a-zA-Z0-9-]+\.)+[a-zA-Z]{2,}([\/\w\.-]*)*\/?$/;
+
+  categories$!: Observable<Categoria[]>;
+
+  get isArtistaOuAdmin(): boolean {
+    if (!this.userRole) return false;
+    return this.userRole === 'Artista' || this.userRole === 'Administrador';
+  }
+
+
   constructor(
     private fb: FormBuilder,
-    private usuarioService: UsuarioService
-    // Se você tiver um serviço de "Toast", injete-o aqui
-    // private toastService: ToastService 
+    private usuarioService: UsuarioService,
+    private categoriaService: CategoriaService
   ) {}
 
+  
+  ngOnDestroy(): void {
+    document.body.style.overflow = ''; // restaura quando fechar
+  }
+
   ngOnInit(): void {
-    // --- ATUALIZADO ---
+    document.body.style.overflow = 'hidden'; // trava o scroll da página
 
     // Função auxiliar para extrair o "handle" da URL completa
     const extractHandle = (url: string | null | undefined, prefix: string): string => {
@@ -53,11 +74,18 @@ export class EditProfileModalComponent implements OnInit {
 
     // Inicializa o formulário
     this.editForm = this.fb.group({
-      nomeCompleto: [this.userProfile.nomeCompleto, [Validators.required, Validators.maxLength(200)]],
       bio: [this.userProfile.bio || '', [Validators.maxLength(500)]],
+
+      categoriaPrincipalId: [{
+        value: this.userProfile.categoriaPrincipalId || '', 
+        disabled: !this.isArtistaOuAdmin // Só artistas podem mudar
+      }],
       
       // Portfólio continua sendo uma URL completa.
-      UrlPortifolio: [this.userProfile.urlPortifolio || ''],
+      UrlPortifolio: [
+        this.userProfile.urlPortifolio || '', 
+        [Validators.pattern(this.urlRegex)] // <-- A VALIDAÇÃO
+      ],
       
       // Novos campos de "handle" com validação de pattern
       linkedinHandle: [
@@ -71,14 +99,34 @@ export class EditProfileModalComponent implements OnInit {
         [Validators.pattern(/^[a-zA-Z0-9_.]+$/)]
       ]
     });
+
+    if (this.isArtistaOuAdmin) {
+      this.categories$ = this.categoriaService.getCategories();
+    }
+  }
+
+  get bio() {
+    return this.editForm.get('bio');
+  }
+
+  get urlPortifolio() {
+    return this.editForm.get('UrlPortifolio');
   }
 
   onFileSelected(event: Event): void {
-    // ... (lógica de seleção de arquivo sem mudança)
     const element = event.target as HTMLInputElement;
     const file = element.files?.[0];
 
     if (file) {
+      // --- 1. VALIDAÇÃO ADICIONADA ---
+      // Verifica se o tipo de arquivo começa com "image/"
+      if (!file.type.startsWith('image/')) {
+        this.showTemporaryError('Arquivo inválido. Por favor, selecione apenas imagens.');
+        element.value = ''; // Limpa o input
+        return;
+      }
+      // --- Fim da Validação ---
+
       this.selectedFile = file;
       const reader = new FileReader();
       reader.onload = () => {
@@ -153,15 +201,15 @@ export class EditProfileModalComponent implements OnInit {
 
     // --- ATUALIZADO ---
     // Reconstrói as URLs completas a partir dos "handles" antes de enviar
-    const { nomeCompleto, bio, UrlPortifolio, linkedinHandle, instagramHandle } = this.editForm.value;
+    const { bio, UrlPortifolio, linkedinHandle, instagramHandle } = this.editForm.value;
 
     const textData = {
-      nomeCompleto,
       bio,
       // Envia nulo (ou string vazia) se o campo estiver vazio
       UrlPortifolio: UrlPortifolio || null, 
       UrlLinkedin: linkedinHandle ? this.linkedInPrefix + linkedinHandle : null,
       UrlInstagram: instagramHandle ? this.instagramPrefix + instagramHandle : null,
+      categoriaPrincipalId: this.isArtistaOuAdmin ? this.editForm.get('categoriaPrincipalId')?.value || null : undefined
     };
 
     this.usuarioService.updateMyProfile(textData, this.selectedFile).pipe(

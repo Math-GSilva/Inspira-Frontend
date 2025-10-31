@@ -13,18 +13,14 @@ export class UsuarioService {
   constructor(private http: HttpClient) { }
 
   searchUsers(query: string, categoriaPrincipal: string): Observable<UsuarioSearchResultDto[]> {
-    console.log(query);
     const params = new HttpParams().set('query', query).set('categoriaPrincipal', categoriaPrincipal);
     let result = this.http.get<UsuarioSearchResultDto[]>(`${this.apiUrl}/search`, { params });
-    result.forEach(user => {
-      console.log(user);
-    })
+
     return result;
   }
 
   getProfile(username: string): Observable<UsuarioProfile> {
     let retorno = this.http.get<UsuarioProfile>(`${this.apiUrl}/${username}`);
-    retorno.forEach(u => console.log(u))
     return retorno;
   }
 
@@ -37,31 +33,42 @@ export class UsuarioService {
   }
 
   updateMyProfile(
-    // O seu DTO de TS agora só precisa dos campos de texto
-    textData: { nomeCompleto: string; bio?: string },
+    // 1. ATUALIZADO: 'textData' agora aceita o novo ID
+    textData: { 
+      bio?: string | null;
+      UrlPortifolio?: string | null;
+      UrlLinkedin?: string | null;
+      UrlInstagram?: string | null;
+      categoriaPrincipalId?: string | null; // <-- ADICIONADO
+    },
     fotoPerfil: File | null
   ): Observable<UsuarioProfile> {
     
-    // Criamos um FormData, que é o formato para enviar ficheiros
     const formData = new FormData();
 
-    // Adiciona os campos de texto ao FormData
-    formData.append('NomeCompleto', textData.nomeCompleto);
-    
-    // Verificamos se a 'bio' não é nula ou indefinida antes de adicionar
+    // 2. Adiciona os campos (incluindo o novo)
     if (textData.bio) {
       formData.append('Bio', textData.bio);
     }
-
-    // Adiciona o ficheiro (se o utilizador selecionou um)
-    // O nome 'FotoPerfil' DEVE ser igual ao da propriedade no seu DTO C#
+    if (textData.UrlPortifolio) {
+      formData.append('UrlPortifolio', textData.UrlPortifolio);
+    }
+    if (textData.UrlLinkedin) {
+      formData.append('UrlLinkedin', textData.UrlLinkedin);
+    }
+    if (textData.UrlInstagram) {
+      formData.append('UrlInstagram', textData.UrlInstagram);
+    }
+    // --- ADICIONADO ---
+    if (textData.categoriaPrincipalId) {
+      formData.append('CategoriaPrincipalId', textData.categoriaPrincipalId);
+    }
+    // --- FIM ---
+    
     if (fotoPerfil) {
       formData.append('FotoPerfil', fotoPerfil, fotoPerfil.name);
     }
 
-    // A requisição agora é um PUT com FormData. 
-    // O Angular (e o interceptor) tratará dos headers (multipart/form-data).
     return this.http.put<UsuarioProfile>(`${this.apiUrl}/me`, formData);
   }
-
 }

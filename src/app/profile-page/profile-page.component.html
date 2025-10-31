@@ -47,8 +47,13 @@
 
           <div class="profile-details">
             <p class="full-name">{{ data.profile.nomeCompleto }}</p>
+            <div *ngIf="data.profile.categoriaPrincipalNome" class="main-category-inline">
+              <span class="category-label">Categoria principal:</span>
+              <span class="category-name">{{ data.profile.categoriaPrincipalNome }}</span>
+            </div>
+            <hr>
             <p class="bio">{{ data.profile.bio }}</p>
-
+            <br>
             <div class="social-links">
               
               <a *ngIf="data.profile.urlPortifolio" 
@@ -133,6 +138,7 @@
       <app-edit-profile-modal
         *ngIf="isEditModalOpen"
         [userProfile]="data.profile"
+        [userRole]="currentUserRole" 
         (close)="closeEditModal()"
         (profileUpdated)="onProfileUpdated($event)">
       </app-edit-profile-modal>

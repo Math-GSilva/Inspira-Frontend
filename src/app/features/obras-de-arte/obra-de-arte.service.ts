@@ -30,7 +30,6 @@ export class ObraDeArteService {
     pageSize: number = 10
   ): Observable<PaginatedResponse<ObraDeArte>> { // <-- 1. TIPO DE RETORNO ATUALIZADO
     
-    console.log("entrou")
     let params = new HttpParams();
     params = params.set('pageSize', pageSize.toString()); // <-- 2. PARÂMETRO ADICIONADO
 
@@ -43,7 +42,6 @@ export class ObraDeArteService {
     }
 
     let retorno = this.http.get<PaginatedResponse<ObraDeArte>>(this.apiUrl, { params });
-    console.log(retorno)
     return retorno;
   }
 

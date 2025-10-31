@@ -1,5 +1,5 @@
-@import '../../styles/variables';
-@import 'plyr/dist/plyr.css'; // <-- ADICIONADO: Importa CSS do Plyr
+@import "../../styles/variables";
+@import "plyr/dist/plyr.css"; // <-- ADICIONADO: Importa CSS do Plyr
 
 // Layout principal da página (Sem mudanças)
 .profile-page-layout {
@@ -10,8 +10,12 @@
   gap: $spacing-xl;
 }
 .column {
-  &.left-column { flex: 0 0 250px; }
-  &.right-column { flex: 1; }
+  &.left-column {
+    flex: 0 0 250px;
+  }
+  &.right-column {
+    flex: 1;
+  }
 }
 
 // Cabeçalho do Perfil (Sem mudanças)
@@ -20,7 +24,9 @@
   gap: $spacing-xl * 2;
   margin-bottom: $spacing-xl;
 }
-.avatar-container { flex: 0 0 150px; }
+.avatar-container {
+  flex: 0 0 150px;
+}
 .profile-avatar {
   width: 150px;
   height: 150px;
@@ -57,13 +63,17 @@
     &.btn-primary {
       background-color: $primary-color;
       color: $white;
-      &:hover { background-color: darken($primary-color, 10%); }
+      &:hover {
+        background-color: darken($primary-color, 10%);
+      }
     }
     &.btn-secondary {
       background-color: $card-bg-color;
       color: $text-color;
       border-color: $border-color;
-      &:hover { background-color: #f5f5f5; }
+      &:hover {
+        background-color: #f5f5f5;
+      }
     }
   }
 }
@@ -71,7 +81,9 @@
   display: flex;
   gap: $spacing-xl;
   font-size: 1rem;
-  strong { font-weight: 600; }
+  strong {
+    font-weight: 600;
+  }
 }
 .profile-details {
   .full-name {
@@ -108,6 +120,27 @@
       box-shadow: 0 2px 5px rgba(darken($primary-color, 10%), 0.2);
     }
   }
+
+  .main-category-inline {
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+    margin-top: 0.5rem;
+    margin-bottom: 0.8rem;
+    font-family: "Poppins", sans-serif;
+    font-size: 0.95rem;
+    color: var(--text-color, #333);
+
+    .category-label {
+      font-weight: 500;
+      color: var(--text-muted, #555);
+    }
+
+    .category-name {
+      font-weight: 600;
+      color: var(--primary-color, #d1568e);
+    }
+  }
 }
 .separator {
   border: 0;
@@ -126,14 +159,19 @@
 // .artwork-gallery { ... }
 // .gallery-item { ... }
 
-
 // ### INÍCIO DOS ESTILOS (copiado do timeline-feed.component.scss) ###
 
 // --- ANIMAÇÃO DO CORAÇÃO ---
 @keyframes heart-pop {
-  0% { transform: scale(0); }
-  50% { transform: scale(1.2); }
-  100% { transform: scale(1); }
+  0% {
+    transform: scale(0);
+  }
+  50% {
+    transform: scale(1.2);
+  }
+  100% {
+    transform: scale(1);
+  }
 }
 
 // Usamos a mesma classe para o <section>
@@ -141,10 +179,10 @@
   display: flex;
   flex-direction: column;
   gap: 2rem;
-  
+
   // Ajuste para o feed não ficar absurdamente largo no perfil
   // Opcional, mas recomendado
-  max-width: 600px; 
+  max-width: 600px;
   margin: 0 auto; // Centraliza o feed
 }
 
@@ -186,13 +224,13 @@
 
 .card-media-container {
   position: relative;
-  line-height: 0; 
+  line-height: 0;
 
   .artwork-image {
     display: block;
     width: 100%;
     height: auto;
-    max-height: 80vh; 
+    max-height: 80vh;
   }
 
   plyr {
@@ -200,15 +238,15 @@
     width: 100%;
 
     ::ng-deep .plyr__video-wrapper {
-        padding-bottom: 0 !important;
-        height: auto;
-        position: relative;
+      padding-bottom: 0 !important;
+      height: auto;
+      position: relative;
     }
     ::ng-deep video {
-        display: block;
-        width: 100%;
-        height: auto;
-        max-height: 80vh;
+      display: block;
+      width: 100%;
+      height: auto;
+      max-height: 80vh;
     }
     --plyr-color-main: #{$primary-color};
   }
@@ -219,75 +257,75 @@
 }
 
 .card-footer {
-   padding: 1rem;
-   font-size: 0.9rem;
+  padding: 1rem;
+  font-size: 0.9rem;
 
-   .actions {
-     margin-bottom: 0.8rem;
-     display: flex;
-     align-items: center;
+  .actions {
+    margin-bottom: 0.8rem;
+    display: flex;
+    align-items: center;
 
-     .action-btn {
-       background: none;
-       border: none;
-       cursor: pointer;
-       margin-right: 1rem;
-       font-size: 0.9rem;
-       color: $sec-text-color;
-       display: flex;
-       align-items: center;
-       gap: 0.3rem;
-       padding: 0;
-       transition: color 0.2s ease;
+    .action-btn {
+      background: none;
+      border: none;
+      cursor: pointer;
+      margin-right: 1rem;
+      font-size: 0.9rem;
+      color: $sec-text-color;
+      display: flex;
+      align-items: center;
+      gap: 0.3rem;
+      padding: 0;
+      transition: color 0.2s ease;
 
-       &:hover {
-         color: $text-color;
-       }
+      &:hover {
+        color: $text-color;
+      }
 
-       .icon-heart::before {
-         content: '🤍';
-         font-size: 1.4rem;
-         line-height: 1;
-         transition: all 0.2s ease;
-       }
+      .icon-heart::before {
+        content: "🤍";
+        font-size: 1.4rem;
+        line-height: 1;
+        transition: all 0.2s ease;
+      }
 
-       &.liked {
-         .icon-heart::before {
-           content: '❤️';
-           animation: heart-pop 0.4s ease-in-out;
-         }
+      &.liked {
+        .icon-heart::before {
+          content: "❤️";
+          animation: heart-pop 0.4s ease-in-out;
+        }
 
-         .btn-text {
-           font-weight: 600;
-           background: linear-gradient(90deg, #ff0000, #fb7676);
-           -webkit-background-clip: text;
-           background-clip: text;
-           -webkit-text-fill-color: transparent;
-         }
-       }
-     }
-   }
+        .btn-text {
+          font-weight: 600;
+          background: linear-gradient(90deg, #ff0000, #fb7676);
+          -webkit-background-clip: text;
+          background-clip: text;
+          -webkit-text-fill-color: transparent;
+        }
+      }
+    }
+  }
 
-   .likes {
-     font-weight: bold;
-     margin-bottom: 0.5rem;
-   }
+  .likes {
+    font-weight: bold;
+    margin-bottom: 0.5rem;
+  }
 
-   .description {
-     margin-bottom: 0.5rem;
-     strong {
-       margin-right: 0.3rem;
-     }
-   }
+  .description {
+    margin-bottom: 0.5rem;
+    strong {
+      margin-right: 0.3rem;
+    }
+  }
 
-   .comments {
-     color: $sec-text-color;
-     cursor: pointer;
-     transition: color 0.2s ease;
-     &:hover {
-       color: $text-color;
-     }
-   }
+  .comments {
+    color: $sec-text-color;
+    cursor: pointer;
+    transition: color 0.2s ease;
+    &:hover {
+      color: $text-color;
+    }
+  }
 }
 
 .comment-box {

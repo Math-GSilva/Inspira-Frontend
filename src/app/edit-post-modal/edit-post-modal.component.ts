@@ -80,7 +80,6 @@ export class EditPostModalComponent implements OnInit, OnChanges {
       .pipe(finalize(() => this.isLoading = false))
       .subscribe({
         next: (updatedArtwork) => {
-          console.log('Post atualizado com sucesso!');
           this.saveSuccess.emit(updatedArtwork); // Emite a obra atualizada
           this.closeModal(); // Fecha o modal
         },
