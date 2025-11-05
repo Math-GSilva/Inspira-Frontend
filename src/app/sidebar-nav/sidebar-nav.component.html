@@ -4,23 +4,36 @@
       Inspira
     </div>
   </a>
+
   <ul>
     <li *ngFor="let link of navLinks" routerLinkActive="active">
       <a *ngIf="link.route" [routerLink]="link.route">
         <span class="icon-placeholder"></span>
         <span>{{ link.name }}</span>
       </a>
-      <a *ngIf="!link.route" (click)="openSearcModal()" href="javascript:void(0);">
+      <a *ngIf="!link.route" (click)="openSearchModal()" href="javascript:void(0);">
         <span class="icon-placeholder"></span>
         <span>{{ link.name }}</span>
       </a>
     </li>
   </ul>
 
-  <button class="btn-new-post" (click)="openNewPostModal()">
+  <button *ngIf="isAdmin$ | async" 
+          class="btn-admin-action" 
+          (click)="openAddCategoryModal()">
+    Nova Categoria
+  </button>
+
+  <button *ngIf="isArtist$ | async" class="btn-new-post" (click)="openNewPostModal()">
     Publicar Nova Obra
   </button>
+
 </nav>
 
 <app-new-post-modal *ngIf="isNewPostModalOpen" (close)="closeNewPostModal()"></app-new-post-modal>
 <app-search *ngIf="isSearchModalOpen" (close)="closeSearchModal()"></app-search>
+
+<app-add-category-modal 
+  *ngIf="isAddCategoryModalOpen" 
+  (close)="closeAddCategoryModal()">
+</app-add-category-modal>

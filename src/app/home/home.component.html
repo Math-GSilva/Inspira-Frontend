@@ -1,5 +1,15 @@
 <main class="home-container">
   <app-sidebar-nav class="column left-column"></app-sidebar-nav>
-  <app-timeline-feed class="column main-column"></app-timeline-feed>
-  <app-user-profile-card class="column right-column"></app-user-profile-card>
+  <app-timeline-feed 
+    class="column main-column"
+    [categoryId]="selectedCategoryId"> 
+  </app-timeline-feed>
+
+  <aside class="column right-column">
+    <app-user-profile-card></app-user-profile-card>
+    
+    <app-category-filter 
+      (categorySelected)="onCategoryFilterChange($event)">
+    </app-category-filter>
+  </aside>
 </main>

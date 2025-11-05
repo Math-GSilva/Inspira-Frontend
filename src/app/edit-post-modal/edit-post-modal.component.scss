@@ -1,0 +1,206 @@
+@import 'variables'; // Certifique-se que este import funciona graças ao angular.json
+
+:host {
+  display: block;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 1000; // Garante que o modal fica por cima de tudo
+}
+
+.modal-overlay {
+  width: 100%;
+  height: 100%;
+  background-color: rgba($black, 0.6);
+  backdrop-filter: blur(5px);
+  -webkit-backdrop-filter: blur(5px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  animation: fadeIn 0.3s ease-out;
+}
+
+.modal-card {
+  background: $white;
+  color: $text-color;
+  border-radius: $border-radius-large;
+  box-shadow: 0 10px 30px rgba($black, 0.2);
+  width: 90%;
+  max-width: 550px;
+  position: relative; // Para o posicionamento do loading
+  overflow: hidden; // Para o loading não vazar
+  animation: slideUp 0.4s ease-out;
+}
+
+.modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1.25rem 1.5rem;
+  border-bottom: 1px solid $border-color;
+
+  h2 {
+    margin: 0;
+    font-size: 1.4rem;
+    font-weight: 600;
+  }
+}
+
+.close-button {
+  background: none;
+  border: none;
+  font-size: 2rem;
+  line-height: 1;
+  color: $sec-text-color;
+  cursor: pointer;
+  transition: color 0.2s ease;
+
+  &:hover {
+    color: $primary-color;
+  }
+}
+
+.modal-body {
+  padding: 1.5rem;
+  max-height: 70vh;
+  overflow-y: auto;
+}
+
+.form-group {
+  margin-bottom: 1.25rem;
+
+  label {
+    display: block;
+    font-weight: 600;
+    margin-bottom: 0.5rem;
+    color: $text-color;
+  }
+}
+
+// Estilos de inputs (reutilize os seus estilos existentes se possível)
+.input-field,
+.textarea-field,
+.select-field {
+  width: 100%;
+  padding: 0.8rem 1rem;
+  border: 1px solid $border-color;
+  border-radius: $border-radius-default;
+  font-size: 1rem;
+  transition: border-color 0.2s, box-shadow 0.2s;
+
+  &:focus {
+    outline: none;
+    border-color: $primary-color;
+    box-shadow: 0 0 0 3px rgba($primary-color, 0.2);
+  }
+}
+
+.textarea-field {
+  resize: vertical;
+  min-height: 80px;
+}
+
+// Estilo para o campo de upload
+.file-upload-label {
+  display: block;
+  text-align: center;
+  padding: 0.8rem 1rem;
+  border: 2px dashed $border-color;
+  border-radius: $border-radius-default;
+  cursor: pointer;
+  transition: all 0.2s ease;
+
+  &:hover {
+    border-color: $primary-color;
+    background-color: lighten($primary-color, 40%);
+  }
+}
+
+.image-preview {
+  margin-top: 1rem;
+  text-align: center;
+  img {
+    max-width: 100%;
+    max-height: 200px;
+    border-radius: $border-radius-default;
+    border: 1px solid $border-color;
+  }
+}
+
+.modal-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 1rem;
+  margin-top: 1.5rem;
+}
+
+// Estilos de botões (reutilize os seus se possível)
+.btn {
+  font-weight: 600;
+  padding: 10px 24px;
+  border-radius: 30px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  border: 1px solid transparent;
+
+  &[disabled] {
+    opacity: 0.6;
+    cursor: not-allowed;
+  }
+}
+
+.btn-primary {
+  background: $primary-gradient;
+  color: $white;
+}
+
+.btn-secondary {
+  background-color: $white;
+  color: $primary-color;
+  border-color: $border-color;
+
+  &:hover {
+    background-color: #f7f7f7;
+  }
+}
+
+// Loading Spinner (reutilize o seu se possível)
+.loading-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba($white, 0.8);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 10;
+}
+
+.spinner {
+  border: 4px solid rgba($black, 0.1);
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  border-left-color: $primary-color;
+  animation: spin 1s ease infinite;
+}
+
+// Animações
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes slideUp {
+  from { transform: translateY(20px); opacity: 0; }
+  to { transform: translateY(0); opacity: 1; }
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}

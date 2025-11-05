@@ -1,85 +1,106 @@
 <div class="modal-overlay" (click)="closeModal()">
-  
   <div class="modal-card" (click)="$event.stopPropagation()">
     
-    <header class="modal-header">
-      <h2>Editar Perfil</h2>
-      <button class="close-button" (click)="closeModal()">×</button>
-    </header>
-
-    <div class="modal-body">
-      <form [formGroup]="editForm" (ngSubmit)="onSubmit()">
-        
-        <div class="form-group">
-          <label for="nomeCompleto">Nome Completo</label>
-          <input type="text" 
-                 id="nomeCompleto"
-                 formControlName="nomeCompleto"
-                 class="input-field"
-                 placeholder="O seu nome completo">
-          
-          <div *ngIf="editForm.get('nomeCompleto')?.touched && editForm.get('nomeCompleto')?.errors" class="error-message-inline">
-            <span *ngIf="editForm.get('nomeCompleto')?.errors?.['required']">
-              O nome completo é obrigatório.
-            </span>
-            <span *ngIf="editForm.get('nomeCompleto')?.errors?.['maxlength']">
-              Máximo de 200 caracteres.
-            </span>
-          </div>
-        </div>
-
-        <div class="form-group">
-          <label for="bio">Biografia</label>
-          <textarea id="bio"
-                    formControlName="bio"
-                    class="textarea-field"
-                    rows="4"
-                    placeholder="Fale um pouco sobre si..."></textarea>
-          
-          <div *ngIf="editForm.get('bio')?.touched && editForm.get('bio')?.errors" class="error-message-inline">
-            <span *ngIf="editForm.get('bio')?.errors?.['maxlength']">
-              Máximo de 500 caracteres.
-            </span>
-          </div>
-        </div>
-
-        <div class="form-group">
-          <label for="fotoPerfil">Foto de Perfil</label>
-          
-          <div class="profile-pic-preview">
-            <img [src]="previewUrl || userProfile.urlFotoPerfil || 'https://placehold.co/100x100/d1568e/FFFFFF?text=?'" 
-                 alt="Pré-visualização da foto de perfil">
-          </div>
-          
-          <input type="file" 
-                 id="fotoPerfil" 
-                 (change)="onFileSelected($event)" 
-                 accept="image/*" 
-                 class="file-input">
-          <small class="form-text">Selecione uma nova imagem para atualizar (opcional).</small>
-        </div>
-
-
-        <div *ngIf="errorMessage" class="error-message general-error">
-          {{ errorMessage }}
-        </div>
-
-        <footer class="modal-actions">
-          <button type="button" class="btn btn-secondary" (click)="closeModal()">
-            Cancelar
-          </button>
-          <button type="submit" class="btn btn-primary" [disabled]="editForm.invalid || isLoading">
-            <span *ngIf="!isLoading">Guardar Alterações</span>
-            <span *ngIf="isLoading">A guardar...</span>
-          </button>
-        </footer>
-
-      </form>
-    </div>
-
     <div *ngIf="isLoading" class="loading-overlay">
       <div class="spinner"></div>
     </div>
 
+    <div class="modal-header">
+      <h2>Editar Perfil</h2>
+      <button class="close-button" (click)="closeModal()" aria-label="Fechar">&times;</button>
+    </div>
+
+    <div class="modal-body">
+      <form [formGroup]="editForm" (ngSubmit)="onSubmit()" novalidate>
+        
+        <div class="form-group profile-pic-group">
+          <label for="fotoPerfil" class="profile-pic-label">
+            <img [src]="previewUrl || userProfile.urlFotoPerfil || 'https://placehold.co/100x100/d1568e/FFFFFF?text=' + userProfile.username.charAt(0).toUpperCase()" 
+                 alt="Pré-visualização do avatar" 
+                 class="profile-pic-preview">
+            <span>Mudar foto de perfil</span>
+          </label>
+          <input type="file" id="fotoPerfil" (change)="onFileSelected($event)" accept="image/*" hidden>
+        </div>
+
+        <div class="form-group">
+          <label for="nomeCompleto">Nome Completo</label>
+          <input type="text" id="nomeCompleto" 
+                 [value]="userProfile.nomeCompleto" 
+                 class="input-field" disabled readonly>
+          <small class="form-text">O nome completo não pode ser alterado.</small>
+        </div>
+
+        <div class="form-group">
+          <label for="bio">Bio</label>
+          <textarea id="bio" 
+                    formControlName="bio" 
+                    class="textarea-field" 
+                    rows="3"
+                    [class.error-text]="bio?.errors?.['maxlength']"> </textarea>
+          
+          <div class="field-feedback">
+            <div *ngIf="bio?.invalid && (bio?.dirty || bio?.touched)" class="validation-error">
+              <small *ngIf="bio?.errors?.['maxlength']">
+                A bio não pode ter mais de 500 caracteres.
+              </small>
+            </div>
+
+            <small class="char-counter" [class.error-text]="bio?.errors?.['maxlength']">
+              {{ bio?.value?.length || 0 }} / 500
+            </small>
+          </div>
+        </div>
+        
+        <ng-container *ngIf="isArtistaOuAdmin">
+          <hr classF="field-separator">
+
+          <div class="form-group">
+            <label for="categoriaPrincipal">Categoria Principal</label>
+            
+            <ng-select id="categoriaPrincipal" formControlName="categoriaPrincipalId" [items]="categories$ | async" bindLabel="nome"
+              bindValue="id" [searchable]="false" [clearable]="true">
+            </ng-select>
+        
+            <small class="form-text">Sua especialidade principal (ex: Fotografia, Pintura).</small>
+          </div>
+
+          <div class="form-group">
+            <label for="UrlPortifolio">Portfólio (URL)</label>
+            <input type="text" id="UrlPortifolio" formControlName="UrlPortifolio" class="input-field" 
+                   placeholder="https://meu-portfolio.com">
+            </div>
+
+          <div class="form-group social-group">
+            <label for="linkedinHandle">LinkedIn</label>
+            <div class="input-prefix-wrapper">
+              <span>{{ linkedInPrefix }}</span>
+              <input type="text" id="linkedinHandle" formControlName="linkedinHandle" 
+                     (paste)="handleSocialPaste($event, 'linkedinHandle')"
+                     placeholder="seu-usuario">
+            </div>
+          </div>
+
+          <div class="form-group social-group">
+            <label for="instagramHandle">Instagram</label>
+            <div class="input-prefix-wrapper">
+              <span>{{ instagramPrefix }}</span>
+              <input type="text" id="instagramHandle" formControlName="instagramHandle"
+                     (paste)="handleSocialPaste($event, 'instagramHandle')"
+                     placeholder="seu.usuario">
+            </div>
+          </div>
+        </ng-container>
+        <div *ngIf="errorMessage" class="error-message">
+          {{ errorMessage }}
+        </div>
+
+        <div class="modal-actions">
+          <button type="button" class="btn btn-secondary" (click)="closeModal()">Cancelar</button>
+          <button type="submit" class="btn btn-primary" [disabled]="editForm.invalid || isLoading">Salvar</button>
+        </div>
+
+      </form>
+    </div>
   </div>
 </div>

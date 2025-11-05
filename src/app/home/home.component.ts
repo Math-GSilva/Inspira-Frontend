@@ -2,6 +2,7 @@ import { Component } from '@angular/core';
 import { SidebarNavComponent } from '../sidebar-nav/sidebar-nav.component';
 import { TimelineFeedComponent } from '../timeline-feed/timeline-feed.component';
 import { UserProfileCardComponent } from '../user-profile-card/user-profile-card.component';
+import { CategoryFilterComponent } from '../category-filter/category-filter.component';
 
 @Component({
   selector: 'app-home',
@@ -10,11 +11,16 @@ import { UserProfileCardComponent } from '../user-profile-card/user-profile-card
   imports: [
     SidebarNavComponent,
     TimelineFeedComponent,
-    UserProfileCardComponent
+    UserProfileCardComponent,
+    CategoryFilterComponent
   ],
   templateUrl: './home.component.html',
   styleUrl: './home.component.scss'
 })
 export class HomeComponent {
-  // Este componente não precisa de lógica, a sua única função é estruturar a página.
+  selectedCategoryId: string | null = null; 
+
+  onCategoryFilterChange(categoryId: string | null): void {
+    this.selectedCategoryId = categoryId;
+  }
 }

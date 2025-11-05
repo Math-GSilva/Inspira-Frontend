@@ -119,6 +119,13 @@
   &.ng-invalid.ng-touched {
     border-color: #e74c3c;
   }
+
+  // Estilo para campos desabilitados
+  &[disabled] {
+    background-color: #f5f5f5;
+    color: $sec-text-color;
+    cursor: not-allowed;
+  }
 }
 
 .textarea-field {
@@ -126,13 +133,42 @@
   min-height: 100px;
 }
 
-// --- NOVOS ESTILOS PARA UPLOAD ---
+// --- =================================== ---
+// --- === ESTILOS ATUALIZADOS/ADICIONADOS === ---
+// --- =================================== ---
 
-// Estilo para a pré-visualização da imagem
+// 1. Upload de Foto de Perfil
+.form-group.profile-pic-group {
+  display: flex;
+  align-items: center;
+  gap: $spacing-lg;
+  margin-bottom: $spacing-lg;
+}
+
+// O <label> que funciona como botão
+.profile-pic-label {
+  display: flex;
+  align-items: center;
+  gap: $spacing-md;
+  cursor: pointer;
+  margin-bottom: 0 !important; // Sobrescreve o margin-bottom padrão
+
+  span {
+    font-weight: 600;
+    color: $primary-color;
+    transition: opacity 0.2s ease;
+  }
+
+  &:hover span {
+    opacity: 0.7;
+  }
+}
+
+// A pré-visualização (o círculo)
 .profile-pic-preview {
-  margin-bottom: $spacing-md;
-  width: 100px;
-  height: 100px;
+  margin-bottom: 0 !important;
+  width: 80px;
+  height: 80px;
   border-radius: $border-radius-full;
   overflow: hidden;
   border: 3px solid $border-color;
@@ -141,35 +177,11 @@
   img {
     width: 100%;
     height: 100%;
-    object-fit: cover; // Garante que a imagem cobre o espaço sem distorcer
+    object-fit: cover;
   }
 }
 
-// Estilo para o input de ficheiro
-.file-input {
-  font-size: 0.9rem;
-  font-family: inherit;
-
-  // Estilização do botão "Escolher ficheiro" (varia entre navegadores)
-  &::file-selector-button {
-    font-weight: 500;
-    padding: $spacing-sm $spacing-md;
-    border-radius: $border-radius-default;
-    cursor: pointer;
-    transition: all 0.3s ease;
-    border: 1px solid $border-color;
-    background-color: $white;
-    color: $text-color;
-    margin-right: $spacing-md;
-
-    &:hover {
-      background-color: #f7f7f7;
-      border-color: darken($border-color, 10%);
-    }
-  }
-}
-
-// Texto de ajuda abaixo do input
+// 2. Texto de ajuda
 .form-text {
   display: block;
   font-size: 0.85rem;
@@ -177,17 +189,110 @@
   margin-top: $spacing-sm;
 }
 
-// --- FIM DOS NOVOS ESTILOS ---
+// 3. Separador e Título da Seção (para Artistas)
+.field-separator {
+  border: 0;
+  height: 1px;
+  background-color: $border-color;
+  margin: $spacing-lg 0;
+}
 
-// Mensagem de erro inline para validação
-.error-message-inline {
+.section-title {
+  font-weight: 600;
+  font-size: 1rem;
+  color: $text-color;
+  margin-bottom: $spacing-md;
+}
+
+// 4. Estilo para os inputs com prefixo (LinkedIn/Instagram)
+.form-group.social-group {
+  label {
+    font-size: 0.9rem;
+  }
+}
+
+.input-prefix-wrapper {
+  display: flex;
+  align-items: center;
+  border: 1px solid $border-color;
+  border-radius: $border-radius-default;
+  transition: border-color 0.2s, box-shadow 0.2s;
+  
+  // Foca o wrapper quando o input foca
+  &:focus-within {
+    outline: none;
+    border-color: $primary-color;
+    box-shadow: 0 0 0 3px rgba($primary-color, 0.2);
+  }
+  
+  // O prefixo (ex: "https://...")
+  span {
+    padding: 0.8rem 0.5rem 0.8rem 1rem;
+    font-size: 0.9rem;
+    color: $sec-text-color;
+    background-color: #f7f7f7; // Fundo levemente cinza
+    border-right: 1px solid $border-color;
+    white-space: nowrap; // Impede que o texto quebre
+  }
+  
+  // O input
+  input {
+    flex-grow: 1;
+    border: none;
+    outline: none;
+    padding: 0.8rem 1rem;
+    font-size: 0.9rem;
+    font-family: inherit;
+    background-color: transparent;
+
+    // Estilo para feedback de erro
+    &.ng-invalid.ng-touched {
+      // Não precisamos de borda vermelha, o wrapper cuida disso
+    }
+  }
+
+  // Feedback de erro para o wrapper
+  &.ng-invalid.ng-touched {
+    border-color: #e74c3c;
+  }
+}
+
+// 5. Mensagens de Erro
+.validation-error { // (Classe que adicionei no HTML)
   color: #e74c3c;
   font-size: 0.85rem;
   margin-top: $spacing-sm;
 }
 
-// Mensagem de erro geral da API
-.error-message.general-error {
+.error-text {
+  color: #e74c3c !important; // Cor vermelha para o texto
+}
+
+// 2. Container para o feedback (contador e erro)
+.field-feedback {
+  display: flex;
+  justify-content: flex-end; // Padrão é alinhar à direita
+  align-items: flex-start;
+  margin-top: $spacing-sm;
+  gap: $spacing-md; // Espaço entre o erro e o contador
+}
+
+// 3. Contador de Caracteres
+.char-counter {
+  font-size: 0.8rem;
+  color: $sec-text-color;
+  white-space: nowrap; // Impede que "500 / 500" quebre a linha
+}
+
+// 4. Mensagem de Erro (para todos os campos)
+.validation-error {
+  color: #e74c3c;
+  font-size: 0.85rem;
+  text-align: left; // Alinha o erro à esquerda
+  flex-grow: 1; // Permite que o erro empurre o contador
+}
+
+.error-message { // (Classe do HTML para erros da API)
   color: #e74c3c;
   background-color: #fbeae8;
   border: 1px solid #e74c3c;
@@ -197,6 +302,7 @@
   font-size: 0.9rem;
   text-align: center;
 }
+// --- FIM DOS NOVOS ESTILOS ---
 
 .modal-actions {
   display: flex;
@@ -262,4 +368,70 @@
   border-left-color: $primary-color;
   animation: spin 1s ease infinite;
 }
+/* Personalização do ng-select */
+::ng-deep ng-select {
+  width: 100%;
+  font-family: 'Poppins', sans-serif;
+  font-size: 0.95rem;
 
+  .ng-select-container {
+    display: flex;
+    align-items: center; /* Centraliza verticalmente */
+    border: 1.5px solid var(--primary-color, #d1568e);
+    border-radius: 12px;
+    background-color: var(--background-color, #fff);
+    color: var(--text-color, #333);
+    min-height: 44px;
+    padding: 0 0.6rem;
+    transition: all 0.2s ease-in-out;
+    box-shadow: none;
+
+    &:hover {
+      border-color: var(--primary-color-dark, #b04578);
+    }
+
+    &.ng-select-focused {
+      border-color: var(--primary-color, #d1568e);
+      box-shadow: 0 0 0 3px rgba(209, 86, 142, 0.25);
+    }
+
+    .ng-value {
+      display: flex;
+      align-items: center;
+      font-weight: 500;
+    }
+
+    .ng-placeholder {
+      display: flex;
+      align-items: center;
+      color: #999;
+    }
+
+    .ng-clear-wrapper {
+      color: var(--primary-color, #d1568e);
+    }
+  }
+
+  .ng-dropdown-panel {
+    border-radius: 12px;
+    border: 1px solid var(--primary-color, #d1568e);
+    background-color: var(--background-color, #fff);
+    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.1);
+    font-family: 'Poppins', sans-serif;
+
+    .ng-option {
+      padding: 10px 12px;
+      display: flex;
+      align-items: center;
+      transition: background-color 0.2s ease;
+
+      &:hover {
+        background-color: rgba(209, 86, 142, 0.08);
+      }
+
+      &.ng-option-selected {
+        display: none; /* Oculta a opção já selecionada */
+      }
+    }
+  }
+}

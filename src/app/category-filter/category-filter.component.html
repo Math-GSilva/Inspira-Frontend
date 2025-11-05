@@ -1,0 +1,19 @@
+<div class="category-filter-container">
+  <h4>Filtrar por Categoria:</h4>
+  <div class="category-buttons">
+    <button 
+      class="category-btn"
+      [class.active]="activeCategoryId === null" 
+      (click)="selectCategory(null)">
+      Todas
+    </button>
+    
+    <button 
+      *ngFor="let category of categories$ | async" 
+      class="category-btn"
+      [class.active]="activeCategoryId === category.id"
+      (click)="selectCategory(category.id)">
+      {{ category.nome }}
+    </button>
+  </div>
+</div>

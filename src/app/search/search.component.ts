@@ -1,4 +1,4 @@
-import { Component, EventEmitter, OnInit, Output } from '@angular/core';
+import { Component, EventEmitter, OnDestroy, OnInit, Output } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormControl, ReactiveFormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
@@ -25,7 +25,7 @@ import { MatInputModule } from '@angular/material/input';
   templateUrl: './search.component.html',
   styleUrls: ['./search.component.scss']
 })
-export class SearchComponent implements OnInit {
+export class SearchComponent implements OnInit, OnDestroy {
   @Output() close = new EventEmitter<void>();
 
   // Controles para os dois campos de filtro
@@ -47,7 +47,12 @@ export class SearchComponent implements OnInit {
     private router: Router
   ) {}
 
+  ngOnDestroy(): void {
+    document.body.style.overflow = ''; // restaura quando fechar
+  }
+
   ngOnInit(): void {
+    document.body.style.overflow = 'hidden'; // trava o scroll da página
     // Busca as categorias para popular o dropdown
     this.categories$ = this.categoriaService.getCategories();
 
@@ -108,7 +113,6 @@ export class SearchComponent implements OnInit {
   }
 
   goToProfile(username: string): void {
-    console.log(username)
     this.router.navigate([`profile/${username}`]).then(() => {
       // O modal só é fechado DEPOIS de a navegação ter sido concluída
       this.closeModal();

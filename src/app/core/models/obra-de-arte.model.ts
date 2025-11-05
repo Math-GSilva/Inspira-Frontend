@@ -10,9 +10,9 @@ export interface ObraDeArte {
   totalCurtidas: number;
   curtidaPeloUsuario?: boolean;
   showCommentBox?: boolean;
+  tipoConteudoMidia?: string;
 }
 export interface UpdateObraDeArteDto {
   titulo: string;
   descricao: string;
-  categoriaId: string;
 }

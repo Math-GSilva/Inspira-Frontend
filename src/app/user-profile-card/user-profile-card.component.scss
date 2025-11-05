@@ -27,12 +27,25 @@
     font-size: 1.3rem;
     font-weight: 500;
     margin: 0;
+    cursor: pointer; // <-- ADICIONADO
+    transition: color 0.2s ease;
   }
 
   .profile-username {
     font-size: 1rem;
     color: $sec-text-color;
     margin: 0.2rem 0 0 0;
+  }
+}
+
+.profile-name-link {
+  text-decoration: none; // Remove sublinhado
+  color: inherit; // Herda a cor do .profile-info
+
+  &:hover {
+    .profile-name {
+      color: $primary-color; // Adiciona hover no H3
+    }
   }
 }
 

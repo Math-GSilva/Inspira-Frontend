@@ -5,6 +5,7 @@ export interface Categoria {
 
 export interface CreateCategoriaDto {
   nome: string;
+  descricao: string;
 }
 
 export interface UpdateCategoriaDto {

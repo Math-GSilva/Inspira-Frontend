@@ -29,4 +29,5 @@ $main-content-max-width: 800px;
 
 .right-column {
   flex: 0 0 $profile-width;
+  align-self: flex-start; 
 }

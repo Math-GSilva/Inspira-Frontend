@@ -1,4 +1,6 @@
 export interface UsuarioProfile {
+  categoriaPrincipalNome: string;
+  categoriaPrincipalId: string;
   id: string;
   username: string;
   nomeCompleto: string;
@@ -7,4 +9,8 @@ export interface UsuarioProfile {
   contagemSeguidores: number;
   contagemSeguindo: number;
   seguidoPeloUsuarioAtual: boolean;
+
+  urlPortifolio?: string | null;
+  urlLinkedin?: string | null;
+  urlInstagram?: string | null;
 }
