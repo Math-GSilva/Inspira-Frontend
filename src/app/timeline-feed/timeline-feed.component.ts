@@ -109,7 +109,7 @@ export class TimelineFeedComponent implements OnInit, OnChanges, AfterViewInit, 
 
   private prependNewArtwork(newPost: ObraDeArte): void {
     const isAdmin = this.currentUser?.role === 'Administrador';
-    const currentUsername = this.currentUser?.nameid;
+    const currentUsername = this.currentUser?.name;
     
     const isOwner = newPost.autorUsername === currentUsername; 
     const calculatedType = this.calculateMediaTypeFromMime(newPost.tipoConteudoMidia);
@@ -176,7 +176,7 @@ export class TimelineFeedComponent implements OnInit, OnChanges, AfterViewInit, 
 
     const currentUser: DecodedToken | null = this.authService.currentUserValue;
     const isAdmin = currentUser?.role === 'Administrador';
-    const currentUsername = currentUser?.nameid; 
+    const currentUsername = currentUser?.name; 
 
     this.obraDeArteService.getAll(this.categoryId, null, this.nextCursor, this.PAGE_SIZE)
       .pipe(finalize(() => this.isLoading = false))

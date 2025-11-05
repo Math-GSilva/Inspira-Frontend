@@ -2,11 +2,12 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { CreateCurtidaDto, CurtidaResponseDto } from '../../core/models/curtida.model';
+import { environment } from '../../../envirorments/environment';
 @Injectable({
   providedIn: 'root'
 })
 export class CurtidaService {
-  private apiUrl = `http://localhost:8000/api/Curtidas`;
+    private readonly apiUrl = `${environment.apiUrl}/Curtidas`;
 
   constructor(private http: HttpClient) { }
 

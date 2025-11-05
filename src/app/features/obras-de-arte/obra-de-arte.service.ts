@@ -4,12 +4,13 @@ import { Observable } from 'rxjs';
 import { ObraDeArte, UpdateObraDeArteDto } from '../../core/models/obra-de-arte.model';
 // --- ADICIONADO ---
 import { PaginatedResponse } from '../../core/models/paginated-response.model';
+import { environment } from '../../../envirorments/environment';
 
 @Injectable({
   providedIn: 'root'
 })
 export class ObraDeArteService {
-  private readonly apiUrl = `http://localhost:8000/api/ObrasDeArte`;
+    private readonly apiUrl = `${environment.apiUrl}/ObrasDeArte`;
 
   constructor(private http: HttpClient) { }
 

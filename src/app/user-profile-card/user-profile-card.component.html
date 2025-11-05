@@ -1,15 +1,15 @@
 <aside *ngIf="currentUser$ | async as user" class="user-profile-card">
 
-  <a [routerLink]="['/profile', user.nameid]">
+  <a [routerLink]="['/profile', user.name]">
     <img 
-      [src]="user.urlPerfil || 'https://placehold.co/80x80/d1568e/FFFFFF?text=' + user.nameid.charAt(0).toUpperCase()" 
-      [alt]="'Foto de perfil de ' + user.nameid" 
+      [src]="user.urlPerfil || 'https://placehold.co/80x80/d1568e/FFFFFF?text=' + user.name.charAt(0).toUpperCase()" 
+      [alt]="'Foto de perfil de ' + user.name" 
       class="profile-avatar">
   </a>
 
   <div class="profile-info">
-    <a [routerLink]="['/profile', user.nameid]" class="profile-name-link">
-      <h3 class="profile-name">{{ user.nameid }}</h3>
+    <a [routerLink]="['/profile', user.name]" class="profile-name-link">
+      <h3 class="profile-name">{{ user.name }}</h3>
     </a>
     <p class="profile-username">{{ user.email }}</p>
     <p class="profile-role">({{ user.role }})</p>

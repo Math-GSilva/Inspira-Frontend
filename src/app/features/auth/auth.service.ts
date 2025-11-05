@@ -4,13 +4,14 @@ import { BehaviorSubject, Observable, tap } from 'rxjs';
 import { Router } from '@angular/router';
 import { DecodedToken } from './decoded-token.model';
 import { jwtDecode } from 'jwt-decode';
+import { environment } from '../../../envirorments/environment';
 
 @Injectable({
   providedIn: 'root',
 })
 export class AuthService {
-  private baseUrl = 'http://localhost:8000/api/auth';
-  private readonly TOKEN_KEY = 'authToken'; // Centralizando a chave do token
+  private baseUrl = `${environment.apiUrl}/auth`;
+  private readonly TOKEN_KEY = 'inspira_auth_token';
 
   private currentUserSubject = new BehaviorSubject<DecodedToken | null>(null);
 
@@ -36,7 +37,7 @@ export class AuthService {
   }
 
   logout(): void {
-    localStorage.removeItem(this.TOKEN_KEY);
+    sessionStorage.removeItem(this.TOKEN_KEY);
     this.currentUserSubject.next(null);
     this.router.navigate(['/auth/login']); // ou '/login' dependendo da sua rota
   }
@@ -46,7 +47,7 @@ export class AuthService {
   }
 
   getToken(): string | null {
-    return localStorage.getItem(this.TOKEN_KEY);
+    return sessionStorage.getItem(this.TOKEN_KEY);
   }
 
   /**
@@ -92,7 +93,7 @@ export class AuthService {
     const updated = { ...current, urlPerfil: newUrl };
     this.currentUserSubject.next(updated);
 
-    localStorage.setItem('currentUser', JSON.stringify(updated));
+    sessionStorage.setItem('currentUser', JSON.stringify(updated));
   }
 }
 
@@ -112,7 +113,7 @@ export class AuthService {
       const userData: DecodedToken = {
         sub: decodedPayload.sub,
         email: decodedPayload.email,
-        nameid: decodedPayload.nameid,
+        name: decodedPayload.name,
         role: decodedPayload[
           'http://schemas.microsoft.com/ws/2008/06/identity/claims/role'
         ],
@@ -128,9 +129,9 @@ export class AuthService {
   }
 
   private saveAuthData(token: string, userInfo: any): void {
-    localStorage.setItem(this.TOKEN_KEY, token);
+    sessionStorage.setItem(this.TOKEN_KEY, token);
     if (userInfo) {
-      localStorage.setItem('userInfo', JSON.stringify(userInfo));
+      sessionStorage.setItem('userInfo', JSON.stringify(userInfo));
     }
   }
 }

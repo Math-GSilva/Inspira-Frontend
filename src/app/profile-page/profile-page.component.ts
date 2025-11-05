@@ -122,7 +122,7 @@ export class ProfilePageComponent implements OnInit {
                   profile, 
                   artworks: calculatedArtworks,
                   // 5. ATUALIZADO: Compara com o 'nameid' do usuário
-                  isMyProfile: profile.username === currentUser?.nameid
+                  isMyProfile: profile.username === currentUser?.name
                 };
               })
             );
