@@ -4,7 +4,7 @@ import { Observable } from 'rxjs';
 import { ObraDeArte, UpdateObraDeArteDto } from '../../core/models/obra-de-arte.model';
 // --- ADICIONADO ---
 import { PaginatedResponse } from '../../core/models/paginated-response.model';
-import { environment } from '../../../envirorments/environment';
+import { environment } from '../../../environments/environment';
 
 @Injectable({
   providedIn: 'root'

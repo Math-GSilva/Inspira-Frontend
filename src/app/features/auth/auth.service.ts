@@ -4,7 +4,7 @@ import { BehaviorSubject, Observable, tap } from 'rxjs';
 import { Router } from '@angular/router';
 import { DecodedToken } from './decoded-token.model';
 import { jwtDecode } from 'jwt-decode';
-import { environment } from '../../../envirorments/environment';
+import { environment } from '../../../environments/environment';
 
 @Injectable({
   providedIn: 'root',

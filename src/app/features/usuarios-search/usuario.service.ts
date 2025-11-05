@@ -3,7 +3,7 @@ import { HttpClient, HttpParams } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { UsuarioSearchResultDto } from '../../core/models/usuario-search-response.model';
 import { UsuarioProfile } from '../../core/models/usuario-profile.model';
-import { environment } from '../../../envirorments/environment';
+import { environment } from '../../../environments/environment';
 
 @Injectable({
   providedIn: 'root'
