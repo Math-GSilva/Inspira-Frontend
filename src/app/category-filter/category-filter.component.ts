@@ -15,12 +15,11 @@ export class CategoryFilterComponent implements OnInit {
   @Output() categorySelected = new EventEmitter<string | null>();
 
   categories$!: Observable<Categoria[]>;
-  activeCategoryId: string | null = null; // Guarda o ID da categoria ativa
+  activeCategoryId: string | null = null;
 
   constructor(private categoriaService: CategoriaService) {}
 
   ngOnInit(): void {
-    // Busca as categorias ao iniciar
     this.categories$ = this.categoriaService.getCategories();
   }
   selectCategory(categoryId: string | null): void {

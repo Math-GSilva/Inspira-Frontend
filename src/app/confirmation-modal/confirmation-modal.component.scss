@@ -1,4 +1,3 @@
-// Importa suas variáveis globais (ajuste o caminho se necessário)
 @import '../../styles/variables'; 
 
 .modal-overlay {
@@ -7,18 +6,18 @@
   left: 0;
   width: 100%;
   height: 100%;
-  background-color: rgba(0, 0, 0, 0.6); // Fundo escurecido
+  background-color: rgba(0, 0, 0, 0.6); 
   display: flex;
   justify-content: center;
   align-items: center;
   z-index: 1000;
   padding: $spacing-md;
-  // Animação suave de entrada
+  
   animation: fadeIn 0.2s ease-out;
 }
 
 .modal-container {
-  // Estilo do seu projeto
+  
   background-color: $card-bg-color; 
   border: 1px solid $border-color;   
   border-radius: $border-radius-md; 
@@ -26,7 +25,7 @@
   width: 100%;
   box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
   overflow: hidden;
-  // Animação de "pop-up"
+  
   animation: scaleIn 0.2s ease-out;
 }
 
@@ -63,20 +62,19 @@
   padding: $spacing-lg;
   font-size: 1rem;
   color: $text-color;
-  line-height: 1.5; // Melhora a legibilidade
+  line-height: 1.5; 
 }
 
 .modal-footer {
   display: flex;
-  justify-content: flex-end; // Alinha botões à direita
+  justify-content: flex-end; 
   gap: $spacing-md;
   padding: $spacing-lg;
-  background-color: rgba(0, 0, 0, 0.03); // Fundo levemente diferente
+  background-color: rgba(0, 0, 0, 0.03); 
   border-top: 1px solid $border-color;
 }
 
-// --- Estilos de Botão Genéricos ---
-// (Você pode mover isso para um arquivo global _buttons.scss)
+
 .btn {
   font-family: inherit;
   font-size: 0.95rem;
@@ -89,7 +87,7 @@
 }
 
 .btn-secondary {
-  background-color: #eee; // Cor secundária genérica
+  background-color: #eee; 
   color: #333;
   border: 1px solid #ccc;
 
@@ -99,7 +97,7 @@
 }
 
 .btn-primary {
-  background-color: $primary-color; // Sua cor primária
+  background-color: $primary-color; 
   color: #fff;
 
   &:hover {
@@ -108,7 +106,7 @@
 }
 
 .btn-danger {
-  background-color: #E0245E; // Vermelho (o mesmo do seu .delete-option)
+  background-color: #E0245E; 
   color: #fff;
 
   &:hover {
@@ -116,7 +114,7 @@
   }
 }
 
-// --- Animações ---
+
 @keyframes fadeIn {
   from { opacity: 0; }
   to { opacity: 1; }
