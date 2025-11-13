@@ -12,15 +12,14 @@ import { Comentario } from '../core/models/comentario.model';
   styleUrls: ['./comments-modal.component.scss']
 })
 export class CommentsModalComponent implements OnInit {
-  @Input() obraDeArteId!: string; // Recebe o ID da obra do componente pai
-  @Output() close = new EventEmitter<void>(); // Emite um evento para se fechar
+  @Input() obraDeArteId!: string;
+  @Output() close = new EventEmitter<void>();
 
   comments$!: Observable<Comentario[]>;
 
   constructor(private comentarioService: ComentarioService) {}
 
   ngOnInit(): void {
-    // Busca os comentários assim que o modal é inicializado
     this.comments$ = this.comentarioService.getComentarios(this.obraDeArteId);
   }
 

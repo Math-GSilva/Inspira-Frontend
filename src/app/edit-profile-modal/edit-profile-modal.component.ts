@@ -34,8 +34,6 @@ export class EditProfileModalComponent implements OnInit, OnDestroy {
   selectedFile: File | null = null;
   previewUrl: string | null = null;
 
-  // --- ADICIONADO ---
-  // Definir os prefixos como constantes públicas para usar no template
   public readonly linkedInPrefix = 'https://www.linkedin.com/in/';
   public readonly instagramPrefix = 'https://www.instagram.com/';
 
@@ -57,45 +55,38 @@ export class EditProfileModalComponent implements OnInit, OnDestroy {
 
   
   ngOnDestroy(): void {
-    document.body.style.overflow = ''; // restaura quando fechar
+    document.body.style.overflow = '';
   }
 
   ngOnInit(): void {
-    document.body.style.overflow = 'hidden'; // trava o scroll da página
+    document.body.style.overflow = 'hidden';
 
-    // Função auxiliar para extrair o "handle" da URL completa
     const extractHandle = (url: string | null | undefined, prefix: string): string => {
       if (url && url.toLowerCase().startsWith(prefix.toLowerCase())) {
-        // Pega 'username' de '.../prefixo/username/outracoisa'
         return url.substring(prefix.length).split('/')[0]; 
       }
-      return ''; // Retorna string vazia se nulo ou não começar com o prefixo
+      return '';
     };
 
-    // Inicializa o formulário
     this.editForm = this.fb.group({
       bio: [this.userProfile.bio || '', [Validators.maxLength(500)]],
 
       categoriaPrincipalId: [{
         value: this.userProfile.categoriaPrincipalId || '', 
-        disabled: !this.isArtistaOuAdmin // Só artistas podem mudar
+        disabled: !this.isArtistaOuAdmin
       }],
       
-      // Portfólio continua sendo uma URL completa.
       UrlPortifolio: [
         this.userProfile.urlPortifolio || '', 
-        [Validators.pattern(this.urlRegex)] // <-- A VALIDAÇÃO
+        [Validators.pattern(this.urlRegex)]
       ],
       
-      // Novos campos de "handle" com validação de pattern
       linkedinHandle: [
         extractHandle(this.userProfile.urlLinkedin, this.linkedInPrefix),
-        // Regex: permite letras, números, hífen e underscore
         [Validators.pattern(/^[a-zA-Z0-9_-]+$/)] 
       ],
       instagramHandle: [
         extractHandle(this.userProfile.urlInstagram, this.instagramPrefix),
-        // Regex: permite letras, números, ponto e underscore
         [Validators.pattern(/^[a-zA-Z0-9_.]+$/)]
       ]
     });
@@ -118,14 +109,11 @@ export class EditProfileModalComponent implements OnInit, OnDestroy {
     const file = element.files?.[0];
 
     if (file) {
-      // --- 1. VALIDAÇÃO ADICIONADA ---
-      // Verifica se o tipo de arquivo começa com "image/"
       if (!file.type.startsWith('image/')) {
         this.showTemporaryError('Arquivo inválido. Por favor, selecione apenas imagens.');
-        element.value = ''; // Limpa o input
+        element.value = '';
         return;
       }
-      // --- Fim da Validação ---
 
       this.selectedFile = file;
       const reader = new FileReader();
@@ -136,13 +124,8 @@ export class EditProfileModalComponent implements OnInit, OnDestroy {
     }
   }
 
-  // --- NOVO MÉTODO ---
-  /**
-   * Intercepta o evento 'paste' (colar) nos inputs de redes sociais.
-   * Tenta extrair o "handle" de uma URL completa colada.
-   */
   handleSocialPaste(event: ClipboardEvent, fieldName: 'linkedinHandle' | 'instagramHandle'): void {
-    event.preventDefault(); // Impede a colagem padrão
+    event.preventDefault();
     const pastedText = event.clipboardData?.getData('text') || '';
     if (!pastedText) return;
 
@@ -160,33 +143,27 @@ export class EditProfileModalComponent implements OnInit, OnDestroy {
     }
 
     try {
-      // Tenta analisar como uma URL
       const url = new URL(pastedText);
 
       if (url.hostname.includes(expectedHost)) {
         if (fieldName === 'linkedinHandle' && url.pathname.startsWith(expectedPathPrefix)) {
           handle = url.pathname.substring(expectedPathPrefix.length).split('/')[0];
           isValidPaste = true;
-        } else if (fieldName === 'instagramHandle' && url.pathname.length > 1) { // > 1 para ignorar apenas "/"
+        } else if (fieldName === 'instagramHandle' && url.pathname.length > 1) {
           handle = url.pathname.substring(expectedPathPrefix.length).split('/')[0];
           isValidPaste = true;
         }
       }
     } catch (e) {
-      // Não é uma URL, pode ser um handle.
-      // Deixa o 'handle' como o texto colado para o validador de pattern pegar
       handle = pastedText;
-      isValidPaste = true; // É válido colar um handle
+      isValidPaste = true;
     }
 
     if (isValidPaste) {
       this.editForm.get(fieldName)?.setValue(handle);
       this.editForm.get(fieldName)?.markAsDirty();
-      // this.toastService.success('Link adaptado com sucesso!');
     } else {
-      // Colou algo que não é um link válido (ex: google.com)
       this.showTemporaryError(`Link inválido. Cole um link do ${fieldName === 'linkedinHandle' ? 'LinkedIn' : 'Instagram'}.`);
-      // this.toastService.error('Link inválido. Cole um link do LinkedIn.');
     }
   }
 
@@ -199,13 +176,10 @@ export class EditProfileModalComponent implements OnInit, OnDestroy {
     this.isLoading = true;
     this.errorMessage = null;
 
-    // --- ATUALIZADO ---
-    // Reconstrói as URLs completas a partir dos "handles" antes de enviar
     const { bio, UrlPortifolio, linkedinHandle, instagramHandle } = this.editForm.value;
 
     const textData = {
       bio,
-      // Envia nulo (ou string vazia) se o campo estiver vazio
       UrlPortifolio: UrlPortifolio || null, 
       UrlLinkedin: linkedinHandle ? this.linkedInPrefix + linkedinHandle : null,
       UrlInstagram: instagramHandle ? this.instagramPrefix + instagramHandle : null,
@@ -217,6 +191,7 @@ export class EditProfileModalComponent implements OnInit, OnDestroy {
     ).subscribe({
       next: (updatedProfile) => {
         this.profileUpdated.emit(updatedProfile);
+        this.closeModal();
       },
       error: (err) => {
         this.errorMessage = err.error?.message || 'Não foi possível atualizar o perfil. Tente novamente.';
@@ -228,15 +203,12 @@ export class EditProfileModalComponent implements OnInit, OnDestroy {
     this.close.emit();
   }
 
-  // --- NOVO MÉTODO (AUXILIAR) ---
-  /** Mostra uma mensagem de erro que desaparece sozinha. */
   private showTemporaryError(message: string): void {
     this.errorMessage = message;
     setTimeout(() => {
-      // Só limpa a mensagem se for a mesma (evita apagar um erro de API)
       if (this.errorMessage === message) {
         this.errorMessage = null;
       }
-    }, 3000); // 3 segundos
+    }, 3000);
   }
 }
