@@ -13,13 +13,13 @@ import { AddCategoryModalComponent } from '../add-category-modal/add-category-mo
 import { DecodedToken } from '../features/auth/decoded-token.model';
 
 @Component({ selector: 'app-new-post-modal', standalone: true, template: '' })
-class MockNewPostModalComponent { @Output() close = new EventEmitter<void>(); }
+class MockNewPostModalComponent { @Output() closeRequest = new EventEmitter<void>(); }
 
 @Component({ selector: 'app-search', standalone: true, template: '' })
-class MockSearchComponent { @Output() close = new EventEmitter<void>(); }
+class MockSearchComponent { @Output() closeRequest = new EventEmitter<void>(); }
 
 @Component({ selector: 'app-add-category-modal', standalone: true, template: '' })
-class MockAddCategoryModalComponent { @Output() close = new EventEmitter<void>(); }
+class MockAddCategoryModalComponent { @Output() closeRequest = new EventEmitter<void>(); }
 
 const mockUserAdmin: DecodedToken = { 
   sub: '1', name: 'Admin', email: 'admin@test.com', role: 'Administrador', exp: 123, urlPerfil: '' 
@@ -161,7 +161,7 @@ fdescribe('SidebarNavComponent', () => {
       const modalDebugEl = fixture.debugElement.query(By.directive(MockNewPostModalComponent));
       const modalComponent = modalDebugEl.componentInstance as MockNewPostModalComponent;
 
-      modalComponent.close.emit();
+      modalComponent.closeRequest.emit();
       
       expect(component.isNewPostModalOpen).toBeFalse();
     });

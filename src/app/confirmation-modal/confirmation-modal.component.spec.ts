@@ -127,21 +127,21 @@ fdescribe('ConfirmationModalComponent', () => {
     });
 
     it('should emit "close" event when cancel button is clicked', () => {
-      spyOn(component.close, 'emit');
+      spyOn(component.closeRequest, 'emit');
       
       const cancelBtn = compiled.querySelector('.btn-secondary') as HTMLButtonElement;
       cancelBtn.click();
 
-      expect(component.close.emit).toHaveBeenCalled();
+      expect(component.closeRequest.emit).toHaveBeenCalled();
     });
 
     it('should emit "close" event when "X" button is clicked', () => {
-      spyOn(component.close, 'emit');
+      spyOn(component.closeRequest, 'emit');
       
       const closeIconBtn = compiled.querySelector('.close-btn') as HTMLButtonElement;
       closeIconBtn.click();
 
-      expect(component.close.emit).toHaveBeenCalled();
+      expect(component.closeRequest.emit).toHaveBeenCalled();
     });
   });
 
