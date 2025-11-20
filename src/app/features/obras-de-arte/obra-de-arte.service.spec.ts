@@ -30,7 +30,6 @@ fdescribe('ObraDeArteService', () => {
     expect(service).toBeTruthy();
   });
 
-  // --- CREATE (POST com FormData) ---
   it('should create an artwork (POST FormData)', () => {
     const formData = new FormData();
     formData.append('Titulo', 'Nova Arte');
@@ -43,13 +42,11 @@ fdescribe('ObraDeArteService', () => {
 
     const req = httpMock.expectOne(apiUrl);
     expect(req.request.method).toBe('POST');
-    // Verifica se o corpo é o FormData enviado
     expect(req.request.body).toBe(formData);
 
     req.flush(mockResponse);
   });
 
-  // --- GET ALL (Paginação e Filtros) ---
   describe('getAll', () => {
     
     it('should get artworks with default parameters', () => {
@@ -59,7 +56,6 @@ fdescribe('ObraDeArteService', () => {
       const req = httpMock.expectOne(req => req.url === apiUrl);
       expect(req.request.method).toBe('GET');
       
-      // Verifica os params padrão
       expect(req.request.params.get('pageSize')).toBe('10');
       expect(req.request.params.has('categoriaId')).toBeFalse();
       expect(req.request.params.has('cursor')).toBeFalse();
@@ -72,8 +68,6 @@ fdescribe('ObraDeArteService', () => {
       const cursor = '2023-01-01T00:00:00';
       const pageSize = 20;
       
-      // Nota: O parâmetro 'username' (segundo argumento) é ignorado no seu código atual,
-      // então passamos 'user' mas não esperamos vê-lo nos params.
       service.getAll(categoryId, 'user-ignorado', cursor, pageSize).subscribe();
 
       const req = httpMock.expectOne(req => req.url === apiUrl);
@@ -82,7 +76,6 @@ fdescribe('ObraDeArteService', () => {
       expect(req.request.params.get('categoriaId')).toBe(categoryId);
       expect(req.request.params.get('cursor')).toBe(cursor);
       
-      // Confirma que username NÃO foi enviado (baseado no seu código atual)
       expect(req.request.params.has('username')).toBeFalse(); 
 
       const mockResponse: PaginatedResponse<ObraDeArte> = {
@@ -92,7 +85,6 @@ fdescribe('ObraDeArteService', () => {
     });
   });
 
-  // --- GET ALL BY USER ---
   it('should get artworks by user ID', () => {
     const userId = 'user-123';
     const mockList: ObraDeArte[] = [{ id: '1' } as ObraDeArte];
@@ -108,7 +100,6 @@ fdescribe('ObraDeArteService', () => {
     req.flush(mockList);
   });
 
-  // --- GET BY ID ---
   it('should get artwork by ID', () => {
     const id = 'art-1';
     const mockArt = { id: 'art-1', titulo: 'Arte' } as ObraDeArte;
@@ -123,7 +114,6 @@ fdescribe('ObraDeArteService', () => {
     req.flush(mockArt);
   });
 
-  // --- UPDATE (PUT) ---
   it('should update artwork', () => {
     const id = 'art-1';
     const dto: UpdateObraDeArteDto = { titulo: 'Editado', descricao: 'Desc' };
@@ -140,7 +130,6 @@ fdescribe('ObraDeArteService', () => {
     req.flush(responseArt);
   });
 
-  // --- DELETE ---
   it('should delete artwork', () => {
     const id = 'art-1';
 

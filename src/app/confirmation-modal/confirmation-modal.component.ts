@@ -17,14 +17,14 @@ export class ConfirmationModalComponent {
   @Input() confirmButtonClass: 'primary' | 'danger' = 'primary';
 
   @Output() confirm = new EventEmitter<void>();
-  @Output() close = new EventEmitter<void>();
+  @Output() closeRequest = new EventEmitter<void>();
 
   onConfirm(): void {
     this.confirm.emit();
   }
 
   onClose(): void {
-    this.close.emit();
+    this.closeRequest.emit();
   }
 
   onOverlayClick(event: MouseEvent): void {

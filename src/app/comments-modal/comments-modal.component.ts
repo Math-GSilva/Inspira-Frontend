@@ -13,7 +13,7 @@ import { Comentario } from '../core/models/comentario.model';
 })
 export class CommentsModalComponent implements OnInit {
   @Input() obraDeArteId!: string;
-  @Output() close = new EventEmitter<void>();
+  @Output() closeRequest = new EventEmitter<void>();
 
   comments$!: Observable<Comentario[]>;
 
@@ -24,6 +24,6 @@ export class CommentsModalComponent implements OnInit {
   }
 
   closeModal(): void {
-    this.close.emit();
+    this.closeRequest.emit();
   }
 }

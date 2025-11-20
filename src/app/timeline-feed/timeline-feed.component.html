@@ -77,7 +77,7 @@
 <app-comments-modal
   *ngIf="isCommentsModalOpen && selectedArtworkIdForModal"
   [obraDeArteId]="selectedArtworkIdForModal"
-  (close)="closeCommentsModal()">
+  (closeRequest)="closeCommentsModal()">
 </app-comments-modal>
 
 <app-confirmation-modal
@@ -87,12 +87,12 @@
   confirmButtonText="Remover"
   confirmButtonClass="danger" 
   (confirm)="handleConfirmDelete()"
-  (close)="handleCloseConfirmModal()">
+  (closeRequest)="handleCloseConfirmModal()">
 </app-confirmation-modal>
 
 <app-edit-post-modal
   *ngIf="isEditModalOpen"
   [artwork]="artworkToEdit"
-  (close)="isEditModalOpen = false"
+  (closeRequest)="isEditModalOpen = false"
   (saveSuccess)="handleUpdateSuccess($event)">
 </app-edit-post-modal>

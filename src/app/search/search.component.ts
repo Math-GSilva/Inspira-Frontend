@@ -26,18 +26,14 @@ import { MatInputModule } from '@angular/material/input';
   styleUrls: ['./search.component.scss']
 })
 export class SearchComponent implements OnInit, OnDestroy {
-  @Output() close = new EventEmitter<void>();
+  @Output() closeRequest = new EventEmitter<void>();
 
-  // Controles para os dois campos de filtro
   searchControl = new FormControl('');
-  // ALTERADO: FormControl agora é do tipo string e inicia com uma string vazia.
   categoryControl = new FormControl<string>(''); 
   
-  // Observables para resultados e categorias
   results$!: Observable<UsuarioSearchResultDto[]>;
   categories$!: Observable<Categoria[]>;
 
-  // Estado da UI
   isLoading = false;
   hasSearched = false;
 
@@ -48,25 +44,21 @@ export class SearchComponent implements OnInit, OnDestroy {
   ) {}
 
   ngOnDestroy(): void {
-    document.body.style.overflow = ''; // restaura quando fechar
+    document.body.style.overflow = '';
   }
 
   ngOnInit(): void {
-    document.body.style.overflow = 'hidden'; // trava o scroll da página
-    // Busca as categorias para popular o dropdown
+    document.body.style.overflow = 'hidden';
     this.categories$ = this.categoriaService.getCategories();
 
-    // Combina os valueChanges dos dois controles para acionar a busca
     this.results$ = combineLatest([
       this.searchControl.valueChanges.pipe(startWith('')),
-      // ALTERADO: Inicia com uma string vazia para corresponder ao novo tipo.
       this.categoryControl.valueChanges.pipe(startWith('')) 
     ]).pipe(
       debounceTime(300),
       distinctUntilChanged((prev, curr) => JSON.stringify(prev) === JSON.stringify(curr)),
       tap(([query, categoryId]) => {
         const hasQuery = query && query.trim().length >= 2;
-        // ALTERADO: A verificação agora é se a string categoryId não está vazia.
         const hasCategory = !!categoryId; 
         if (hasQuery || hasCategory) {
           this.isLoading = true;
@@ -77,16 +69,13 @@ export class SearchComponent implements OnInit, OnDestroy {
       }),
       switchMap(([query, categoryId]) => {
         const hasQuery = query && query.trim().length >= 2;
-        // ALTERADO: A verificação agora é se a string categoryId não está vazia.
         const hasCategory = !!categoryId;
         
         if (!hasQuery && !hasCategory) {
-          return of([]); // Se nenhum filtro for válido, retorna array vazio
+          return of([]);
         }
 
-        // Passa os valores (ou string vazia) para o serviço
         const finalQuery = hasQuery ? query.trim() : "";
-        // ALTERADO: Simplificado, pois categoryId já é uma string ou uma string vazia.
         const finalCategory = categoryId || "";
 
         return this.usuarioService.searchUsers(finalQuery, finalCategory).pipe(
@@ -109,12 +98,11 @@ export class SearchComponent implements OnInit, OnDestroy {
   }
 
   closeModal(): void {
-    this.close.emit();
+    this.closeRequest.emit();
   }
 
   goToProfile(username: string): void {
     this.router.navigate([`profile/${username}`]).then(() => {
-      // O modal só é fechado DEPOIS de a navegação ter sido concluída
       this.closeModal();
     });
   }

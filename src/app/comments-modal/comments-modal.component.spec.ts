@@ -133,9 +133,9 @@ fdescribe('CommentsModalComponent', () => {
   describe('Modal Close Events', () => {
 
     it('deve emitir "close" quando closeModal() é chamado', () => {
-      spyOn(component.close, 'emit');
+      spyOn(component.closeRequest, 'emit');
       component.closeModal();
-      expect(component.close.emit).toHaveBeenCalledTimes(1);
+      expect(component.closeRequest.emit).toHaveBeenCalledTimes(1);
     });
 
     it('deve chamar closeModal() quando o overlay é clicado', () => {

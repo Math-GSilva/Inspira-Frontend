@@ -9,12 +9,11 @@ fdescribe('CategoriaService', () => {
   let service: CategoriaService;
   let httpMock: HttpTestingController;
 
-  // A URL base que o serviço usa
   const apiUrl = `${environment.apiUrl}/Categorias`;
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      imports: [HttpClientTestingModule], // Módulo de teste HTTP
+      imports: [HttpClientTestingModule],
       providers: [CategoriaService]
     });
 
@@ -23,7 +22,6 @@ fdescribe('CategoriaService', () => {
   });
 
   afterEach(() => {
-    // Garante que não há requisições pendentes ou inesperadas
     httpMock.verify();
   });
 
@@ -31,28 +29,23 @@ fdescribe('CategoriaService', () => {
     expect(service).toBeTruthy();
   });
 
-  // --- Teste: GET (Todas as categorias) ---
   it('should retrieve all categories (GET)', () => {
     const dummyCategories: Categoria[] = [
       { id: '1', nome: 'Pintura', descricao: 'Tintas e telas' },
       { id: '2', nome: 'Escultura', descricao: 'Argila e pedra' }
     ];
 
-    // 1. Chama o método
     service.getCategories().subscribe(categories => {
       expect(categories.length).toBe(2);
       expect(categories).toEqual(dummyCategories);
     });
 
-    // 2. Verifica a URL e o Método
     const req = httpMock.expectOne(apiUrl);
     expect(req.request.method).toBe('GET');
 
-    // 3. Retorna os dados falsos
     req.flush(dummyCategories);
   });
 
-  // --- Teste: GET (Por ID) ---
   it('should retrieve a category by ID (GET)', () => {
     const dummyCategory: Categoria = { id: '1', nome: 'Pintura', descricao: 'Detalhes' };
 
@@ -66,7 +59,6 @@ fdescribe('CategoriaService', () => {
     req.flush(dummyCategory);
   });
 
-  // --- Teste: POST (Criar) ---
   it('should create a category (POST)', () => {
     const newCategoryDto: CreateCategoriaDto = { nome: 'Digital', descricao: 'Arte digital' };
     const responseCategory: Categoria = { id: '123', ...newCategoryDto };
@@ -77,12 +69,11 @@ fdescribe('CategoriaService', () => {
 
     const req = httpMock.expectOne(apiUrl);
     expect(req.request.method).toBe('POST');
-    expect(req.request.body).toEqual(newCategoryDto); // Verifica se enviou o DTO correto
+    expect(req.request.body).toEqual(newCategoryDto);
 
     req.flush(responseCategory);
   });
 
-  // --- Teste: PUT (Atualizar) ---
   it('should update a category (PUT)', () => {
     const updateDto: UpdateCategoriaDto = { nome: 'Pintura a Óleo' };
     const updatedCategory: Categoria = { id: '1', nome: 'Pintura a Óleo', descricao: 'Atualizado' };
@@ -98,20 +89,17 @@ fdescribe('CategoriaService', () => {
     req.flush(updatedCategory);
   });
 
-  // --- Teste: DELETE (Remover) ---
   it('should delete a category (DELETE)', () => {
     service.deleteCategory('1').subscribe(response => {
-      // DELETE geralmente não retorna corpo, ou retorna null/void
       expect(response).toBeNull(); 
     });
 
     const req = httpMock.expectOne(`${apiUrl}/1`);
     expect(req.request.method).toBe('DELETE');
 
-    req.flush(null); // Simula resposta vazia (No Content)
+    req.flush(null);
   });
 
-  // --- Teste: Tratamento de Erro (Exemplo Genérico) ---
   it('should handle API error gracefully', () => {
     const errorMessage = 'Erro ao buscar categorias';
 
@@ -125,7 +113,6 @@ fdescribe('CategoriaService', () => {
 
     const req = httpMock.expectOne(apiUrl);
     
-    // Simula um erro 500
     req.flush(errorMessage, { status: 500, statusText: 'Server Error' });
   });
 });

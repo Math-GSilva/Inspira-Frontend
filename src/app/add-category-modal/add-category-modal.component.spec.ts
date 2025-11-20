@@ -72,9 +72,9 @@ fdescribe('AddCategoryModalComponent', () => {
 
   describe('Modal Close Events', () => {
     it('should emit "close" when closeModal() is called', () => {
-      spyOn(component.close, 'emit');
+      spyOn(component.closeRequest, 'emit');
       component.closeModal();
-      expect(component.close.emit).toHaveBeenCalledTimes(1);
+      expect(component.closeRequest.emit).toHaveBeenCalledTimes(1);
     });
 
     it('should call closeModal() when overlay is clicked', () => {

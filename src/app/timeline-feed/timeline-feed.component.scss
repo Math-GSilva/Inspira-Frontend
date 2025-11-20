@@ -1,8 +1,6 @@
-@import '../../styles/variables'; // Supondo que suas variáveis ($primary-color, etc.) estejam aqui
-@import 'plyr/dist/plyr.css';    // Mantenha a importação do CSS base do Plyr
+@import '../../styles/variables';
+@import 'plyr/dist/plyr.css';
 
-// --- ANIMAÇÃO DO CORAÇÃO (sem mudanças) ---
-// ... (seu keyframes heart-pop) ...
 @keyframes heart-pop {
   0% { transform: scale(0); }
   50% { transform: scale(1.2); }
@@ -17,7 +15,6 @@
 }
 
 .artwork-card {
-  // ... (sem mudanças) ...
   background-color: $card-bg-color;
   border: 1px solid $border-color;
   border-radius: $border-radius-md;
@@ -54,14 +51,13 @@
   }
 
   .options-container {
-    position: relative; // Contexto para o menu absoluto
+    position: relative;
   }
 
   .options-btn {
     background: none;
     border: none;
     cursor: pointer;
-    font-size: 1.8rem; // Maior para ser mais clicável
     line-height: 1;
     padding: 0.2rem 0.5rem;
     color: $text-color;
@@ -73,36 +69,35 @@
 
   .options-menu {
     position: absolute;
-    top: 100%; // Posiciona abaixo do botão
-    right: 0;  // Alinhado à direita
-    background-color: $card-bg-color; // Fundo do card
-    border: 1px solid $border-color; // Borda
-    border-radius: $border-radius-md; // Borda arredondada
+    top: 100%;
+    right: 0;
+    background-color: $card-bg-color;
+    border: 1px solid $border-color;
+    border-radius: $border-radius-md;
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-    padding: $spacing-sm 0; // Padding vertical, sem horizontal
+    padding: $spacing-sm 0;
     z-index: 10;
-    min-width: 120px; // Largura mínima
+    min-width: 120px;
 
     button {
       display: block;
       width: 100%;
       background: none;
       border: none;
-      padding: $spacing-md $spacing-lg; // Padding interno
+      padding: $spacing-md $spacing-lg;
       text-align: left;
       font-size: 0.9rem;
-      font-family: inherit; // Garante a mesma fonte
+      font-family: inherit;
       cursor: pointer;
-      color: $text-color; // Cor do texto
+      color: $text-color;
       transition: background-color 0.2s ease;
 
       &:hover {
-        background-color: rgba(0, 0, 0, 0.05); // Um leve hover
+        background-color: rgba(0, 0, 0, 0.05);
       }
 
-      // Estilo especial para a opção de remover
       &.delete-option {
-        color: #E0245E; // Cor de perigo (vermelho)
+        color: #E0245E;
 
         &:hover {
           background-color: rgba(224, 36, 94, 0.1);
@@ -112,44 +107,36 @@
   }
 }
 
-// --- CONTAINER DE MÍDIA AJUSTADO ---
 .card-media-container {
-  position: relative; // Necessário para alguns posicionamentos internos do Plyr
-  line-height: 0; // Remove espaço extra sob os elementos
+  position: relative;
+  line-height: 0;
 
-  // Garante que a imagem ocupe todo o espaço
   .artwork-image {
-    display: block;   // Remove espaço extra abaixo
-    width: 100%;      // Ocupa toda a largura
-    height: auto;     // Mantém a proporção
-    max-height: 80vh; // Limita a altura máxima para imagens muito altas (opcional, ajuste o valor)
+    display: block;
+    width: 100%;
+    height: auto;
+    max-height: 80vh;
   }
 
-  // Estilos aplicados ao componente <plyr>
   plyr {
-    display: block; // Garante que ocupe a largura
-    width: 100%;    // Ocupa toda a largura
+    display: block;
+    width: 100%;
 
-    // Ajuste fino para garantir que o vídeo dentro do plyr também ocupe o espaço
-    // ::ng-deep é necessário para estilizar componentes internos do Plyr
     ::ng-deep .plyr__video-wrapper {
-        // Tenta remover padding/margin interno se houver
         padding-bottom: 0 !important;
-        height: auto; // Deixa o vídeo definir a altura
-        position: relative; // Ou 'static' se causar problemas
+        height: auto;
+        position: relative;
     }
     ::ng-deep video {
-        display: block; // Remove espaço extra
+        display: block;
         width: 100%;
-        height: auto; // Mantém proporção do vídeo
-        max-height: 80vh; // Limita altura máxima (opcional, igual à imagem)
+        height: auto;
+        max-height: 80vh;
     }
 
-     // Customização básica do Player (Opcional)
-    --plyr-color-main: #{$primary-color}; // Exemplo: Usa sua cor primária
+    --plyr-color-main: #{$primary-color};
   }
 
-  // Padding apenas para o player de áudio
   .audio-player-wrapper {
     padding: $spacing-md;
   }
@@ -157,7 +144,6 @@
 
 
 .card-footer {
-  // ... (Estilos do rodapé - sem mudanças) ...
    padding: 1rem;
    font-size: 0.9rem;
 
@@ -229,7 +215,6 @@
    }
 }
 
-// ... (Estilos do .comment-box e .loading-state - sem mudanças) ...
 .comment-box {
   margin-top: $spacing-md;
   padding-top: $spacing-md;
@@ -253,7 +238,7 @@
     button {
       background: none;
       border: none;
-      color: #0095f6; // Cor padrão do Instagram, pode ajustar
+      color: #0095f6;
       font-weight: 600;
       cursor: pointer;
       padding: $spacing-sm;

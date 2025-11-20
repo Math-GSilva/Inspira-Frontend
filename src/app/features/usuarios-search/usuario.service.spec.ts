@@ -10,7 +10,6 @@ fdescribe('UsuarioService', () => {
   let service: UsuarioService;
   let httpMock: HttpTestingController;
 
-  // URL base definida no serviço
   const apiUrl = `${environment.apiUrl}/Usuario`;
 
   beforeEach(() => {
@@ -31,7 +30,6 @@ fdescribe('UsuarioService', () => {
     expect(service).toBeTruthy();
   });
 
-  // --- Teste: Busca de Usuários (GET com Params) ---
   it('should search users with query params', () => {
     const query = 'test';
     const category = 'Pintura';
@@ -44,7 +42,6 @@ fdescribe('UsuarioService', () => {
       expect(results).toEqual(mockResults);
     });
 
-    // Verifica URL e Query Params
     const req = httpMock.expectOne(req => 
       req.url === `${apiUrl}/search` && 
       req.params.get('query') === query &&
@@ -55,7 +52,6 @@ fdescribe('UsuarioService', () => {
     req.flush(mockResults);
   });
 
-  // --- Teste: Obter Perfil (GET) ---
   it('should get user profile by username', () => {
     const username = 'artist_one';
     const mockProfile: UsuarioProfile = {
@@ -73,7 +69,6 @@ fdescribe('UsuarioService', () => {
     req.flush(mockProfile);
   });
 
-  // --- Teste: Seguir Usuário (POST) ---
   it('should follow a user (POST)', () => {
     const userId = '123';
 
@@ -83,12 +78,11 @@ fdescribe('UsuarioService', () => {
 
     const req = httpMock.expectOne(`${apiUrl}/${userId}/follow`);
     expect(req.request.method).toBe('POST');
-    expect(req.request.body).toEqual({}); // Verifica corpo vazio
+    expect(req.request.body).toEqual({});
 
     req.flush({});
   });
 
-  // --- Teste: Deixar de Seguir (DELETE) ---
   it('should unfollow a user (DELETE)', () => {
     const userId = '123';
 
@@ -102,7 +96,6 @@ fdescribe('UsuarioService', () => {
     req.flush({});
   });
 
-  // --- Teste: Atualizar Perfil (PUT com FormData) ---
   describe('updateMyProfile', () => {
     
     it('should update profile with all fields and a file', () => {
@@ -124,7 +117,6 @@ fdescribe('UsuarioService', () => {
       const req = httpMock.expectOne(`${apiUrl}/me`);
       expect(req.request.method).toBe('PUT');
       
-      // Verificação do FormData
       const body = req.request.body as FormData;
       expect(body instanceof FormData).toBeTrue();
       
@@ -134,7 +126,6 @@ fdescribe('UsuarioService', () => {
       expect(body.get('UrlInstagram')).toBe(textData.UrlInstagram);
       expect(body.get('CategoriaPrincipalId')).toBe(textData.categoriaPrincipalId);
       
-      // Verifica o arquivo
       const fileSent = body.get('FotoPerfil') as File;
       expect(fileSent).toBeTruthy();
       expect(fileSent.name).toBe('avatar.png');
@@ -145,7 +136,6 @@ fdescribe('UsuarioService', () => {
     it('should update profile with partial data and NO file', () => {
       const textData = {
         bio: 'Apenas bio mudou'
-        // Outros campos undefined/null
       };
       
       service.updateMyProfile(textData, null).subscribe();
@@ -155,10 +145,9 @@ fdescribe('UsuarioService', () => {
 
       expect(body.get('Bio')).toBe(textData.bio);
       
-      // Verifica se campos não enviados não foram anexados ao FormData
       expect(body.has('UrlPortifolio')).toBeFalse();
       expect(body.has('UrlLinkedin')).toBeFalse();
-      expect(body.has('FotoPerfil')).toBeFalse(); // Sem arquivo
+      expect(body.has('FotoPerfil')).toBeFalse();
 
       req.flush({});
     });

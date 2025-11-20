@@ -11,21 +11,11 @@ export class CurtidaService {
 
   constructor(private http: HttpClient) { }
 
-  /**
-   * Envia uma curtida para uma obra de arte.
-   * Corresponde a: POST /api/curtidas
-   * @param obraDeArteId - O ID da obra a ser curtida.
-   */
   curtir(obraDeArteId: string): Observable<CurtidaResponseDto> {
     const dto: CreateCurtidaDto = { obraDeArteId };
     return this.http.post<CurtidaResponseDto>(this.apiUrl, dto);
   }
 
-  /**
-   * Remove uma curtida de uma obra de arte.
-   * Corresponde a: DELETE /api/curtidas/{obraDeArteId}
-   * @param obraDeArteId - O ID da obra a ser descurtida.
-   */
   descurtir(obraDeArteId: string): Observable<CurtidaResponseDto> {
     return this.http.delete<CurtidaResponseDto>(`${this.apiUrl}/${obraDeArteId}`);
   }

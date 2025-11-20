@@ -15,7 +15,7 @@ import { CommonModule } from '@angular/common';
   templateUrl: './login.component.html',
   styleUrl: './login.component.scss'
 })
-export class LoginComponent implements OnInit {
+export class LoginComponent {
   loginForm: FormGroup;
   errorMessage: string | null = null;
 
@@ -28,9 +28,6 @@ export class LoginComponent implements OnInit {
       Username: ['', [Validators.required, Validators.minLength(3)]],
       Password: ['', [Validators.required, Validators.minLength(6)]]
     });
-  }
-
-  ngOnInit(): void {
   }
 
   onSubmit(): void {

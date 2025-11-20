@@ -161,10 +161,10 @@ fdescribe('EditPostModalComponent', () => {
 
   describe('UI Interactions', () => {
     it('should emit close event when clicking cancel button', () => {
-      spyOn(component.close, 'emit');
+      spyOn(component.closeRequest, 'emit');
       const cancelBtn = compiled.querySelector('.btn-secondary') as HTMLButtonElement;
       cancelBtn.click();
-      expect(component.close.emit).toHaveBeenCalled();
+      expect(component.closeRequest.emit).toHaveBeenCalled();
     });
 
     it('should show loading spinner when isLoading is true', () => {

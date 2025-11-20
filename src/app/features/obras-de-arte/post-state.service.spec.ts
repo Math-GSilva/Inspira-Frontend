@@ -29,14 +29,11 @@ fdescribe('PostStateService', () => {
       categoriaNome: 'Geral'
     };
 
-    // 1. Inscreva-se no Observable
     service.newPost$.subscribe((post) => {
-      // 3. Verifique se o que chegou é igual ao que foi enviado
       expect(post).toEqual(dummyPost);
-      done(); // Avisa ao Jasmine que o teste assíncrono acabou
+      done();
     });
 
-    // 2. Dispare o evento
     service.announceNewPost(dummyPost);
   });
 });

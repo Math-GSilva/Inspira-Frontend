@@ -27,7 +27,7 @@
     font-size: 1.3rem;
     font-weight: 500;
     margin: 0;
-    cursor: pointer; // <-- ADICIONADO
+    cursor: pointer;
     transition: color 0.2s ease;
   }
 
@@ -39,12 +39,12 @@
 }
 
 .profile-name-link {
-  text-decoration: none; // Remove sublinhado
-  color: inherit; // Herda a cor do .profile-info
+  text-decoration: none;
+  color: inherit;
 
   &:hover {
     .profile-name {
-      color: $primary-color; // Adiciona hover no H3
+      color: $primary-color;
     }
   }
 }

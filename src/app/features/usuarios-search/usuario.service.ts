@@ -34,20 +34,18 @@ export class UsuarioService {
   }
 
   updateMyProfile(
-    // 1. ATUALIZADO: 'textData' agora aceita o novo ID
     textData: { 
       bio?: string | null;
       UrlPortifolio?: string | null;
       UrlLinkedin?: string | null;
       UrlInstagram?: string | null;
-      categoriaPrincipalId?: string | null; // <-- ADICIONADO
+      categoriaPrincipalId?: string | null;
     },
     fotoPerfil: File | null
   ): Observable<UsuarioProfile> {
     
     const formData = new FormData();
 
-    // 2. Adiciona os campos (incluindo o novo)
     if (textData.bio) {
       formData.append('Bio', textData.bio);
     }
@@ -60,11 +58,9 @@ export class UsuarioService {
     if (textData.UrlInstagram) {
       formData.append('UrlInstagram', textData.UrlInstagram);
     }
-    // --- ADICIONADO ---
     if (textData.categoriaPrincipalId) {
       formData.append('CategoriaPrincipalId', textData.categoriaPrincipalId);
     }
-    // --- FIM ---
     
     if (fotoPerfil) {
       formData.append('FotoPerfil', fotoPerfil, fotoPerfil.name);

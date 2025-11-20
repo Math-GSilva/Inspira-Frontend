@@ -7,7 +7,6 @@ import { CategoryFilterComponent } from '../category-filter/category-filter.comp
 @Component({
   selector: 'app-home',
   standalone: true,
-  // Importamos os 3 componentes filhos para que possam ser usados no template.
   imports: [
     SidebarNavComponent,
     TimelineFeedComponent,

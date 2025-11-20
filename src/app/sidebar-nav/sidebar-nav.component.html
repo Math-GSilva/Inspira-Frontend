@@ -30,10 +30,10 @@
 
 </nav>
 
-<app-new-post-modal *ngIf="isNewPostModalOpen" (close)="closeNewPostModal()"></app-new-post-modal>
-<app-search *ngIf="isSearchModalOpen" (close)="closeSearchModal()"></app-search>
+<app-new-post-modal *ngIf="isNewPostModalOpen" (closeRequest)="closeNewPostModal()"></app-new-post-modal>
+<app-search *ngIf="isSearchModalOpen" (closeRequest)="closeSearchModal()"></app-search>
 
 <app-add-category-modal 
   *ngIf="isAddCategoryModalOpen" 
-  (close)="closeAddCategoryModal()">
+  (closeRequest)="closeAddCategoryModal()">
 </app-add-category-modal>

@@ -7,23 +7,20 @@ import { Component, EventEmitter, Output } from '@angular/core';
 import { SidebarNavComponent } from './sidebar-nav.component';
 import { AuthService } from '../features/auth/auth.service';
 
-// --- IMPORTAR OS COMPONENTES REAIS (Para removê-los no override) ---
 import { NewPostModalComponent } from '../new-post-modal/new-post-modal.component';
 import { SearchComponent } from '../search/search.component';
 import { AddCategoryModalComponent } from '../add-category-modal/add-category-modal.component';
 import { DecodedToken } from '../features/auth/decoded-token.model';
 
-// --- 1. Mocks dos Componentes Filhos (Com os mesmos seletores) ---
 @Component({ selector: 'app-new-post-modal', standalone: true, template: '' })
-class MockNewPostModalComponent { @Output() close = new EventEmitter<void>(); }
+class MockNewPostModalComponent { @Output() closeRequest = new EventEmitter<void>(); }
 
 @Component({ selector: 'app-search', standalone: true, template: '' })
-class MockSearchComponent { @Output() close = new EventEmitter<void>(); }
+class MockSearchComponent { @Output() closeRequest = new EventEmitter<void>(); }
 
 @Component({ selector: 'app-add-category-modal', standalone: true, template: '' })
-class MockAddCategoryModalComponent { @Output() close = new EventEmitter<void>(); }
+class MockAddCategoryModalComponent { @Output() closeRequest = new EventEmitter<void>(); }
 
-// --- 2. Mocks de Dados ---
 const mockUserAdmin: DecodedToken = { 
   sub: '1', name: 'Admin', email: 'admin@test.com', role: 'Administrador', exp: 123, urlPerfil: '' 
 };
@@ -34,7 +31,6 @@ const mockUserCommon: DecodedToken = {
   sub: '3', name: 'Common', email: 'comum@test.com', role: 'Comum', exp: 123, urlPerfil: '' 
 };
 
-// --- 3. Mock do AuthService ---
 const currentUserSubject = new BehaviorSubject<DecodedToken | null>(null);
 const mockAuthService = {
   currentUser$: currentUserSubject.asObservable()
@@ -54,10 +50,8 @@ fdescribe('SidebarNavComponent', () => {
         { provide: AuthService, useValue: mockAuthService }
       ]
     })
-    // AQUI ESTÁ A CORREÇÃO CRÍTICA:
     .overrideComponent(SidebarNavComponent, {
       remove: { 
-        // Removemos explicitamente os componentes reais da lista de imports do componente
         imports: [
           NewPostModalComponent, 
           SearchComponent, 
@@ -65,7 +59,6 @@ fdescribe('SidebarNavComponent', () => {
         ] 
       },
       add: { 
-        // Adicionamos os nossos Mocks no lugar
         imports: [
           MockNewPostModalComponent, 
           MockSearchComponent, 
@@ -87,7 +80,6 @@ fdescribe('SidebarNavComponent', () => {
     expect(component).toBeTruthy();
   });
 
-  // --- Links de Navegação ---
   describe('Navigation Links', () => {
     it('should render "Início" link', () => {
       const links = fixture.debugElement.queryAll(By.css('ul li a'));
@@ -106,7 +98,6 @@ fdescribe('SidebarNavComponent', () => {
     });
   });
 
-  // --- Permissões ---
   describe('Permissions & Buttons', () => {
     it('should NOT show buttons for Common user', () => {
       currentUserSubject.next(mockUserCommon);
@@ -130,7 +121,6 @@ fdescribe('SidebarNavComponent', () => {
     });
   });
 
-  // --- Modais (Lógica) ---
   describe('Modals Interaction', () => {
     it('should toggle New Post Modal', () => {
       component.openNewPostModal();
@@ -154,14 +144,12 @@ fdescribe('SidebarNavComponent', () => {
     });
   });
 
-  // --- Integração no Template (Onde estava falhando) ---
   describe('Template Integration (Child Components)', () => {
     
     it('should display <app-new-post-modal> when open', () => {
       component.isNewPostModalOpen = true;
       fixture.detectChanges();
       
-      // Agora só existe UM componente com este seletor (o Mock)
       const modal = fixture.debugElement.query(By.css('app-new-post-modal'));
       expect(modal).toBeTruthy();
     });
@@ -173,7 +161,7 @@ fdescribe('SidebarNavComponent', () => {
       const modalDebugEl = fixture.debugElement.query(By.directive(MockNewPostModalComponent));
       const modalComponent = modalDebugEl.componentInstance as MockNewPostModalComponent;
 
-      modalComponent.close.emit();
+      modalComponent.closeRequest.emit();
       
       expect(component.isNewPostModalOpen).toBeFalse();
     });
