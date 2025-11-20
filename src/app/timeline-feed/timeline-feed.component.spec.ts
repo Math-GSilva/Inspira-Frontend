@@ -86,7 +86,7 @@ const mockPostStateService = {
   newPost$: newPostSubject.asObservable()
 };
 
-fdescribe('TimelineFeedComponent', () => {
+describe('TimelineFeedComponent', () => {
   let component: TimelineFeedComponent;
   let fixture: ComponentFixture<TimelineFeedComponent>;
 

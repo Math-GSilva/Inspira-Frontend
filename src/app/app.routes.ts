@@ -8,7 +8,7 @@ export const routes: Routes = [
   { 
     path: '', 
     component: LandingPageComponent, 
-    title: 'ArtConnect | Bem-vindo',
+    title: 'Inspira',
     canActivate: [publicGuard]
   },
   {

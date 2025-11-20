@@ -32,7 +32,7 @@ const mockCategoriaService = jasmine.createSpyObj('CategoriaService', ['getCateg
 const mockObraService = jasmine.createSpyObj('ObraDeArteService', ['createObra']);
 const mockPostStateService = jasmine.createSpyObj('PostStateService', ['announceNewPost']);
 
-fdescribe('NewPostModalComponent', () => {
+describe('NewPostModalComponent', () => {
   let component: NewPostModalComponent;
   let fixture: ComponentFixture<NewPostModalComponent>;
 

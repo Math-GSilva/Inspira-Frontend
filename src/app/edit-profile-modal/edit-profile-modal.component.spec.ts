@@ -33,7 +33,7 @@ const dummyCategories: Categoria[] = [
 const mockUsuarioService = jasmine.createSpyObj('UsuarioService', ['updateMyProfile']);
 const mockCategoriaService = jasmine.createSpyObj('CategoriaService', ['getCategories']);
 
-fdescribe('EditProfileModalComponent', () => {
+describe('EditProfileModalComponent', () => {
   let component: EditProfileModalComponent;
   let fixture: ComponentFixture<EditProfileModalComponent>;
 

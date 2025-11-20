@@ -23,7 +23,7 @@ const dummyArtwork: ObraDeArte = {
 
 const mockObraService = jasmine.createSpyObj('ObraDeArteService', ['updateObra']);
 
-fdescribe('EditPostModalComponent', () => {
+describe('EditPostModalComponent', () => {
   let component: EditPostModalComponent;
   let fixture: ComponentFixture<EditPostModalComponent>;
   let compiled: HTMLElement;

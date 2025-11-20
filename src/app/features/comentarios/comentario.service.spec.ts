@@ -5,7 +5,7 @@ import { ComentarioService } from './comentario.service';
 import { environment } from '../../../environments/environment';
 import { Comentario, CreateComentarioDto } from '../../core/models/comentario.model';
 
-fdescribe('ComentarioService', () => {
+describe('ComentarioService', () => {
   let service: ComentarioService;
   let httpMock: HttpTestingController;
 

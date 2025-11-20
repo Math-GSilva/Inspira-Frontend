@@ -36,7 +36,7 @@ const mockAuthService = {
   currentUser$: currentUserSubject.asObservable()
 };
 
-fdescribe('SidebarNavComponent', () => {
+describe('SidebarNavComponent', () => {
   let component: SidebarNavComponent;
   let fixture: ComponentFixture<SidebarNavComponent>;
 

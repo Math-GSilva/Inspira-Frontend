@@ -3,7 +3,7 @@ import { Router } from '@angular/router';
 import { By } from '@angular/platform-browser';
 import { LandingPageComponent } from './landing-page.component';
 
-fdescribe('LandingPageComponent', () => {
+describe('LandingPageComponent', () => {
   let component: LandingPageComponent;
   let fixture: ComponentFixture<LandingPageComponent>;
   let routerSpy: jasmine.SpyObj<Router>;

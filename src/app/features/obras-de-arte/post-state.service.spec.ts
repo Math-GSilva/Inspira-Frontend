@@ -2,7 +2,7 @@ import { TestBed } from '@angular/core/testing';
 import { PostStateService } from './post-state.service';
 import { ObraDeArte } from '../../core/models/obra-de-arte.model';
 
-fdescribe('PostStateService', () => {
+describe('PostStateService', () => {
   let service: PostStateService;
 
   beforeEach(() => {

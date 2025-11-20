@@ -14,7 +14,7 @@ const mockCategoriaService = jasmine.createSpyObj('CategoriaService', {
   getCategories: of(dummyCategories)
 });
 
-fdescribe('CategoryFilterComponent', () => {
+describe('CategoryFilterComponent', () => {
   let component: CategoryFilterComponent;
   let fixture: ComponentFixture<CategoryFilterComponent>;
   let compiled: HTMLElement;

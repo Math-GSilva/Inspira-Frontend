@@ -24,7 +24,7 @@ const mockUsuarioService = jasmine.createSpyObj('UsuarioService', ['searchUsers'
 const mockCategoriaService = jasmine.createSpyObj('CategoriaService', ['getCategories']);
 const mockRouter = jasmine.createSpyObj('Router', ['navigate']);
 
-fdescribe('SearchComponent', () => {
+describe('SearchComponent', () => {
   let component: SearchComponent;
   let fixture: ComponentFixture<SearchComponent>;
 

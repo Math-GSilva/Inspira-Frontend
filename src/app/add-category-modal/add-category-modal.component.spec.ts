@@ -8,7 +8,7 @@ import { Categoria } from '../core/models/categoria.model';
 
 const mockCategoriaService = jasmine.createSpyObj('CategoriaService', ['createCategory']);
 
-fdescribe('AddCategoryModalComponent', () => {
+describe('AddCategoryModalComponent', () => {
   let component: AddCategoryModalComponent;
   let fixture: ComponentFixture<AddCategoryModalComponent>;
   let compiled: HTMLElement;

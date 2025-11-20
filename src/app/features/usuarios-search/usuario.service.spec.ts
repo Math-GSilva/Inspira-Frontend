@@ -6,7 +6,7 @@ import { environment } from '../../../environments/environment';
 import { UsuarioSearchResultDto } from '../../core/models/usuario-search-response.model';
 import { UsuarioProfile } from '../../core/models/usuario-profile.model';
 
-fdescribe('UsuarioService', () => {
+describe('UsuarioService', () => {
   let service: UsuarioService;
   let httpMock: HttpTestingController;
 

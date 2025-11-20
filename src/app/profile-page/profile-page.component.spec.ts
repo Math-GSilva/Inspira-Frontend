@@ -90,7 +90,7 @@ const mockActivatedRoute = {
   paramMap: of({ get: (key: string) => 'artist' })
 };
 
-fdescribe('ProfilePageComponent', () => {
+describe('ProfilePageComponent', () => {
   let component: ProfilePageComponent;
   let fixture: ComponentFixture<ProfilePageComponent>;
 
