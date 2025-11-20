@@ -9,7 +9,6 @@ fdescribe('CurtidaService', () => {
   let service: CurtidaService;
   let httpMock: HttpTestingController;
 
-  // Reconstrói a URL base para usar nos expects
   const apiUrl = `${environment.apiUrl}/Curtidas`;
 
   beforeEach(() => {
@@ -30,11 +29,9 @@ fdescribe('CurtidaService', () => {
     expect(service).toBeTruthy();
   });
 
-  // --- Teste: Curtir (POST) ---
   it('should send a like request (POST)', () => {
     const obraId = 'art-123';
     
-    // Mock da resposta que o backend retornaria
     const mockResponse: CurtidaResponseDto = {
       curtiu: true,
       totalCurtidas: 15
@@ -46,21 +43,17 @@ fdescribe('CurtidaService', () => {
       expect(response.totalCurtidas).toBe(15);
     });
 
-    // Verifica a chamada HTTP
     const req = httpMock.expectOne(apiUrl);
     expect(req.request.method).toBe('POST');
     
-    // Verifica se o body enviado contém o ID correto
     expect(req.request.body).toEqual({ obraDeArteId: obraId });
 
     req.flush(mockResponse);
   });
 
-  // --- Teste: Descurtir (DELETE) ---
   it('should send a remove like request (DELETE)', () => {
     const obraId = 'art-456';
 
-    // Mock da resposta (geralmente retorna o novo estado das curtidas)
     const mockResponse: CurtidaResponseDto = {
       curtiu: false,
       totalCurtidas: 14
@@ -71,14 +64,12 @@ fdescribe('CurtidaService', () => {
       expect(response.curtiu).toBeFalse();
     });
 
-    // Verifica se a URL contém o ID da obra (RESTful delete)
     const req = httpMock.expectOne(`${apiUrl}/${obraId}`);
     expect(req.request.method).toBe('DELETE');
 
     req.flush(mockResponse);
   });
 
-  // --- Teste: Erro ---
   it('should handle API errors', () => {
     const obraId = 'art-error';
 

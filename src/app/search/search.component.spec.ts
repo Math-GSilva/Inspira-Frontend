@@ -3,19 +3,14 @@ import { ReactiveFormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
 import { of, throwError } from 'rxjs';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
-
-// Imports do Material
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatSelectModule } from '@angular/material/select';
 import { MatInputModule } from '@angular/material/input';
-
 import { SearchComponent } from './search.component';
 import { UsuarioService } from '../features/usuarios-search/usuario.service';
 import { CategoriaService } from '../features/categorias/categoria.service';
 import { UsuarioSearchResultDto } from '../core/models/usuario-search-response.model';
 import { Categoria } from '../core/models/categoria.model';
-
-// --- Mocks ---
 const mockResults: UsuarioSearchResultDto[] = [
   { id: 'u1', username: 'user1', nomeCompleto: 'User Um', urlFotoPerfil: 'img1.jpg', seguidoPeloUsuarioAtual: false },
   { id: 'u2', username: 'user2', nomeCompleto: 'User Dois', urlFotoPerfil: '', seguidoPeloUsuarioAtual: true }
@@ -25,7 +20,6 @@ const mockCategories: Categoria[] = [
   { id: 'c1', nome: 'Cat 1', descricao: '' },
   { id: 'c2', nome: 'Cat 2', descricao: '' }
 ];
-
 const mockUsuarioService = jasmine.createSpyObj('UsuarioService', ['searchUsers', 'followUser', 'unfollowUser']);
 const mockCategoriaService = jasmine.createSpyObj('CategoriaService', ['getCategories']);
 const mockRouter = jasmine.createSpyObj('Router', ['navigate']);
@@ -66,7 +60,6 @@ fdescribe('SearchComponent', () => {
     expect(component).toBeTruthy();
   });
 
-  // --- Inicialização ---
   describe('Initialization', () => {
     it('should load categories on init', () => {
       expect(mockCategoriaService.getCategories).toHaveBeenCalled();
@@ -82,33 +75,29 @@ fdescribe('SearchComponent', () => {
     });
   });
 
-  // --- Lógica de Busca (Filtros) ---
   describe('Search Logic', () => {
     
     it('should not search if query is too short and no category selected', fakeAsync(() => {
-      // Assinar manualmente para ativar o pipeline
       const sub = component.results$.subscribe();
       
       mockUsuarioService.searchUsers.calls.reset();
       
-      // 1. Digita algo curto
       component.searchControl.setValue('a');
       
-      // Avança o tempo (debounce)
       tick(300);
 
       expect(component.isLoading).toBeFalse();
       expect(mockUsuarioService.searchUsers).not.toHaveBeenCalled();
       
-      sub.unsubscribe(); // Limpa timers pendentes
+      sub.unsubscribe();
     }));
 
     it('should search when query length >= 2', fakeAsync(() => {
-      const sub = component.results$.subscribe(); // Ativa o observable
+      const sub = component.results$.subscribe();
 
       component.searchControl.setValue('ab');
       
-      tick(300); // Espera o debounceTime(300)
+      tick(300);
 
       expect(mockUsuarioService.searchUsers).toHaveBeenCalledWith('ab', '');
       expect(component.isLoading).toBeFalse(); 
@@ -134,7 +123,7 @@ fdescribe('SearchComponent', () => {
       component.searchControl.setValue('test');
       component.categoryControl.setValue('c2');
       
-      tick(300); // Debounce reinicia a cada valor, então 300ms após o último basta
+      tick(300);
 
       expect(mockUsuarioService.searchUsers).toHaveBeenCalledWith('test', 'c2');
       
@@ -148,20 +137,16 @@ fdescribe('SearchComponent', () => {
       
       component.searchControl.setValue('erro');
       
-      tick(300); // Dispara a busca
+      tick(300);
 
-      // Não deve quebrar o observable (graças ao catchError -> of([]))
-      // O subscribe acima continuaria vivo
       expect(component.isLoading).toBeFalse();
       
-      sub.unsubscribe(); // Mata o debounceTime pendente
+      sub.unsubscribe();
       
-      // Garante que nenhum timer extra sobrou (segurança extra para o erro "1 periodic timer")
       discardPeriodicTasks(); 
     }));
   });
 
-  // --- Interações de Usuário ---
   describe('User Interaction', () => {
     
     it('should toggle follow status (Follow)', () => {
@@ -185,9 +170,9 @@ fdescribe('SearchComponent', () => {
     });
 
     it('should emit close event when closeModal is called', () => {
-      spyOn(component.close, 'emit');
+      spyOn(component.closeRequest, 'emit');
       component.closeModal();
-      expect(component.close.emit).toHaveBeenCalled();
+      expect(component.closeRequest.emit).toHaveBeenCalled();
     });
 
     it('should navigate to profile and then close modal', fakeAsync(() => {

@@ -1,7 +1,5 @@
 @import "../../styles/variables";
-@import "plyr/dist/plyr.css"; // <-- ADICIONADO: Importa CSS do Plyr
-
-// Layout principal da página (Sem mudanças)
+@import "plyr/dist/plyr.css";
 .profile-page-layout {
   display: flex;
   max-width: 1200px;
@@ -18,7 +16,6 @@
   }
 }
 
-// Cabeçalho do Perfil (Sem mudanças)
 .profile-header {
   display: flex;
   gap: $spacing-xl * 2;
@@ -51,7 +48,6 @@
   }
 }
 .action-buttons {
-  // ... (estilos .btn sem mudanças) ...
   .btn {
     padding: $spacing-sm $spacing-md;
     border-radius: $border-radius-md;
@@ -97,20 +93,20 @@
   }
   .social-links {
     display: flex;
-    flex-wrap: wrap; // Permite que os links quebrem a linha se não couberem
-    gap: $spacing-sm; // Espaço entre os links
-    margin-top: $spacing-md; // Espaço acima dos links (abaixo da bio)
+    flex-wrap: wrap;
+    gap: $spacing-sm;
+    margin-top: $spacing-md;
   }
 
   .social-link {
     text-decoration: none;
     font-weight: 500;
     font-size: 0.85rem;
-    color: $primary-color; // Cor primária para destaque
-    background-color: #f0f5ff; // Um fundo bem leve (ajuste a cor)
+    color: $primary-color;
+    background-color: #f0f5ff;
     padding: $spacing-xs $spacing-sm;
     border-radius: $border-radius-md;
-    border: 1px solid #d6e4ff; // Borda sutil
+    border: 1px solid #d6e4ff;
     transition: all 0.2s ease;
 
     &:hover {
@@ -155,13 +151,6 @@
   color: $sec-text-color;
 }
 
-// --- ESTILOS ANTIGOS REMOVIDOS ---
-// .artwork-gallery { ... }
-// .gallery-item { ... }
-
-// ### INÍCIO DOS ESTILOS (copiado do timeline-feed.component.scss) ###
-
-// --- ANIMAÇÃO DO CORAÇÃO ---
 @keyframes heart-pop {
   0% {
     transform: scale(0);
@@ -174,16 +163,13 @@
   }
 }
 
-// Usamos a mesma classe para o <section>
 .timeline-feed {
   display: flex;
   flex-direction: column;
   gap: 2rem;
 
-  // Ajuste para o feed não ficar absurdamente largo no perfil
-  // Opcional, mas recomendado
   max-width: 600px;
-  margin: 0 auto; // Centraliza o feed
+  margin: 0 auto;
 }
 
 .artwork-card {
@@ -365,12 +351,8 @@
   }
 }
 
-// Estilo para a mensagem de "sem publicações"
 .no-artworks-message {
-  //grid-column: 1 / -1; // Removido
   text-align: center;
   padding: $spacing-xl * 2;
   color: $sec-text-color;
 }
-
-// ### FIM DOS ESTILOS COPIADOS ###

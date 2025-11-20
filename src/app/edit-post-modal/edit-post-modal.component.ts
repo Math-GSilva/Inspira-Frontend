@@ -19,7 +19,7 @@ export class EditPostModalComponent implements OnInit, OnChanges {
   @Input() artwork: ObraDeArte | null = null;
   
   
-  @Output() close = new EventEmitter<void>();
+  @Output() closeRequest = new EventEmitter<void>();
   
   @Output() saveSuccess = new EventEmitter<ObraDeArte>(); 
 
@@ -90,6 +90,6 @@ export class EditPostModalComponent implements OnInit, OnChanges {
   }
 
   closeModal(): void {
-    this.close.emit();
+    this.closeRequest.emit();
   }
 }

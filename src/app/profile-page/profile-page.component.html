@@ -139,14 +139,14 @@
         *ngIf="isEditModalOpen"
         [userProfile]="data.profile"
         [userRole]="currentUserRole" 
-        (close)="closeEditModal()"
+        (closeRequest)="closeEditModal()"
         (profileUpdated)="onProfileUpdated($event)">
       </app-edit-profile-modal>
 
       <app-comments-modal
         *ngIf="isCommentsModalOpen && selectedArtworkIdForModal"
         [obraDeArteId]="selectedArtworkIdForModal"
-        (close)="closeCommentsModal()">
+        (closeRequest)="closeCommentsModal()">
       </app-comments-modal>
 
     </ng-container>

@@ -1,4 +1,4 @@
-@import '../../styles/variables'; // Importando variáveis globais de estilo
+@import '../../styles/variables';
 
 .sidebar-nav {
   padding: 1rem;
@@ -31,11 +31,10 @@
         border-radius: $border-radius-full;
         transition: background-color 0.2s ease, color 0.2s ease;
 
-        .icon-placeholder { // Simula o espaço para um ícone
+        .icon-placeholder {
           width: 24px;
           height: 24px;
           margin-right: 1rem;
-          // background-color: #ccc; // Apenas para visualização
         }
       }
 
@@ -68,16 +67,14 @@
   }
 
   .btn-admin-action {
-    @extend .btn-new-post; // Herda todos os estilos do botão principal
-    
-    // Sobrescreve os estilos para uma aparência "outline"
+    @extend .btn-new-post;
     background: none;
     border: 2px solid $primary-color;
     color: $primary-color;
-    margin-top: 1rem; // Um pouco menos de espaço que o botão principal
+    margin-top: 1rem;
 
     &:hover {
-      background-color: $primary-light-color; // Fundo rosa claro no hover
+      background-color: $primary-light-color;
       color: darken($primary-color, 10%);
       border-color: darken($primary-color, 10%);
     }

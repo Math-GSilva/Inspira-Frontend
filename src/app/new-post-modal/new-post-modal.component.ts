@@ -1,5 +1,5 @@
 import { CommonModule } from "@angular/common";
-import { Component, EventEmitter, OnInit, Output, OnDestroy } from "@angular/core"; // 1. Importar OnDestroy
+import { Component, EventEmitter, OnInit, Output, OnDestroy } from "@angular/core";
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from "@angular/forms";
 import { finalize, Observable } from "rxjs";
 import { ObraDeArteService } from "../features/obras-de-arte/obra-de-arte.service";
@@ -15,16 +15,16 @@ import { NgSelectModule } from "@ng-select/ng-select";
   standalone: true,
   imports: [
     CommonModule, 
-    ReactiveFormsModule, 
-    PlyrModule, // <-- 3. ADICIONAR PLYR AOS IMPORTS,
+    ReactiveFormsModule,
+    PlyrModule,
     NgSelectModule 
   ],
   templateUrl: './new-post-modal.component.html',
   styleUrls: ['./new-post-modal.component.scss'],
   providers: [CategoriaService, ObraDeArteService]
 })
-export class NewPostModalComponent implements OnInit, OnDestroy { // 4. Implementar OnDestroy
-  @Output() close = new EventEmitter<void>();
+export class NewPostModalComponent implements OnInit, OnDestroy {
+  @Output() closeRequest = new EventEmitter<void>();
 
   postForm!: FormGroup;
   categories$!: Observable<Categoria[]>;
@@ -32,11 +32,8 @@ export class NewPostModalComponent implements OnInit, OnDestroy { // 4. Implemen
   isLoading = false;
   errorMessage: string | null = null;
 
-  // --- 5. NOVAS PROPRIEDADES DE PREVIEW ---
   previewType: 'image' | 'video' | 'audio' | null = null;
-  previewUrl: string | null = null; // Agora será string (DataURL ou ObjectURL)
-  
-  // Estado do Plyr
+  previewUrl: string | null = null;
   plyrSources: Plyr.Source[] = [];
   plyrType: Plyr.MediaType = 'video';
 
@@ -48,7 +45,7 @@ export class NewPostModalComponent implements OnInit, OnDestroy { // 4. Implemen
   ) {}
 
   ngOnInit(): void {
-      document.body.style.overflow = 'hidden'; // trava o scroll da página
+      document.body.style.overflow = 'hidden';
 
     this.postForm = this.fb.group({
       Titulo: ['', [Validators.required, Validators.maxLength(200)]],
@@ -61,15 +58,13 @@ export class NewPostModalComponent implements OnInit, OnDestroy { // 4. Implemen
   }
 
   ngOnDestroy(): void {
-      document.body.style.overflow = ''; // restaura quando fechar
+      document.body.style.overflow = '';
 
-    // 6. Limpa o ObjectURL para evitar vazamento de memória
     if (this.previewUrl && this.previewType !== 'image') {
       URL.revokeObjectURL(this.previewUrl);
     }
   }
 
-  // --- 7. MÉTODO onFileSelected TOTALMENTE ATUALIZADO ---
   onFileSelected(event: Event): void {
     const input = event.target as HTMLInputElement;
     if (!input.files || input.files.length === 0) {
@@ -78,7 +73,6 @@ export class NewPostModalComponent implements OnInit, OnDestroy { // 4. Implemen
 
     const file = input.files[0];
 
-    // --- Validação de Tipo ---
     const fileType = file.type;
     const isValid = fileType.startsWith('image/') || fileType.startsWith('video/') || fileType.startsWith('audio/');
 
@@ -89,17 +83,13 @@ export class NewPostModalComponent implements OnInit, OnDestroy { // 4. Implemen
       return;
     }
 
-    // --- Limpeza do preview anterior ---
     this.clearPreview();
 
-    // --- Configuração do novo preview ---
     this.selectedFile = file;
     this.postForm.patchValue({ Midia: this.selectedFile });
     this.errorMessage = null;
 
-    // Gerar URLs de preview
     if (fileType.startsWith('image/')) {
-      // 7.1. Imagens usam FileReader (como antes)
       this.previewType = 'image';
       const reader = new FileReader();
       reader.onload = () => {
@@ -107,7 +97,6 @@ export class NewPostModalComponent implements OnInit, OnDestroy { // 4. Implemen
       };
       reader.readAsDataURL(file);
     } else {
-      // 7.2. Vídeo e Áudio usam ObjectURL (Blob URL) para o Plyr
       this.previewUrl = URL.createObjectURL(file);
       this.plyrSources = [{
         src: this.previewUrl,
@@ -125,7 +114,6 @@ export class NewPostModalComponent implements OnInit, OnDestroy { // 4. Implemen
   }
 
   private clearPreview(): void {
-    // Limpa o ObjectURL anterior (se existir)
     if (this.previewUrl && this.previewType !== 'image') {
       URL.revokeObjectURL(this.previewUrl);
     }
@@ -136,7 +124,6 @@ export class NewPostModalComponent implements OnInit, OnDestroy { // 4. Implemen
   }
 
   onSubmit(): void {
-    // ... (Lógica de submit não muda) ...
     if (this.postForm.invalid) {
       this.postForm.markAllAsTouched();
       return;
@@ -155,7 +142,7 @@ export class NewPostModalComponent implements OnInit, OnDestroy { // 4. Implemen
       .pipe(finalize(() => this.isLoading = false))
       .subscribe({
         next: (newPost: ObraDeArte) => {
-          this.postStateService.announceNewPost(newPost); // Anuncia o novo post
+          this.postStateService.announceNewPost(newPost);
           this.closeModal();
         },
         error: (err: any) => {
@@ -166,6 +153,6 @@ export class NewPostModalComponent implements OnInit, OnDestroy { // 4. Implemen
   }
 
   closeModal(): void {
-    this.close.emit();
+    this.closeRequest.emit();
   }
 }

@@ -14,12 +14,10 @@ import { PostStateService } from '../features/obras-de-arte/post-state.service';
 import { ObraDeArte } from '../core/models/obra-de-arte.model';
 import { DecodedToken } from '../features/auth/decoded-token.model';
 
-// --- IMPORTAR OS COMPONENTES REAIS (Para removê-los no override) ---
 import { CommentsModalComponent } from '../comments-modal/comments-modal.component';
 import { ConfirmationModalComponent } from '../confirmation-modal/confirmation-modal.component';
 import { EditPostModalComponent } from '../edit-post-modal/edit-post-modal.component';
 
-// --- Mocks de Componentes Filhos (Com os mesmos seletores) ---
 import { Component, Input, Output, EventEmitter } from '@angular/core';
 
 @Component({ selector: 'app-comments-modal', standalone: true, template: '' })
@@ -46,7 +44,6 @@ class MockEditPostModalComponent {
   @Output() saveSuccess = new EventEmitter<any>();
 }
 
-// --- Mocks de Dados ---
 const dummyUser: DecodedToken = {
   sub: '1',
   name: 'Tester',
@@ -76,7 +73,6 @@ const paginatedResponse = {
   hasMoreItems: true
 };
 
-// --- Mocks de Serviços ---
 const mockObraService = jasmine.createSpyObj('ObraDeArteService', ['getAll', 'deleteObra']);
 const mockCurtidaService = jasmine.createSpyObj('CurtidaService', ['curtir', 'descurtir']);
 const mockComentarioService = jasmine.createSpyObj('ComentarioService', ['criarComentario']);
@@ -101,7 +97,7 @@ fdescribe('TimelineFeedComponent', () => {
 
     await TestBed.configureTestingModule({
       imports: [
-        TimelineFeedComponent, // Standalone
+        TimelineFeedComponent,
         ReactiveFormsModule,
         RouterTestingModule,
         PlyrModule
@@ -114,7 +110,6 @@ fdescribe('TimelineFeedComponent', () => {
         { provide: PostStateService, useValue: mockPostStateService }
       ]
     })
-    // AQUI ESTÁ A CORREÇÃO: REMOVER OS REAIS, ADICIONAR OS MOCKS
     .overrideComponent(TimelineFeedComponent, {
       remove: { 
         imports: [
@@ -150,7 +145,6 @@ fdescribe('TimelineFeedComponent', () => {
     expect(component).toBeTruthy();
   });
 
-  // --- Inicialização e Carregamento ---
   describe('Initialization & Loading', () => {
     it('should load artworks on init', () => {
       expect(mockObraService.getAll).toHaveBeenCalled();
@@ -183,7 +177,6 @@ fdescribe('TimelineFeedComponent', () => {
     });
   });
 
-  // --- Atualização em Tempo Real ---
   describe('Real-time Updates', () => {
     it('should prepend new post when PostStateService emits', () => {
       const newPost = { ...dummyArtwork, id: 'art-new', titulo: 'Novo Post' };
@@ -195,7 +188,6 @@ fdescribe('TimelineFeedComponent', () => {
     });
   });
 
-  // --- Permissões e Menu de Opções ---
   describe('Permissions & Options Menu', () => {
     it('should allow edit/delete for owner', () => {
       const art = component.artworks[0];
@@ -215,7 +207,6 @@ fdescribe('TimelineFeedComponent', () => {
     });
   });
 
-  // --- Interações (Curtir/Comentar) ---
   describe('Interactions', () => {
     it('should toggle like status', () => {
       const art = component.artworks[0];
@@ -240,7 +231,6 @@ fdescribe('TimelineFeedComponent', () => {
     });
   });
 
-  // --- Modais (Lógica) ---
   describe('Modals Logic', () => {
     it('should open/close comments modal', () => {
       component.openCommentsModal('art-1');

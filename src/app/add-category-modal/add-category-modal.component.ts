@@ -13,7 +13,7 @@ import { CategoriaService } from '../features/categorias/categoria.service';
   styleUrls: ['./add-category-modal.component.scss']
 })
 export class AddCategoryModalComponent implements OnInit {
-  @Output() close = new EventEmitter<void>();
+  @Output() closeRequest = new EventEmitter<void>();
   @Output() categoryAdded = new EventEmitter<Categoria>();
 
   categoryForm!: FormGroup;
@@ -63,6 +63,6 @@ export class AddCategoryModalComponent implements OnInit {
   }
 
   closeModal(): void {
-    this.close.emit();
+    this.closeRequest.emit();
   }
 }

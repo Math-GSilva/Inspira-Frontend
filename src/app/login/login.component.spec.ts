@@ -11,7 +11,6 @@ import { Categoria } from '../core/models/categoria.model';
 import { ObraDeArte } from '../core/models/obra-de-arte.model';
 import { NewPostModalComponent } from '../new-post-modal/new-post-modal.component';
 
-// --- Mocks de Dados ---
 const dummyCategories: Categoria[] = [
   { id: 'cat-1', nome: 'Pintura', descricao: '' },
   { id: 'cat-2', nome: 'Digital', descricao: '' }
@@ -29,7 +28,6 @@ const dummyPost: ObraDeArte = {
   categoriaNome: 'Pintura'
 };
 
-// --- Mocks de Serviços ---
 const mockCategoriaService = jasmine.createSpyObj('CategoriaService', ['getCategories']);
 const mockObraService = jasmine.createSpyObj('ObraDeArteService', ['createObra']);
 const mockPostStateService = jasmine.createSpyObj('PostStateService', ['announceNewPost']);
@@ -38,20 +36,18 @@ fdescribe('NewPostModalComponent', () => {
   let component: NewPostModalComponent;
   let fixture: ComponentFixture<NewPostModalComponent>;
 
-  // Mock das APIs de URL do navegador
   const mockUrl = {
     createObjectURL: jasmine.createSpy('createObjectURL').and.returnValue('blob:fake-url'),
     revokeObjectURL: jasmine.createSpy('revokeObjectURL')
   };
 
   beforeEach(async () => {
-    // Substitui a API global URL
     window.URL.createObjectURL = mockUrl.createObjectURL;
     window.URL.revokeObjectURL = mockUrl.revokeObjectURL;
 
     await TestBed.configureTestingModule({
       imports: [
-        NewPostModalComponent, // Standalone
+        NewPostModalComponent,
         ReactiveFormsModule,
         NgSelectModule,
         PlyrModule
@@ -62,7 +58,6 @@ fdescribe('NewPostModalComponent', () => {
         { provide: PostStateService, useValue: mockPostStateService }
       ]
     })
-    // Importante: Override pois o componente declara providers no @Component
     .overrideComponent(NewPostModalComponent, {
       set: {
         providers: [
@@ -76,7 +71,6 @@ fdescribe('NewPostModalComponent', () => {
     fixture = TestBed.createComponent(NewPostModalComponent);
     component = fixture.componentInstance;
     
-    // Configuração inicial dos mocks
     mockCategoriaService.getCategories.and.returnValue(of(dummyCategories));
     mockObraService.createObra.calls.reset();
     mockUrl.createObjectURL.calls.reset();
@@ -89,7 +83,6 @@ fdescribe('NewPostModalComponent', () => {
     expect(component).toBeTruthy();
   });
 
-  // --- Inicialização e Validação ---
   describe('Initialization & Validation', () => {
     it('should initialize form as invalid', () => {
       expect(component.postForm.invalid).toBeTrue();
@@ -109,22 +102,19 @@ fdescribe('NewPostModalComponent', () => {
     });
   });
 
-  // --- Upload de Arquivo (Lógica Complexa) ---
   describe('File Upload (onFileSelected)', () => {
     
-    // Helper para criar eventos de arquivo
     const createFileEvent = (fileType: string) => {
       const file = new File(['content'], 'test-file', { type: fileType });
       return { 
         target: { files: [file] },
         file: file 
-      } as any; // casting para facilitar
+      } as any;
     };
 
     it('should handle IMAGE upload (FileReader)', (done) => {
       const evt = createFileEvent('image/png');
       
-      // Espiona FileReader
       const mockReader = {
         readAsDataURL: jasmine.createSpy('readAsDataURL'),
         result: 'data:image/png;base64,fake',
@@ -138,7 +128,6 @@ fdescribe('NewPostModalComponent', () => {
       expect(component.previewType).toBe('image');
       expect(mockReader.readAsDataURL).toHaveBeenCalledWith(evt.file);
 
-      // Simula o callback onload
       mockReader.onload();
       
       expect(component.previewUrl).toBe('data:image/png;base64,fake');
@@ -153,7 +142,6 @@ fdescribe('NewPostModalComponent', () => {
       expect(component.previewType).toBe('video');
       expect(component.plyrType).toBe('video');
       
-      // Verifica uso da API URL
       expect(window.URL.createObjectURL).toHaveBeenCalledWith(evt.file);
       expect(component.previewUrl).toBe('blob:fake-url');
       expect(component.plyrSources[0].src).toBe('blob:fake-url');
@@ -180,20 +168,16 @@ fdescribe('NewPostModalComponent', () => {
     });
 
     it('should clear previous preview when selecting new file', () => {
-      // 1. Seleciona vídeo primeiro
       component.previewUrl = 'blob:old-url';
       component.previewType = 'video';
       
-      // 2. Seleciona novo arquivo (imagem)
       const evt = createFileEvent('image/jpeg');
       component.onFileSelected(evt);
 
-      // Deve ter revogado a URL antiga do vídeo
       expect(window.URL.revokeObjectURL).toHaveBeenCalledWith('blob:old-url');
     });
   });
 
-  // --- Gerenciamento de Memória ---
   describe('Memory Management (ngOnDestroy)', () => {
     it('should revoke ObjectURL on destroy if preview was video/audio', () => {
       component.previewUrl = 'blob:some-video';
@@ -214,7 +198,6 @@ fdescribe('NewPostModalComponent', () => {
     });
   });
 
-  // --- Submissão ---
   describe('Form Submission (onSubmit)', () => {
     
     it('should NOT submit if form is invalid', () => {
@@ -224,14 +207,12 @@ fdescribe('NewPostModalComponent', () => {
     });
 
     it('should create FormData and submit correctly', fakeAsync(() => {
-      // 1. Mock de sucesso
       mockObraService.createObra.and.returnValue(
         of(dummyPost).pipe(switchMap(p => timer(1).pipe(switchMap(() => of(p)))))
       );
       
       spyOn(component, 'closeModal');
 
-      // 2. Preenche Form
       const file = new File(['a'], 'v.mp4', { type: 'video/mp4' });
       component.selectedFile = file;
       
@@ -239,14 +220,12 @@ fdescribe('NewPostModalComponent', () => {
         Titulo: 'Meu Vídeo',
         Descricao: 'Descrição',
         CategoriaId: 'cat-1',
-        Midia: file // O validador requer que o campo não seja nulo
+        Midia: file
       });
 
-      // 3. Submete
       component.onSubmit();
       expect(component.isLoading).toBeTrue();
 
-      // 4. Verifica FormData
       const args = mockObraService.createObra.calls.mostRecent().args[0] as FormData;
       expect(args instanceof FormData).toBeTrue();
       expect(args.get('Titulo')).toBe('Meu Vídeo');
@@ -256,7 +235,6 @@ fdescribe('NewPostModalComponent', () => {
 
       tick(1);
 
-      // 5. Pós-submit
       expect(component.isLoading).toBeFalse();
       expect(mockPostStateService.announceNewPost).toHaveBeenCalledWith(dummyPost);
       expect(component.closeModal).toHaveBeenCalled();

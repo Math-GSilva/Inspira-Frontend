@@ -16,10 +16,8 @@
         
         <mat-form-field appearance="outline" class="category-select-container">
           <mat-select [formControl]="categoryControl">
-            <!-- Alterado o valor padrão para o número 0 -->
             <mat-option [value]="''">Categorias</mat-option>
             
-            <!-- Alterado o valor de cada opção para o ID da categoria -->
             <mat-option *ngFor="let category of (categories$ | async)" [value]="category.id">
               {{ category.nome }}
             </mat-option>

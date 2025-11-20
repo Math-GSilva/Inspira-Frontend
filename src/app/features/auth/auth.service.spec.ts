@@ -1,7 +1,7 @@
 import { TestBed } from '@angular/core/testing';
 import { HttpClientTestingModule, HttpTestingController } from '@angular/common/http/testing';
 import { Router } from '@angular/router';
-import { HttpClient } from '@angular/common/http'; // <-- Importe o HttpClient
+import { HttpClient } from '@angular/common/http';
 import { AuthService } from './auth.service';
 import { environment } from '../../../environments/environment';
 
@@ -13,7 +13,6 @@ fdescribe('AuthService', () => {
   const TOKEN_KEY = 'inspira_auth_token';
   const API_URL = `${environment.apiUrl}/auth`;
 
-  // --- Helper para criar Tokens JWT Falsos (Base64URL Safe) ---
   function createMockToken(expirationInSeconds: number): string {
     const header = JSON.stringify({ alg: 'HS256', typ: 'JWT' });
     const payload = JSON.stringify({
@@ -25,7 +24,6 @@ fdescribe('AuthService', () => {
       exp: expirationInSeconds
     });
 
-    // Função auxiliar para converter para Base64Url (sem padding, +, /)
     const base64Url = (str: string) => {
       return btoa(str).replace(/\+/g, '-').replace(/\//g, '_').replace(/=+$/, '');
     };
@@ -45,7 +43,6 @@ fdescribe('AuthService', () => {
       ]
     });
 
-    // Injeta o serviço padrão (inicia com storage vazio)
     service = TestBed.inject(AuthService);
     httpMock = TestBed.inject(HttpTestingController);
   });
@@ -59,7 +56,6 @@ fdescribe('AuthService', () => {
     expect(service).toBeTruthy();
   });
 
-  // --- Testes de Login ---
   describe('login', () => {
     it('deve fazer POST para /login, salvar token e atualizar estado do usuário', () => {
       const mockCredentials = { email: 'test@test.com', password: '123' };
@@ -80,7 +76,6 @@ fdescribe('AuthService', () => {
     });
   });
 
-  // --- Testes de Logout ---
   describe('logout', () => {
     it('deve limpar token, estado do usuário e navegar para login', () => {
       sessionStorage.setItem(TOKEN_KEY, 'token-falso');
@@ -91,7 +86,6 @@ fdescribe('AuthService', () => {
     });
   });
 
-  // --- Testes de Registro ---
   describe('register', () => {
     it('deve fazer POST para /register', () => {
       const userData = { name: 'Novo' };
@@ -102,7 +96,6 @@ fdescribe('AuthService', () => {
     });
   });
 
-  // --- Testes de Validação ---
   describe('isAuthenticated', () => {
     it('deve retornar FALSE se não houver token', () => {
       sessionStorage.removeItem(TOKEN_KEY);
@@ -124,50 +117,40 @@ fdescribe('AuthService', () => {
     });
   });
 
-  // --- Teste de Inicialização (Construtor) ---
   describe('Constructor (decodeAndNotify)', () => {
     
     it('deve carregar o usuário automaticamente se houver um token válido no storage ao iniciar', () => {
-      // 1. Prepara o cenário (Token válido no storage)
       const futureExp = Math.floor(Date.now() / 1000) + 3600;
       const validToken = createMockToken(futureExp);
       sessionStorage.setItem(TOKEN_KEY, validToken);
 
-      // 2. SOLUÇÃO: Instanciar MANUALMENTE o serviço
-      // Isso força o construtor a rodar AGORA, lendo o storage que acabamos de preencher
       const http = TestBed.inject(HttpClient);
       const router = TestBed.inject(Router);
       const newService = new AuthService(http, router);
 
-      // 3. Verifica a nova instância
       expect(newService.currentUserValue).toBeTruthy();
       expect(newService.currentUserValue?.name).toBe('Tester');
     });
 
     it('deve limpar o usuário se o token no storage estiver expirado ao iniciar', () => {
-      // 1. Token expirado
       const pastExp = Math.floor(Date.now() / 1000) - 3600;
       const expiredToken = createMockToken(pastExp);
       sessionStorage.setItem(TOKEN_KEY, expiredToken);
 
-      // 2. Instancia manualmente
       const http = TestBed.inject(HttpClient);
       const router = TestBed.inject(Router);
       const newService = new AuthService(http, router);
 
-      // 3. Verifica
       expect(newService.currentUserValue).toBeNull();
     });
   });
 
-  // --- Atualização de Foto ---
   describe('updateCurrentUserProfilePhoto', () => {
     it('deve atualizar a URL da foto', () => {
       const futureExp = Math.floor(Date.now() / 1000) + 3600;
       const token = createMockToken(futureExp);
       sessionStorage.setItem(TOKEN_KEY, token);
       
-      // Precisamos de um serviço "logado"
       const http = TestBed.inject(HttpClient);
       const router = TestBed.inject(Router);
       const loggedService = new AuthService(http, router);

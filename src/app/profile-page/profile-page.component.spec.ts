@@ -2,7 +2,7 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { ReactiveFormsModule } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
 import { of, BehaviorSubject } from 'rxjs';
-import { take } from 'rxjs/operators'; // <-- IMPORTANTE: Importe o take
+import { take } from 'rxjs/operators';
 import { PlyrModule } from '@atom-platform/ngx-plyr';
 
 import { ProfilePageComponent } from './profile-page.component';
@@ -19,7 +19,6 @@ import { CommentsModalComponent } from '../comments-modal/comments-modal.compone
 import { UsuarioProfile } from '../core/models/usuario-profile.model';
 import { ObraDeArte } from '../core/models/obra-de-arte.model';
 
-// --- Mocks de Componentes Filhos ---
 import { Component, Input, Output, EventEmitter } from '@angular/core';
 import { DecodedToken } from '../features/auth/decoded-token.model';
 
@@ -40,7 +39,6 @@ class MockCommentsModalComponent {
   @Output() close = new EventEmitter<void>();
 }
 
-// --- Mocks de Dados ---
 const dummyProfile: UsuarioProfile = {
   id: 'u1',
   username: 'artist',
@@ -77,7 +75,6 @@ const dummyArtwork: ObraDeArte = {
   categoriaNome: 'Pintura'
 };
 
-// --- Mocks de Serviços ---
 const mockUsuarioService = jasmine.createSpyObj('UsuarioService', ['getProfile', 'followUser', 'unfollowUser']);
 const mockObraService = jasmine.createSpyObj('ObraDeArteService', ['getAllByUser']);
 const mockCurtidaService = jasmine.createSpyObj('CurtidaService', ['curtir', 'descurtir']);
@@ -126,7 +123,6 @@ fdescribe('ProfilePageComponent', () => {
     fixture = TestBed.createComponent(ProfilePageComponent);
     component = fixture.componentInstance;
 
-    // Resetar todos os Spies
     mockUsuarioService.getProfile.calls.reset();
     mockUsuarioService.followUser.calls.reset();
     mockUsuarioService.unfollowUser.calls.reset();
@@ -136,14 +132,11 @@ fdescribe('ProfilePageComponent', () => {
     mockComentarioService.criarComentario.calls.reset();
     mockAuthService.updateCurrentUserProfilePhoto.calls.reset();
 
-    // Configurar retornos padrão
     mockUsuarioService.getProfile.and.returnValue(of(dummyProfile));
     mockObraService.getAllByUser.and.returnValue(of([dummyArtwork]));
     mockCurtidaService.curtir.and.returnValue(of({ curtiu: true, totalCurtidas: 6 }));
     mockCurtidaService.descurtir.and.returnValue(of({ curtiu: false, totalCurtidas: 5 }));
     mockComentarioService.criarComentario.and.returnValue(of({}));
-    
-    // Resetar estado do usuário
     currentUserSubject.next(dummyCurrentUser);
 
     fixture.detectChanges();
@@ -160,7 +153,6 @@ fdescribe('ProfilePageComponent', () => {
     });
 
     it('should determine isMyProfile correctly (FALSE case)', (done) => {
-      // FIX: Use .pipe(take(1))
       component.profileData$.pipe(take(1)).subscribe(data => {
         expect(data.isMyProfile).toBeFalse();
         done();
@@ -168,11 +160,9 @@ fdescribe('ProfilePageComponent', () => {
     });
 
     it('should determine isMyProfile correctly (TRUE case)', (done) => {
-      // Simula que o usuário logado é o dono
       const ownerUser: DecodedToken = { ...dummyCurrentUser, name: 'artist' };
       currentUserSubject.next(ownerUser);
       
-      // FIX: Use .pipe(take(1))
       component.profileData$.pipe(take(1)).subscribe(data => {
         if (data.profile.username === 'artist' && data.isMyProfile === true) {
             expect(data.isMyProfile).toBeTrue();
@@ -183,7 +173,6 @@ fdescribe('ProfilePageComponent', () => {
     
     it('should calculate media types correctly', (done) => {
         currentUserSubject.next(dummyCurrentUser);
-        // FIX: Use .pipe(take(1))
         component.profileData$.pipe(take(1)).subscribe(data => {
             const artwork = data.artworks[0];
             expect(artwork.calculatedMediaType).toBe('video');
@@ -196,7 +185,6 @@ fdescribe('ProfilePageComponent', () => {
   describe('Follow Logic', () => {
     it('should call followUser', (done) => {
       mockUsuarioService.followUser.and.returnValue(of({}));
-      // FIX: Use .pipe(take(1))
       component.profileData$.pipe(take(1)).subscribe(data => {
         data.profile.seguidoPeloUsuarioAtual = false;
         component.toggleFollow(data);
@@ -208,7 +196,6 @@ fdescribe('ProfilePageComponent', () => {
 
   describe('Like Logic', () => {
     it('should call curtir', (done) => {
-      // FIX: Use .pipe(take(1))
       component.profileData$.pipe(take(1)).subscribe(data => {
         const artwork = data.artworks[0];
         artwork.curtidaPeloUsuario = false;
@@ -221,12 +208,10 @@ fdescribe('ProfilePageComponent', () => {
 
   describe('Comment Logic', () => {
     it('should submit comment validly', (done) => {
-      // FIX: Use .pipe(take(1))
       component.profileData$.pipe(take(1)).subscribe(data => {
         const artwork = data.artworks[0];
         const form = component.commentForms.get(artwork.id);
         
-        // Garante que o formulário existe antes de setar valor
         expect(form).toBeTruthy();
         form?.setValue({ texto: 'Teste' });
         
@@ -238,12 +223,10 @@ fdescribe('ProfilePageComponent', () => {
     });
 
     it('should NOT submit invalid comment', (done) => {
-        // FIX: Use .pipe(take(1))
         component.profileData$.pipe(take(1)).subscribe(data => {
           const artwork = data.artworks[0];
           const form = component.commentForms.get(artwork.id);
           
-          // Torna o formulário inválido
           form?.setValue({ texto: '' });
           
           component.submitComment(artwork);

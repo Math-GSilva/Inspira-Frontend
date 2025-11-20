@@ -1,4 +1,4 @@
-@import 'variables'; // Certifique-se que este import funciona graças ao angular.json
+@import 'variables';
 
 :host {
   display: block;
@@ -7,7 +7,7 @@
   left: 0;
   width: 100%;
   height: 100%;
-  z-index: 1000; // Garante que o modal fica por cima de tudo
+  z-index: 1000;
 }
 
 .modal-overlay {
@@ -21,7 +21,7 @@
   justify-content: center;
   align-items: center;
   z-index: 1000;
-  overflow: hidden; /* impede scroll no overlay */
+  overflow: hidden;
 }
 
 .modal-card {
@@ -29,8 +29,8 @@
   border-radius: 16px;
   max-width: 600px;
   width: 90%;
-  max-height: 90vh; /* importante para limitar a altura */
-  overflow-y: auto; /* scroll interno */
+  max-height: 90vh;
+  overflow-y: auto;
   box-shadow: 0 10px 30px rgba(0, 0, 0, 0.25);
   padding: 1.5rem;
 }
@@ -80,7 +80,6 @@
   }
 }
 
-// Estilos de inputs (reutilize os seus estilos existentes se possível)
 .input-field,
 .textarea-field,
 .select-field {
@@ -103,7 +102,6 @@
   min-height: 80px;
 }
 
-// Estilo para o campo de upload
 .file-upload-label {
   display: block;
   text-align: center;
@@ -124,50 +122,44 @@
   text-align: center;
   border: 1px solid $border-color;
   border-radius: $border-radius-default;
-  overflow: hidden; 
-  display: flex; // Para ajudar a centralizar o plyr/imagem
+  overflow: hidden;
+  display: flex;
   justify-content: center;
   align-items: center;
-  min-height: 150px; // Garante uma altura mínima para o preview
+  min-height: 150px;
 }
 
 .preview-media {
   max-width: 100%;
-  max-height: 250px; // Pode ajustar conforme desejar
-  height: auto; // Garante que a altura se ajuste à proporção
-  width: auto; // Garante que a largura se ajuste à proporção
-  display: block; 
-  margin: 0 auto; 
+  max-height: 250px;
+  height: auto;
+  width: auto;
+  display: block;
+  margin: 0 auto;
 }
 
 .plyr-preview-wrapper {
-  width: 100%; // Plyr deve ocupar a largura total
+  width: 100%;
   max-width: 100%;
-  max-height: 300px; // Aumentar um pouco a altura máxima para acomodar os controles
+  max-height: 300px;
   
-  // --- AQUI VÃO AS MUDANÇAS CHAVE ---
   ::ng-deep plyr {
     display: block;
     width: 100%;
-    height: auto; // Deixa o Plyr determinar sua própria altura proporcional
+    height: auto;
     
-    // --- Sobrescrevendo variáveis CSS do Plyr para combinar com seu tema ---
-    // (Ajuste os nomes das variáveis SCSS para corresponderem às suas)
-    --plyr-color-main: #{$primary-color}; // Cor principal dos botões e progresso
-    --plyr-control-toggle-checked-background: #{$primary-color}; // Background do botão de mute/play quando ativo
-    --plyr-range-thumb-background: #{$primary-color}; // Background do "bolinha" do slider de volume/progresso
-    --plyr-menu-color: #{$text-color}; // Cor do texto nos menus
-    --plyr-control-spacing: 5px; // Espaçamento entre os controles
-    --plyr-font-size-time: 14px; // Tamanho da fonte do tempo
-    --plyr-text-color: #{$text-color}; // Cor padrão do texto nos controles
-    --plyr-control-icon-color: #{$text-color}; // Cor dos ícones nos controles
-    --plyr-tooltip-color: #{$text-color}; // Cor do texto do tooltip
-    --plyr-badge-background: #{$primary-color}; // Para badges (se houver)
-    --plyr-captions-background: rgba(0, 0, 0, 0.7); // Fundo das legendas
-    --plyr-progress-buffered-background: rgba(var(--plyr-range-track-background, #{$secondary-color}), 0.25); // Cor da barra carregada
-    
-    // Adicione mais variáveis do Plyr se precisar personalizar outros elementos
-    // Você pode encontrar a lista completa em: https://github.com/sampotts/plyr#theming
+    --plyr-color-main: #{$primary-color};
+    --plyr-control-toggle-checked-background: #{$primary-color};
+    --plyr-range-thumb-background: #{$primary-color};
+    --plyr-menu-color: #{$text-color};
+    --plyr-control-spacing: 5px;
+    --plyr-font-size-time: 14px;
+    --plyr-text-color: #{$text-color};
+    --plyr-control-icon-color: #{$text-color};
+    --plyr-tooltip-color: #{$text-color};
+    --plyr-badge-background: #{$primary-color};
+    --plyr-captions-background: rgba(0, 0, 0, 0.7);
+    --plyr-progress-buffered-background: rgba(var(--plyr-range-track-background, #{$secondary-color}), 0.25);
   }
 }
 
@@ -178,7 +170,6 @@
   margin-top: 1.5rem;
 }
 
-// Estilos de botões (reutilize os seus se possível)
 .btn {
   font-weight: 600;
   padding: 10px 24px;
@@ -208,7 +199,6 @@
   }
 }
 
-// Loading Spinner (reutilize o seu se possível)
 .loading-overlay {
   position: absolute;
   top: 0;
@@ -238,7 +228,7 @@
 
   .ng-select-container {
     display: flex;
-    align-items: center; /* Centraliza verticalmente o texto */
+    align-items: center;
     border: 1.5px solid var(--primary-color, #d1568e);
     border-radius: 12px;
     background-color: var(--background-color, #fff);
@@ -292,13 +282,12 @@
       }
 
       &.ng-option-selected {
-        display: none; /* Oculta a opção já selecionada */
+        display: none;
       }
     }
   }
 }
 
-// Animações
 @keyframes fadeIn {
   from { opacity: 0; }
   to { opacity: 1; }

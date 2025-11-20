@@ -1,16 +1,14 @@
 import { ComponentFixture, TestBed, fakeAsync, tick } from '@angular/core/testing';
 import { ReactiveFormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
-import { RouterTestingModule } from '@angular/router/testing'; // Importante
+import { RouterTestingModule } from '@angular/router/testing';
 import { of, throwError, timer, switchMap } from 'rxjs';
 
 import { RegisterComponent } from './register.component';
 import { AuthService } from '../features/auth/auth.service';
 
-// --- Mocks ---
 const mockAuthService = jasmine.createSpyObj('AuthService', ['register']);
 
-// Dados válidos para teste
 const validFormData = {
   CompleteName: 'Teste User',
   Username: 'teste.user',
@@ -22,7 +20,7 @@ const validFormData = {
 fdescribe('RegisterComponent', () => {
   let component: RegisterComponent;
   let fixture: ComponentFixture<RegisterComponent>;
-  let router: Router; // Referência ao Router real injetado
+  let router: Router;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
@@ -33,19 +31,13 @@ fdescribe('RegisterComponent', () => {
       ],
       providers: [
         { provide: AuthService, useValue: mockAuthService }
-        // REMOVIDOS: ActivatedRoute e Router providers manuais.
-        // Deixamos o RouterTestingModule cuidar disso para não quebrar o routerLink.
       ]
     })
     .compileComponents();
     
     fixture = TestBed.createComponent(RegisterComponent);
     component = fixture.componentInstance;
-    
-    // Injetamos o Router real que o RouterTestingModule criou
     router = TestBed.inject(Router);
-    
-    // Criamos o espião no método navigate do router real
     spyOn(router, 'navigate');
 
     mockAuthService.register.calls.reset();
@@ -57,7 +49,6 @@ fdescribe('RegisterComponent', () => {
     expect(component).toBeTruthy();
   });
 
-  // --- Validação do Formulário ---
   describe('Form Validation', () => {
     it('should initialize form as invalid', () => {
       expect(component.registerForm.invalid).toBeTrue();
@@ -106,7 +97,6 @@ fdescribe('RegisterComponent', () => {
     });
   });
 
-  // --- Submissão (Fluxo de Sucesso) ---
   describe('Success Submission', () => {
     it('should convert Role to integer and call AuthService', fakeAsync(() => {
       mockAuthService.register.and.returnValue(
@@ -127,12 +117,10 @@ fdescribe('RegisterComponent', () => {
       
       tick(2000);
       
-      // Verifica se o spy do router foi chamado
       expect(router.navigate).toHaveBeenCalledWith(['/auth/login']);
     }));
   });
 
-  // --- Submissão (Fluxo de Erro) ---
   describe('Error Submission', () => {
     it('should display specific error message from API', fakeAsync(() => {
       const errorMsg = 'Email já cadastrado';

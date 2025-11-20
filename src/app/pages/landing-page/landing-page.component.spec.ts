@@ -9,14 +9,11 @@ fdescribe('LandingPageComponent', () => {
   let routerSpy: jasmine.SpyObj<Router>;
 
   beforeEach(async () => {
-    // 1. Criar um "Spy" (espião) do Router
-    // Isso cria um objeto falso que tem um método 'navigate'
     routerSpy = jasmine.createSpyObj('Router', ['navigate']);
 
     await TestBed.configureTestingModule({
-      imports: [LandingPageComponent], // Componente é standalone
+      imports: [LandingPageComponent],
       providers: [
-        // 2. Diz ao Angular: "Quando alguém pedir o Router, entregue este espião"
         { provide: Router, useValue: routerSpy }
       ]
     })
@@ -31,7 +28,6 @@ fdescribe('LandingPageComponent', () => {
     expect(component).toBeTruthy();
   });
 
-  // --- Testes de Renderização (HTML) ---
   describe('Template Rendering', () => {
     
     it('should render the main title "Inspira"', () => {
@@ -50,12 +46,10 @@ fdescribe('LandingPageComponent', () => {
     });
   });
 
-  // --- Testes de Lógica de Navegação ---
   describe('Navigation Logic', () => {
 
     it('should navigate to register page when navigateToRegister is called', () => {
       component.navigateToRegister();
-      // Verifica se o método .navigate foi chamado com o argumento correto
       expect(routerSpy.navigate).toHaveBeenCalledWith(['/auth/register']);
     });
 
@@ -65,29 +59,22 @@ fdescribe('LandingPageComponent', () => {
     });
   });
 
-  // --- Testes de Integração (Clique no Botão -> Ação) ---
   describe('User Interaction (Button Clicks)', () => {
 
     it('should call navigateToRegister when "Criar Conta" button is clicked', () => {
-      // 1. Espiona o método do componente
-      spyOn(component, 'navigateToRegister').and.callThrough(); // .and.callThrough() garante que a lógica interna (o router) também rode
+      spyOn(component, 'navigateToRegister').and.callThrough();
 
-      // 2. Encontra o botão primário (Criar Conta)
       const registerBtn = fixture.debugElement.query(By.css('.btn-primary'));
       
-      // 3. Clica
       registerBtn.triggerEventHandler('click', null);
 
-      // 4. Verifica se o método foi chamado
       expect(component.navigateToRegister).toHaveBeenCalled();
-      // 5. Verifica se o router foi acionado (integração completa)
       expect(routerSpy.navigate).toHaveBeenCalledWith(['/auth/register']);
     });
 
     it('should call navigateToLogin when "Fazer Login" button is clicked', () => {
       spyOn(component, 'navigateToLogin').and.callThrough();
 
-      // Encontra o botão secundário (Login)
       const loginBtn = fixture.debugElement.query(By.css('.btn-secondary'));
       
       loginBtn.triggerEventHandler('click', null);

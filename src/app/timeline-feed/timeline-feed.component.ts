@@ -4,10 +4,8 @@ import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angula
 import { finalize, Subscription } from 'rxjs';
 import { Router, RouterLink } from '@angular/router';
 
-// Importações do Plyr e tipos
 import { PlyrModule } from '@atom-platform/ngx-plyr';
 
-// Componentes e Serviços
 import { CommentsModalComponent } from '../comments-modal/comments-modal.component';
 import { ObraDeArte } from '../core/models/obra-de-arte.model'; 
 import { ObraDeArteService } from '../features/obras-de-arte/obra-de-arte.service';
@@ -20,18 +18,15 @@ import { ConfirmationModalComponent } from '../confirmation-modal/confirmation-m
 import { EditPostModalComponent } from '../edit-post-modal/edit-post-modal.component';
 import { PostStateService } from '../features/obras-de-arte/post-state.service';
 
-
-// Tipo auxiliar nosso
 type CalculatedMediaType = 'imagem' | 'video' | 'audio';
 
-// Interface auxiliar (sem mudanças)
 interface ArtworkWithCalculatedMedia extends ObraDeArte {
   calculatedMediaType: CalculatedMediaType;
   plyrSourcesArray: Plyr.Source[];
   plyrMediaTypeValue: Plyr.MediaType;
-  isOptionsMenuOpen?: boolean; 
-  canEdit: boolean;   // Permissão para editar
-  canDelete: boolean; // Permissão para remover
+  isOptionsMenuOpen?: boolean;
+  canEdit: boolean;
+  canDelete: boolean;
 }
 
 
@@ -86,8 +81,8 @@ export class TimelineFeedComponent implements OnInit, OnChanges, AfterViewInit, 
   ) {}
 
   ngOnInit(): void {
-    this.currentUser = this.authService.currentUserValue; // Guarda o usuário
-    this.loadArtworks(true); // <-- Carga inicial
+    this.currentUser = this.authService.currentUserValue;
+    this.loadArtworks(true);
     this.postStateSubscription = this.postStateService.newPost$.subscribe(newPost => {
       this.prependNewArtwork(newPost);
     });
@@ -126,10 +121,8 @@ export class TimelineFeedComponent implements OnInit, OnChanges, AfterViewInit, 
       canDelete: isOwner || isAdmin
     };
     
-    // Adiciona o novo post no INÍCIO (topo) da lista
     this.artworks.unshift(processedArtwork);
     
-    // Adiciona o formulário de comentário para o novo post
     this.commentForms.set(processedArtwork.id, this.fb.group({
       texto: ['', Validators.required]
     }));
@@ -137,19 +130,16 @@ export class TimelineFeedComponent implements OnInit, OnChanges, AfterViewInit, 
 
   private setupIntersectionObserver(): void {
     const options = {
-      root: null, // Observa em relação ao viewport
+      root: null,
       rootMargin: '0px',
-      threshold: 0.1 // Dispara quando 10% do sentinela estiver visível
+      threshold: 0.1
     };
 
     this.observer = new IntersectionObserver(([entry]) => {
-      // Se o sentinela estiver visível (intersecting) e não estivermos carregando
       if (entry.isIntersecting) {
-        this.loadArtworks(); // Carrega mais itens (não é um reset)
+        this.loadArtworks();
       }
     }, options);
-
-    // Começa a observar o elemento sentinela
     this.observer.observe(this.scrollSentinel.nativeElement);
   }
 
@@ -166,12 +156,11 @@ export class TimelineFeedComponent implements OnInit, OnChanges, AfterViewInit, 
 
     this.isLoading = true;
 
-    // 2. Se for um "refresh" (nova categoria ou carga inicial), reseta o estado.
     if (isRefresh) {
       this.nextCursor = null;
       this.hasMoreItems = true;
-      this.artworks = []; // Limpa o array
       this.commentForms.clear();
+      this.artworks = [];
     }
 
     const currentUser: DecodedToken | null = this.authService.currentUserValue;
@@ -201,10 +190,8 @@ export class TimelineFeedComponent implements OnInit, OnChanges, AfterViewInit, 
           };
         });
 
-        // 6. Anexa os novos itens à lista (em vez de substituir)
         this.artworks.push(...newArtworks);
 
-        // 7. Configura os formulários de comentário para os novos itens
         newArtworks.forEach(art => {
           this.commentForms.set(art.id, this.fb.group({
             texto: ['', Validators.required]
@@ -213,7 +200,6 @@ export class TimelineFeedComponent implements OnInit, OnChanges, AfterViewInit, 
       });
   }
 
-  // --- Funções auxiliares de mídia (sem mudanças) ---
   private calculateMediaTypeFromMime(mimeType?: string): CalculatedMediaType {
     if (!mimeType) return 'imagem';
     const type = mimeType.split('/')[0].toLowerCase();
@@ -238,8 +224,7 @@ export class TimelineFeedComponent implements OnInit, OnChanges, AfterViewInit, 
     return 'audio'; 
   }
 
-
-  // --- Funções de interação (sem mudanças) ---
+  
   toggleLike(artwork: ObraDeArte): void { 
     const action = artwork.curtidaPeloUsuario
       ? this.curtidaService.descurtir(artwork.id)
@@ -291,7 +276,6 @@ export class TimelineFeedComponent implements OnInit, OnChanges, AfterViewInit, 
     this.selectedArtworkIdForModal = null;
   }
   
-  // --- Funções do menu de opções (sem mudanças) ---
   toggleOptionsMenu(artwork: ArtworkWithCalculatedMedia): void {
     const currentState = artwork.isOptionsMenuOpen;
     this.artworks.forEach(a => a.isOptionsMenuOpen = false);
@@ -301,35 +285,27 @@ export class TimelineFeedComponent implements OnInit, OnChanges, AfterViewInit, 
   onEditPost(artwork: ArtworkWithCalculatedMedia): void {
   this.artworkToEdit = artwork;
   this.isEditModalOpen = true;
-  artwork.isOptionsMenuOpen = false; // Fecha o menu de 3 pontinhos
+  artwork.isOptionsMenuOpen = false;
 }
 
   onDeletePost(artwork: ArtworkWithCalculatedMedia): void {
-    // 1. Guarda o ID do post que o usuário quer deletar
     this.artworkToDeleteId = artwork.id;
-    
-    // 2. Abre o modal de confirmação
     this.isConfirmModalOpen = true;
-    
-    // 3. Fecha o menu de 3 pontinhos
     artwork.isOptionsMenuOpen = false; 
   }
 
   handleConfirmDelete(): void {
-    if (!this.artworkToDeleteId) return; // Segurança, caso o ID não esteja definido
+    if (!this.artworkToDeleteId) return;
 
     const idToDelete = this.artworkToDeleteId;
 
-    // Fecha o modal e limpa o ID
     this.handleCloseConfirmModal();
 
-    // Chama o serviço para deletar
     this.obraDeArteService.deleteObra(idToDelete).subscribe({
       next: () => {
         this.artworks = this.artworks.filter(a => a.id !== idToDelete);
       },
       error: (err) => {
-        // Erro: Informa o usuário
         console.error('Erro ao remover o post', err);
         alert('Não foi possível remover o post. Tente novamente mais tarde.');
       }
@@ -347,6 +323,6 @@ export class TimelineFeedComponent implements OnInit, OnChanges, AfterViewInit, 
     this.artworks[index].titulo = updatedArtwork.titulo;
     this.artworks[index].descricao = updatedArtwork.descricao;
   }
-  this.isEditModalOpen = false; // Fecha o modal
+  this.isEditModalOpen = false;
 }
 }

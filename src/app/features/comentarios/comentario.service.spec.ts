@@ -9,7 +9,6 @@ fdescribe('ComentarioService', () => {
   let service: ComentarioService;
   let httpMock: HttpTestingController;
 
-  // URL base esperada
   const apiUrl = `${environment.apiUrl}/Comentarios`;
 
   beforeEach(() => {
@@ -30,7 +29,6 @@ fdescribe('ComentarioService', () => {
     expect(service).toBeTruthy();
   });
 
-  // --- Teste: GET (Buscar com Query Params) ---
   it('deve buscar comentários por ID da obra (GET com params)', () => {
     const obraId = 'obra-123';
     const dummyComments: Comentario[] = [
@@ -57,9 +55,6 @@ fdescribe('ComentarioService', () => {
       expect(comments).toEqual(dummyComments);
     });
 
-    // Verifica a requisição.
-    // Importante: Como usa HttpParams, a URL completa inclui a query string.
-    // Podemos checar a URL base e os params separadamente para ser mais preciso.
     const req = httpMock.expectOne(request => 
       request.url === apiUrl && request.params.has('obraDeArteId')
     );
@@ -70,7 +65,6 @@ fdescribe('ComentarioService', () => {
     req.flush(dummyComments);
   });
 
-  // --- Teste: POST (Criar) ---
   it('deve criar um comentário (POST)', () => {
     const newCommentDto: CreateComentarioDto = { 
       obraDeArteId: 'obra-123', 
@@ -96,7 +90,6 @@ fdescribe('ComentarioService', () => {
     req.flush(responseComment);
   });
 
-  // --- Teste: DELETE (Remover) ---
   it('deve deletar um comentário por ID (DELETE)', () => {
     const commentId = 'comentario-999';
 
@@ -104,14 +97,12 @@ fdescribe('ComentarioService', () => {
       expect(response).toBeNull();
     });
 
-    // Verifica se a URL foi montada corretamente com o ID
     const req = httpMock.expectOne(`${apiUrl}/${commentId}`);
     expect(req.request.method).toBe('DELETE');
 
     req.flush(null);
   });
 
-  // --- Teste: Erro ---
   it('deve propagar erro da API', () => {
     service.getComentarios('1').subscribe({
       next: () => fail('Deveria ter falhado'),

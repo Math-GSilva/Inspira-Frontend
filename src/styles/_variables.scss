@@ -1,47 +1,24 @@
-// Ficheiro de variáveis globais para o projeto Inspira
-
-// 1. CORES
-// =================================================================
-
-// Paleta principal baseada no seu design
 $primary-color: #d1568e;
-$primary-light-color: #fceef5; // Um tom claro do pink para fundos de hover/ativos
+$primary-light-color: #fceef5;
 $secondary-color: #a651f8;
-$primary-gradient: linear-gradient(135deg, $secondary-color, $primary-color); // RENOMEADO de $gradient para maior clareza
-
-// Cores de Texto
-$text-color: #333; // RENOMEADO de $text-color para consistência
-$sec-text-color: #666; // RENOMEADO de $sec-text-color para consistência
-
-// Cores de Interface
-$white: #ffffff; // ADICIONADO
-$black: #000000; // ADICIONADO
+$primary-gradient: linear-gradient(135deg, $secondary-color, $primary-color);
+$text-color: #333;
+$sec-text-color: #666;
+$white: #ffffff;
+$black: #000000;
 $border-color: #e0e0e0;
 $card-bg-color: #ffffff;
-$background-color: #f9f9f9; // Cor de fundo geral para a app
-
-// 2. FONTES
-// =================================================================
+$background-color: #f9f9f9;
 $font-primary: 'Poppins', sans-serif;
 $font-logo: 'Pacifico', cursive;
-
-// 3. BORDAS
-// =================================================================
 $border-radius-sm: 4px;
 $border-radius-md: 8px;
 $border-radius-lg: 16px;
-$border-radius-full: 999px; // Para botões e avatares arredondados
-
-// ADICIONADO: Aliases para manter a compatibilidade com o SCSS do modal
-// Agora pode usar tanto $border-radius-md como $border-radius-default
+$border-radius-full: 999px;
 $border-radius-default: $border-radius-md;
 $border-radius-large: $border-radius-lg;
-
-// 4. ESPAÇAMENTO (para margens, paddings, gaps)
-// =================================================================
 $spacing-xs: 4px;
 $spacing-sm: 8px;
 $spacing-md: 16px;
 $spacing-lg: 24px;
 $spacing-xl: 32px;
-

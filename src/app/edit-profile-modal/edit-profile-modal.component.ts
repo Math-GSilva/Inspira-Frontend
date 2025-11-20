@@ -22,7 +22,7 @@ import { NgSelectModule } from '@ng-select/ng-select';
 })
 export class EditProfileModalComponent implements OnInit, OnDestroy {
   @Input() userProfile!: UsuarioProfile;
-  @Output() close = new EventEmitter<void>();
+  @Output() closeRequest = new EventEmitter<void>();
   @Output() profileUpdated = new EventEmitter<UsuarioProfile>();
 
   @Input() userRole: string | null = null;
@@ -200,7 +200,7 @@ export class EditProfileModalComponent implements OnInit, OnDestroy {
   }
 
   closeModal(): void {
-    this.close.emit();
+    this.closeRequest.emit();
   }
 
   private showTemporaryError(message: string): void {

@@ -39,7 +39,7 @@ export class AuthService {
   logout(): void {
     sessionStorage.removeItem(this.TOKEN_KEY);
     this.currentUserSubject.next(null);
-    this.router.navigate(['/auth/login']); // ou '/login' dependendo da sua rota
+    this.router.navigate(['/auth/login']);
   }
 
   register(userData: any): Observable<any> {
@@ -50,12 +50,6 @@ export class AuthService {
     return sessionStorage.getItem(this.TOKEN_KEY);
   }
 
-  /**
-   * NOVO MÉTODO: Verifica se o usuário está autenticado de forma segura,
-   * checando a validade e a data de expiração do token.
-   * Este método é o que deve ser usado pelos Route Guards.
-   * @returns `true` se o token existir e não estiver expirado.
-   */
   isAuthenticated(): boolean {
     const token = this.getToken();
 
@@ -66,23 +60,16 @@ export class AuthService {
     try {
       const decodedToken: DecodedToken = jwtDecode(token);
 
-      // O campo 'exp' do JWT está em segundos, Date.now() está em milissegundos.
       const expirationDate = decodedToken.exp * 1000;
       const now = Date.now();
 
-      // Se a data de expiração for maior que a data atual, o token é válido.
       return expirationDate > now;
     } catch (error) {
       console.error('Token inválido ou corrompido:', error);
-      return false; // Erro na decodificação significa que o token não é válido
+      return false;
     }
   }
 
-  /**
-   * MÉTODO ANTIGO ATUALIZADO:
-   * Agora usa a lógica correta de 'isAuthenticated'.
-   * @deprecated Use isAuthenticated() para mais clareza.
-   */
   isLoggedIn(): boolean {
     return this.isAuthenticated();
   }
@@ -101,13 +88,11 @@ export class AuthService {
     const token = this.getToken();
 
     if (!token || !this.isAuthenticated()) {
-      // Adicionada verificação de validade
       this.currentUserSubject.next(null);
       return;
     }
 
     try {
-      // Usando a biblioteca para mais segurança na decodificação
       const decodedPayload: any = jwtDecode(token);
 
       const userData: DecodedToken = {

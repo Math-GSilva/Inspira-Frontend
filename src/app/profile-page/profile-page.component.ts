@@ -3,19 +3,19 @@ import { CommonModule } from '@angular/common';
 import { ActivatedRoute, RouterLink } from '@angular/router';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Observable, combineLatest } from 'rxjs';
-import { switchMap, map, finalize } from 'rxjs/operators';
+import { switchMap, map, finalize, tap } from 'rxjs/operators';
 import { PlyrModule } from '@atom-platform/ngx-plyr';
 import { ObraDeArteService } from '../features/obras-de-arte/obra-de-arte.service';
 import { AuthService } from '../features/auth/auth.service';
 import { UsuarioService } from '../features/usuarios-search/usuario.service';
 import { CurtidaService } from '../features/curtidas/curtida.service'; // Importado
-import { ComentarioService } from '../features/comentarios/comentario.service'; // Importado
+import { ComentarioService } from '../features/comentarios/comentario.service';
 import { ObraDeArte } from '../core/models/obra-de-arte.model';
 import { UsuarioProfile } from '../core/models/usuario-profile.model';
-import { CreateComentarioDto } from '../core/models/comentario.model'; // Importado
+import { CreateComentarioDto } from '../core/models/comentario.model';
 import { SidebarNavComponent } from '../sidebar-nav/sidebar-nav.component';
 import { EditProfileModalComponent } from '../edit-profile-modal/edit-profile-modal.component';
-import { CommentsModalComponent } from '../comments-modal/comments-modal.component'; // Importado
+import { CommentsModalComponent } from '../comments-modal/comments-modal.component';
 
 type CalculatedMediaType = 'imagem' | 'video' | 'audio';
 
@@ -39,9 +39,9 @@ interface ProfileData {
     RouterLink,
     SidebarNavComponent,
     EditProfileModalComponent,
-    ReactiveFormsModule, // Adicionado
-    PlyrModule,          // Adicionado
-    CommentsModalComponent // Adicionado
+    ReactiveFormsModule,
+    PlyrModule,
+    CommentsModalComponent
   ],
   templateUrl: './profile-page.component.html',
   styleUrls: ['./profile-page.component.scss']
@@ -51,11 +51,9 @@ export class ProfilePageComponent implements OnInit {
   isLoading = true;
   isEditModalOpen = false;
 
-  // --- Lógica de Comentários (copiado do timeline-feed) ---
   commentForms = new Map<string, FormGroup>();
   isCommentsModalOpen = false;
   selectedArtworkIdForModal: string | null = null;
-  // --------------------------------------------------------
 
   currentUserRole: string | null = null;
 
@@ -65,74 +63,69 @@ export class ProfilePageComponent implements OnInit {
     private usuarioService: UsuarioService,
     private obraDeArteService: ObraDeArteService,
     private authService: AuthService,
-    // --- Serviços Injetados (copiado do timeline-feed) ---
     private curtidaService: CurtidaService,
     private comentarioService: ComentarioService,
     private fb: FormBuilder
-    // -----------------------------------------------------
   ) {}
 
   ngOnInit(): void {
     this.profileData$ = this.route.paramMap.pipe(
-      switchMap(params => {
-        const username = params.get('username');
-        if (!username) {
-          throw new Error('Username não encontrado na rota.');
-        }
-
-        this.isLoading = true;
-        this.commentForms.clear(); 
-
-        // 2. ATUALIZADO: Busca o objeto currentUser COMPLETO
-        const profile$ = this.usuarioService.getProfile(username);
-        const currentUser$ = this.authService.currentUser$; // <-- MUDANÇA (era .pipe(map...)) [cite: 17, line 85]
-
-        return profile$.pipe(
-          switchMap(profile => {
-
-            const artworks$ = this.obraDeArteService.getAllByUser(profile.id);
-
-            // 3. ATUALIZADO: Combina com o objeto currentUser completo
-            return combineLatest([artworks$, currentUser$]).pipe( // <-- MUDANÇA (era myUsername$) [cite: 17, line 90]
-              map(([profileArtworks, currentUser]) => { // <-- MUDANÇA (era myUsername) [cite: 17, line 91]
-                
-                const calculatedArtworks = profileArtworks.map(art => {
-                  // ... (lógica de 'calculatedArtworks') ... [cite: 17, lines 94-114]
-                  const calculatedType = this.calculateMediaTypeFromMime(art.tipoConteudoMidia);
-                  const plyrSources = this.calculatePlyrSources(art.url, calculatedType, art.tipoConteudoMidia);
-                  const plyrType = this.calculatePlyrMediaType(calculatedType);
-
-                  this.commentForms.set(art.id, this.fb.group({
-                    texto: ['', Validators.required]
-                  }));
-
-                  return {
-                    ...art,
-                    calculatedMediaType: calculatedType,
-                    plyrSourcesArray: plyrSources,
-                    plyrMediaTypeValue: plyrType
-                  };
-                });
-                
-                this.isLoading = false;
-                
-                this.currentUserRole = currentUser?.role || null;
-                
-                return {
-                  profile, 
-                  artworks: calculatedArtworks,
-                  // 5. ATUALIZADO: Compara com o 'nameid' do usuário
-                  isMyProfile: profile.username === currentUser?.name
-                };
-              })
-            );
-          })
-        );
-      })
+      map(params => params.get('username')),
+      tap(username => {
+        if (!username) throw new Error('Username não encontrado na rota.');
+        this.initializeLoadingState();
+      }),
+      switchMap(username => this.usuarioService.getProfile(username!)),
+      switchMap(profile => this.loadArtworksAndUser(profile))
     );
   }
 
-  // --- Métodos de Cálculo de Mídia (copiado do timeline-feed) ---
+  private initializeLoadingState(): void {
+    this.isLoading = true;
+    this.commentForms.clear();
+  }
+
+  private loadArtworksAndUser(profile: any): Observable<any> {
+    const artworks$ = this.obraDeArteService.getAllByUser(profile.id);
+    const currentUser$ = this.authService.currentUser$;
+
+    return combineLatest([artworks$, currentUser$]).pipe(
+      map(([artworks, currentUser]) => 
+        this.createProfileViewModel(profile, artworks, currentUser)
+      )
+    );
+  }
+
+  private createProfileViewModel(profile: any, artworks: any[], currentUser: any): any {
+    this.isLoading = false;
+    this.currentUserRole = currentUser?.role || null;
+
+    const calculatedArtworks = artworks.map(art => this.processArtwork(art));
+
+    return {
+      profile,
+      artworks: calculatedArtworks,
+      isMyProfile: profile.username === currentUser?.name
+    };
+  }
+
+  private processArtwork(art: any): any {
+    const calculatedType = this.calculateMediaTypeFromMime(art.tipoConteudoMidia);
+    const plyrSources = this.calculatePlyrSources(art.url, calculatedType, art.tipoConteudoMidia);
+    const plyrType = this.calculatePlyrMediaType(calculatedType);
+  
+    this.commentForms.set(art.id, this.fb.group({
+      texto: ['', Validators.required]
+    }));
+  
+    return {
+      ...art,
+      calculatedMediaType: calculatedType,
+      plyrSourcesArray: plyrSources,
+      plyrMediaTypeValue: plyrType
+    };
+  }
+
   private calculateMediaTypeFromMime(mimeType?: string): CalculatedMediaType {
     if (!mimeType) return 'imagem';
     const type = mimeType.split('/')[0].toLowerCase();
@@ -156,26 +149,21 @@ export class ProfilePageComponent implements OnInit {
     if (calculatedType === 'video') return 'video';
     return 'audio';
   }
-  // ----------------------------------------------------------------
 
-  // --- Métodos de Interação (copiado do timeline-feed) ---
   toggleLike(artwork: ArtworkWithCalculatedMedia): void {
     const action = artwork.curtidaPeloUsuario
       ? this.curtidaService.descurtir(artwork.id)
       : this.curtidaService.curtir(artwork.id);
 
-    // Atualiza a UI otimistamente (opcional, mas bom)
     artwork.curtidaPeloUsuario = !artwork.curtidaPeloUsuario;
     artwork.totalCurtidas += artwork.curtidaPeloUsuario ? 1 : -1;
 
     action.subscribe({
       next: response => {
-        // Confirma a atualização com dados do backend
         artwork.totalCurtidas = response.totalCurtidas;
         artwork.curtidaPeloUsuario = response.curtiu;
       },
       error: () => {
-         // Reverte em caso de erro
          artwork.curtidaPeloUsuario = !artwork.curtidaPeloUsuario;
          artwork.totalCurtidas += artwork.curtidaPeloUsuario ? 1 : -1;
       }
@@ -200,7 +188,6 @@ export class ProfilePageComponent implements OnInit {
     this.comentarioService.criarComentario(dto).subscribe(() => {
       form.reset();
       artwork.showCommentBox = false;
-      // Idealmente, você também incrementaria a contagem de comentários aqui
     });
   }
 
@@ -213,11 +200,8 @@ export class ProfilePageComponent implements OnInit {
     this.isCommentsModalOpen = false;
     this.selectedArtworkIdForModal = null;
   }
-  // --------------------------------------------------------------
 
-  // --- Métodos de Seguir/Modal (já existentes) ---
   toggleFollow(data: ProfileData): void {
-    // ... (lógica original do toggleFollow) ...
      const originalProfile = { ...data.profile };
      data.profile.seguidoPeloUsuarioAtual = !data.profile.seguidoPeloUsuarioAtual;
      data.profile.contagemSeguidores += data.profile.seguidoPeloUsuarioAtual ? 1 : -1;
