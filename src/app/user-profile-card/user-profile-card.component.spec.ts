@@ -18,7 +18,7 @@ const mockUser: DecodedToken = {
   aud: 'audience'
 };
 
-fdescribe('UserProfileCardComponent', () => {
+describe('UserProfileCardComponent', () => {
   let component: UserProfileCardComponent;
   let fixture: ComponentFixture<UserProfileCardComponent>;
 

@@ -17,7 +17,10 @@
         {{ errorMessage }}
     </div>
 
-    <button type="submit" class="btn-submit" [disabled]="loginForm.invalid">Entrar</button>
+    <button type="submit" class="btn-submit" [disabled]="loginForm.invalid || isLoading">
+      <span *ngIf="isLoading">Entrando...</span>
+      <span *ngIf="!isLoading">Entrar</span>
+    </button>
   </form>
 
   <p class="switch-form-link">

@@ -6,7 +6,7 @@ import { environment } from '../../../environments/environment';
 import { ObraDeArte, UpdateObraDeArteDto } from '../../core/models/obra-de-arte.model';
 import { PaginatedResponse } from '../../core/models/paginated-response.model';
 
-fdescribe('ObraDeArteService', () => {
+describe('ObraDeArteService', () => {
   let service: ObraDeArteService;
   let httpMock: HttpTestingController;
 

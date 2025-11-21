@@ -5,7 +5,7 @@ import { CurtidaService } from './curtida.service';
 import { environment } from '../../../environments/environment';
 import { CurtidaResponseDto } from '../../core/models/curtida.model';
 
-fdescribe('CurtidaService', () => {
+describe('CurtidaService', () => {
   let service: CurtidaService;
   let httpMock: HttpTestingController;
 

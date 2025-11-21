@@ -5,7 +5,7 @@ import { HttpClient } from '@angular/common/http';
 import { AuthService } from './auth.service';
 import { environment } from '../../../environments/environment';
 
-fdescribe('AuthService', () => {
+describe('AuthService', () => {
   let service: AuthService;
   let httpMock: HttpTestingController;
   let routerSpy: jasmine.SpyObj<Router>;

@@ -3,6 +3,7 @@ import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angula
 import { Router, RouterLink } from '@angular/router';
 import { AuthService } from '../features/auth/auth.service';
 import { CommonModule } from '@angular/common';
+import { finalize } from 'rxjs';
 
 @Component({
   selector: 'app-login',
@@ -18,6 +19,7 @@ import { CommonModule } from '@angular/common';
 export class LoginComponent {
   loginForm: FormGroup;
   errorMessage: string | null = null;
+  isLoading = false;
 
   constructor(
     private fb: FormBuilder,
@@ -36,9 +38,14 @@ export class LoginComponent {
       return;
     }
 
+    this.isLoading = true;
     this.errorMessage = null;
 
-    this.authService.login(this.loginForm.value).subscribe({
+    this.authService.login(this.loginForm.value)
+    .pipe(
+      finalize(() => this.isLoading = false)
+    )
+    .subscribe({
       next: (response) => {
         this.router.navigate(['home']);
       },

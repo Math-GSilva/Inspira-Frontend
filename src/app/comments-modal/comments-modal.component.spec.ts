@@ -27,7 +27,7 @@ const mockComments: Comentario[] = [
 const mockComentarioService = jasmine.createSpyObj('ComentarioService', ['getComentarios']);
 let commentsSubject: ReplaySubject<Comentario[]>;
 
-fdescribe('CommentsModalComponent', () => {
+describe('CommentsModalComponent', () => {
   let component: CommentsModalComponent;
   let fixture: ComponentFixture<CommentsModalComponent>;
   let compiled: HTMLElement;

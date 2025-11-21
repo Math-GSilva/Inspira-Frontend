@@ -5,7 +5,7 @@ import { CategoriaService } from './categoria.service';
 import { environment } from '../../../environments/environment';
 import { Categoria, CreateCategoriaDto, UpdateCategoriaDto } from '../../core/models/categoria.model';
 
-fdescribe('CategoriaService', () => {
+describe('CategoriaService', () => {
   let service: CategoriaService;
   let httpMock: HttpTestingController;
 

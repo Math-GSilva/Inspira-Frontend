@@ -40,7 +40,7 @@ class MockCategoryFilterComponent {
   @Output() categorySelected = new EventEmitter<string | null>();
 }
 
-fdescribe('HomeComponent', () => {
+describe('HomeComponent', () => {
   let component: HomeComponent;
   let fixture: ComponentFixture<HomeComponent>;
 
