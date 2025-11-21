@@ -1,11 +1,20 @@
 import { TestBed } from '@angular/core/testing';
 import { AppComponent } from './app.component';
-import { HttpClient } from '@angular/common/http';
+import { provideRouter } from '@angular/router';
+import { provideHttpClient } from '@angular/common/http';
+import { provideHttpClientTesting } from '@angular/common/http/testing';
+import { By } from '@angular/platform-browser';
+import { RouterOutlet } from '@angular/router';
 
 describe('AppComponent', () => {
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [AppComponent, HttpClient],
+      imports: [AppComponent], 
+      providers: [
+        provideRouter([]),
+        provideHttpClient(),
+        provideHttpClientTesting()
+      ]
     }).compileComponents();
   });
 
@@ -21,10 +30,11 @@ describe('AppComponent', () => {
     expect(app.title).toEqual('inspira-frontend');
   });
 
-  it('should render title', () => {
+  it('should contain the router outlet', () => {
     const fixture = TestBed.createComponent(AppComponent);
     fixture.detectChanges();
-    const compiled = fixture.nativeElement as HTMLElement;
-    expect(compiled.querySelector('h1')?.textContent).toContain('Hello, inspira-frontend');
+    
+    const routerOutlet = fixture.debugElement.query(By.directive(RouterOutlet));
+    expect(routerOutlet).not.toBeNull();
   });
 });
