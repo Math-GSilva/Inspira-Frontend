@@ -1,4 +1,4 @@
-@import '../../styles/variables';
+@import "../../styles/variables";
 
 :host {
   display: block;
@@ -93,73 +93,128 @@
   }
 }
 
-.category-select-container {
-  width: 180px; 
+.category-select-wrapper {
+  width: 230px;
   flex-shrink: 0;
-  font-size: 1rem;
-
-  ::ng-deep .mat-mdc-form-field-subscript-wrapper {
-    display: none;
-  }
-
-  ::ng-deep .mat-mdc-form-field-flex {
-    height: calc(2.6rem + 2px); 
-    min-height: calc(2.6rem + 2px);
-    padding: 0;
-    align-items: center;
-  }
-  
-  ::ng-deep .mat-mdc-form-field-infix {
-    padding-top: 0;
-    padding-bottom: 0;
-    padding-left: 1rem; 
-    min-height: 0;
-  }
-
-  ::ng-deep .mat-mdc-select-arrow-wrapper {
-    padding-right: 1rem;
-  }
-  
-  ::ng-deep .mat-mdc-select-value {
-    padding: 0;
-  }
-  
-  ::ng-deep .mdc-notched-outline > * {
-    border-radius: 0;
-  }
-  ::ng-deep .mdc-notched-outline__leading {
-    border-top-left-radius: $border-radius-full;
-    border-bottom-left-radius: $border-radius-full;
-  }
-  ::ng-deep .mdc-notched-outline__trailing {
-    border-top-right-radius: $border-radius-full;
-    border-bottom-right-radius: $border-radius-full;
-  }
-  ::ng-deep .mdc-notched-outline > * {
-    border-color: $border-color !important; // Borda padrão
-  }
-  ::ng-deep .mat-mdc-select-arrow svg,
-  ::ng-deep .mat-mdc-floating-label {
-    color: $sec-text-color; // Cor do label e da seta
-  }
-  ::ng-deep .mat-mdc-select-value {
-    color: $text-color; // Cor do texto selecionado
-  }
-
-  &.mat-focused {
-    ::ng-deep .mat-mdc-floating-label {
-      color: $primary-color;
-    }
-    ::ng-deep .mdc-notched-outline > * {
-      border-width: 1px !important; // Evita que a borda engrosse
-      border-color: $primary-color !important;
-    }
-    ::ng-deep .mdc-notched-outline {
-        box-shadow: 0 0 0 3px rgba($primary-color, 0.2);
-    }
-  }
 }
 
+::ng-deep ng-select {
+  width: 100%;
+  font-family: "Poppins", sans-serif;
+  font-size: 0.95rem;
+
+  .ng-select-container {
+    display: flex;
+    align-items: center;
+    border: 1px solid $border-color;
+    border-radius: $border-radius-full;
+    background-color: var(--background-color, #fff);
+    color: var(--text-color, #333);
+    min-height: 46px;
+    padding: 0 0.6rem;
+    transition: all 0.2s ease-in-out;
+    box-shadow: none;
+
+    &:hover {
+      border-color: darken($border-color, 20%);
+    }
+
+    &.ng-select-focused {
+      border-color: $primary-color;
+      box-shadow: 0 0 0 3px rgba($primary-color, 0.2);
+    }
+
+    &.ng-has-value .ng-placeholder  {
+      display: none !important;
+    }
+
+    .ng-value-container .ng-value {
+      color: #333;
+      font-weight: 500;
+    }
+
+    .ng-value {
+      display: flex;
+      align-items: center;
+      font-weight: 500;
+    }
+
+    .ng-placeholder {
+      display: flex;
+      align-items: center;
+      color: #999;
+    }
+
+    .ng-clear-wrapper {
+      color: $primary-color;
+    }
+  }
+
+  .ng-dropdown-panel {
+    border-radius: 12px;
+    border: 1px solid $primary-color;
+    background-color: var(--background-color, #fff);
+    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.1);
+    font-family: "Poppins", sans-serif;
+    margin-top: 4px;
+
+    .ng-option {
+      padding: 10px 12px;
+      display: flex;
+      align-items: center;
+      transition: background-color 0.2s ease;
+
+      &:hover {
+        background-color: rgba(
+          209,
+          86,
+          142,
+          0.08
+        );
+      }
+
+      &.ng-option-selected {
+        background-color: rgba(209, 86, 142, 0.15);
+        color: $primary-color;
+        font-weight: 600;
+      }
+    }
+  }
+
+  .ng-arrow-wrapper {
+    padding-right: 1rem;
+    display: flex;
+    align-items: center;
+    
+    .ng-arrow {
+      width: 0; 
+      height: 0; 
+      border-left: 5px solid transparent;
+      border-right: 5px solid transparent;
+      border-top: 5px solid #999;
+      transition: transform 0.2s ease, border-color 0.2s;
+    }
+  }
+
+  &.ng-select-opened {
+    .ng-arrow-wrapper .ng-arrow {
+      transform: rotate(180deg);
+      border-top-color: #d1568e; 
+    }
+    
+    .ng-select-container {
+      z-index: 1001; 
+    }
+  }
+
+  &.ng-has-value .ng-arrow-wrapper {
+    display: none !important;
+  }
+
+  &.ng-has-value .ng-placeholder {
+    display: none !important;
+  }
+}
 
 .results-container {
   flex-grow: 1;
@@ -238,7 +293,7 @@
   font-weight: 600;
   cursor: pointer;
   transition: all 0.2s ease;
-  
+
   background-color: $primary-color;
   color: $white;
 
@@ -250,13 +305,23 @@
 }
 
 @keyframes fadeIn {
-  from { opacity: 0; }
-  to { opacity: 1; }
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
 }
 
 @keyframes slideUp {
-  from { transform: translateY(20px); opacity: 0; }
-  to { transform: translateY(0); opacity: 1; }
+  from {
+    transform: translateY(20px);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
 }
 
 .spinner {
@@ -269,6 +334,10 @@
 }
 
 @keyframes spin {
-  0% { transform: rotate(0deg); }
-  100% { transform: rotate(360deg); }
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
 }

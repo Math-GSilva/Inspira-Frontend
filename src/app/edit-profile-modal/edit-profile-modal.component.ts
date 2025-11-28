@@ -7,6 +7,7 @@ import { UsuarioService } from '../features/usuarios-search/usuario.service';
 import { CategoriaService } from '../features/categorias/categoria.service';
 import { Categoria } from '../core/models/categoria.model';
 import { NgSelectModule } from '@ng-select/ng-select';
+import { ToastService } from '../core/services/toast.service';
 
 @Component({
   selector: 'app-edit-profile-modal',
@@ -50,7 +51,8 @@ export class EditProfileModalComponent implements OnInit, OnDestroy {
   constructor(
     private fb: FormBuilder,
     private usuarioService: UsuarioService,
-    private categoriaService: CategoriaService
+    private categoriaService: CategoriaService,
+    private toastService: ToastService
   ) {}
 
   
@@ -190,11 +192,12 @@ export class EditProfileModalComponent implements OnInit, OnDestroy {
       finalize(() => this.isLoading = false)
     ).subscribe({
       next: (updatedProfile) => {
+        this.toastService.showSuccess('Perfil atualizado com sucesso!');
         this.profileUpdated.emit(updatedProfile);
         this.closeModal();
       },
       error: (err) => {
-        this.errorMessage = err.error?.message || 'Não foi possível atualizar o perfil. Tente novamente.';
+        this.toastService.showError('Erro ao atualizar o perfil. Tente novamente.');
       }
     });
   }

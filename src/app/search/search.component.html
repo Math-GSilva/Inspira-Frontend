@@ -14,15 +14,18 @@
                class="search-input"
                autofocus>
         
-        <mat-form-field appearance="outline" class="category-select-container">
-          <mat-select [formControl]="categoryControl">
-            <mat-option [value]="''">Categorias</mat-option>
-            
-            <mat-option *ngFor="let category of (categories$ | async)" [value]="category.id">
-              {{ category.nome }}
-            </mat-option>
-          </mat-select>
-        </mat-form-field>
+        <div class="category-select-wrapper">
+          <ng-select 
+            [items]="categories$ | async" 
+            bindLabel="nome"
+            bindValue="id" 
+            [searchable]="false" 
+            [clearable]="true"
+            placeholder="Categorias"
+            [formControl]="categoryControl"
+            class="custom-select">
+          </ng-select>
+        </div>
         
       </div>
 

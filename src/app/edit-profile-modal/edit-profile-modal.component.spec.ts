@@ -8,6 +8,8 @@ import { UsuarioService } from '../features/usuarios-search/usuario.service';
 import { CategoriaService } from '../features/categorias/categoria.service';
 import { UsuarioProfile } from '../core/models/usuario-profile.model';
 import { Categoria } from '../core/models/categoria.model';
+import { NoopAnimationsModule } from '@angular/platform-browser/animations';
+import { ToastService } from '../core/services/toast.service';
 
 const dummyUser: UsuarioProfile = {
   id: 'u1',
@@ -32,6 +34,7 @@ const dummyCategories: Categoria[] = [
 
 const mockUsuarioService = jasmine.createSpyObj('UsuarioService', ['updateMyProfile']);
 const mockCategoriaService = jasmine.createSpyObj('CategoriaService', ['getCategories']);
+const mockToastService = jasmine.createSpyObj('ToastService', ['showSuccess', 'showError']);
 
 describe('EditProfileModalComponent', () => {
   let component: EditProfileModalComponent;
@@ -42,11 +45,13 @@ describe('EditProfileModalComponent', () => {
       imports: [
         EditProfileModalComponent,
         ReactiveFormsModule,
-        NgSelectModule
+        NgSelectModule,
+        NoopAnimationsModule
       ],
       providers: [
         { provide: UsuarioService, useValue: mockUsuarioService },
-        { provide: CategoriaService, useValue: mockCategoriaService }
+        { provide: CategoriaService, useValue: mockCategoriaService },
+        { provide: ToastService, useValue: mockToastService }
       ]
     })
     .overrideComponent(EditProfileModalComponent, {
@@ -305,6 +310,7 @@ describe('EditProfileModalComponent', () => {
       tick(1);
 
       expect(component.isLoading).toBeFalse();
+      expect(mockToastService.showSuccess).toHaveBeenCalled();
       expect(component.profileUpdated.emit).toHaveBeenCalled();
       expect(component.closeModal).toHaveBeenCalled();
     }));
@@ -334,6 +340,7 @@ describe('EditProfileModalComponent', () => {
         jasmine.objectContaining(expectedTextData), 
         null
       );
+      expect(mockToastService.showSuccess).toHaveBeenCalled();
     }));
 
     it('should handle API error correctly', fakeAsync(() => {
@@ -349,7 +356,7 @@ describe('EditProfileModalComponent', () => {
       tick(1);
 
       expect(component.isLoading).toBeFalse();
-      expect(component.errorMessage).toBe('Erro backend');
+      expect(mockToastService.showError).toHaveBeenCalled();
       expect(component.profileUpdated.emit).not.toHaveBeenCalled(); 
     }));
   });

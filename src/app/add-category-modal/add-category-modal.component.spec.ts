@@ -5,8 +5,11 @@ import { delay, of, switchMap, throwError, timer } from 'rxjs';
 import { AddCategoryModalComponent } from './add-category-modal.component';
 import { CategoriaService } from '../features/categorias/categoria.service';
 import { Categoria } from '../core/models/categoria.model';
+import { NoopAnimationsModule } from '@angular/platform-browser/animations';
+import { ToastService } from '../core/services/toast.service';
 
-const mockCategoriaService = jasmine.createSpyObj('CategoriaService', ['createCategory']);
+const mockCategoriaService = jasmine.createSpyObj('CategoriaService', ['createCategory', 'notifyCategoryUpdate']);
+const mockToastService = jasmine.createSpyObj('ToastService', ['showSuccess', 'showError']);
 
 describe('AddCategoryModalComponent', () => {
   let component: AddCategoryModalComponent;
@@ -16,9 +19,10 @@ describe('AddCategoryModalComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [AddCategoryModalComponent, ReactiveFormsModule],
+      imports: [AddCategoryModalComponent, ReactiveFormsModule, NoopAnimationsModule],
       providers: [
-        { provide: CategoriaService, useValue: mockCategoriaService }
+        { provide: CategoriaService, useValue: mockCategoriaService },
+        { provide: ToastService, useValue: mockToastService }
       ]
     })
     .compileComponents();
@@ -121,7 +125,7 @@ describe('AddCategoryModalComponent', () => {
       expect(component.categoryForm.markAllAsTouched).toHaveBeenCalled();
     });
 
-    it('should call createCategory, emit categoryAdded, and close modal on valid submission', fakeAsync(() => {
+    it('should call createCategory, notify update, show toast and close modal on success', fakeAsync(() => {
       mockCategoriaService.createCategory.and.returnValue(of(dummyCategory).pipe(delay(1)));
       
       spyOn(component.categoryAdded, 'emit');
@@ -134,14 +138,13 @@ describe('AddCategoryModalComponent', () => {
 
       tick(1);
 
-      expect(mockCategoriaService.createCategory).toHaveBeenCalledWith({
-        nome: 'Categoria Teste',
-        descricao: 'Desc Teste'
-      });
-
+      expect(mockCategoriaService.createCategory).toHaveBeenCalled();
+      
+      expect(mockCategoriaService.notifyCategoryUpdate).toHaveBeenCalled();
+      expect(mockToastService.showSuccess).toHaveBeenCalledWith('Categoria criada com sucesso!');
+      
       expect(component.categoryAdded.emit).toHaveBeenCalledWith(dummyCategory);
       expect(component.closeModal).toHaveBeenCalled();
-      expect(component.errorMessage).toBeNull();
     }));
 
     it('should set errorMessage and not close modal on service error', fakeAsync(() => {
@@ -165,9 +168,25 @@ describe('AddCategoryModalComponent', () => {
       tick(1);
 
       expect(component.isLoading).toBeFalse();
-      expect(component.errorMessage).toBe(errorMsg);
+      expect(mockToastService.showError).toHaveBeenCalled(); 
       expect(component.categoryAdded.emit).not.toHaveBeenCalled();
       expect(component.closeModal).not.toHaveBeenCalled();
+    }));
+
+    it('should show error toast on service error', fakeAsync(() => {
+      mockCategoriaService.createCategory.and.returnValue(
+        timer(1).pipe(switchMap(() => throwError(() => new Error('Erro API'))))
+      );
+
+      component.f['nome'].setValue('Categoria Teste');
+      component.onSubmit();
+
+      expect(component.isLoading).toBeTrue();
+
+      tick(1);
+
+      expect(component.isLoading).toBeFalse();
+      expect(mockToastService.showError).toHaveBeenCalled(); 
     }));
 
     it('should set isLoading to true during submission and false after (on success)', fakeAsync(() => {

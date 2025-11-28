@@ -5,6 +5,8 @@ import { of, throwError, delay, switchMap, timer } from 'rxjs';
 import { EditPostModalComponent } from './edit-post-modal.component';
 import { ObraDeArteService } from '../features/obras-de-arte/obra-de-arte.service';
 import { ObraDeArte } from '../core/models/obra-de-arte.model'; 
+import { NoopAnimationsModule } from '@angular/platform-browser/animations';
+import { ToastService } from '../core/services/toast.service';
 
 const dummyArtwork: ObraDeArte = {
   id: 'art-123',
@@ -22,6 +24,7 @@ const dummyArtwork: ObraDeArte = {
 };
 
 const mockObraService = jasmine.createSpyObj('ObraDeArteService', ['updateObra']);
+const mockToastService = jasmine.createSpyObj('ToastService', ['showSuccess', 'showError']);
 
 describe('EditPostModalComponent', () => {
   let component: EditPostModalComponent;
@@ -30,9 +33,10 @@ describe('EditPostModalComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [EditPostModalComponent, ReactiveFormsModule],
+      imports: [EditPostModalComponent, ReactiveFormsModule, NoopAnimationsModule],
       providers: [
-        { provide: ObraDeArteService, useValue: mockObraService }
+        { provide: ObraDeArteService, useValue: mockObraService },
+        { provide: ToastService, useValue: mockToastService }
       ]
     })
     .overrideComponent(EditPostModalComponent, {
@@ -128,9 +132,9 @@ describe('EditPostModalComponent', () => {
       tick(1);
 
       expect(component.isLoading).toBeFalse();
+      expect(mockToastService.showSuccess).toHaveBeenCalled();
       expect(component.saveSuccess.emit).toHaveBeenCalledWith(updatedArt);
       expect(component.closeModal).toHaveBeenCalled();
-      expect(component.errorMessage).toBeNull();
     }));
 
     it('should handle service error correctly', fakeAsync(() => {
@@ -152,7 +156,7 @@ describe('EditPostModalComponent', () => {
       tick(1);
 
       expect(component.isLoading).toBeFalse();
-      expect(component.errorMessage).toBeTruthy();
+      expect(mockToastService.showError).toHaveBeenCalled();
       
       expect(component.saveSuccess.emit).not.toHaveBeenCalled();
       expect(component.closeModal).not.toHaveBeenCalled();

@@ -1,6 +1,6 @@
 import { Component, EventEmitter, OnInit, Output } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { Observable, of } from 'rxjs';
+import { Observable, of, startWith, switchMap } from 'rxjs';
 import { Categoria } from '../core/models/categoria.model';
 import { CategoriaService } from '../features/categorias/categoria.service';
 
@@ -20,7 +20,10 @@ export class CategoryFilterComponent implements OnInit {
   constructor(private categoriaService: CategoriaService) {}
 
   ngOnInit(): void {
-    this.categories$ = this.categoriaService.getCategories();
+    this.categories$ = this.categoriaService.categoriesUpdated$.pipe(
+      startWith(undefined),
+      switchMap(() => this.categoriaService.getCategories())
+    );
   }
   selectCategory(categoryId: string | null): void {
     if (this.activeCategoryId !== categoryId) {

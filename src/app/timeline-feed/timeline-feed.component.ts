@@ -70,6 +70,24 @@ export class TimelineFeedComponent implements OnInit, OnChanges, AfterViewInit, 
   hasMoreItems: boolean = true;
   private readonly PAGE_SIZE = 10;
 
+  playerOptions = {
+    controls: [
+      'play-large', 
+      'play', 
+      'progress', 
+      'current-time', 
+      'mute', 
+      'volume', 
+      'settings',
+      'fullscreen'
+    ],
+    settings: ['speed'], 
+    speed: { 
+      selected: 1,
+      options: [0.5, 0.75, 1, 1.25, 1.5, 2]
+    }
+  };
+
   constructor(
     private obraDeArteService: ObraDeArteService,
     private curtidaService: CurtidaService,

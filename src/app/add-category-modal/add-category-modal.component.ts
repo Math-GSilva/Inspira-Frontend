@@ -4,6 +4,7 @@ import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angula
 import { finalize } from 'rxjs';
 import { Categoria, CreateCategoriaDto } from '../core/models/categoria.model';
 import { CategoriaService } from '../features/categorias/categoria.service';
+import { ToastService } from '../core/services/toast.service';
 
 @Component({
   selector: 'app-add-category-modal',
@@ -22,7 +23,8 @@ export class AddCategoryModalComponent implements OnInit {
 
   constructor(
     private fb: FormBuilder,
-    private categoriaService: CategoriaService
+    private categoriaService: CategoriaService,
+    private toastService: ToastService
   ) {}
 
   ngOnInit(): void {
@@ -52,12 +54,13 @@ export class AddCategoryModalComponent implements OnInit {
       finalize(() => this.isLoading = false)
     ).subscribe({
       next: (newCategory) => {
+        this.categoriaService.notifyCategoryUpdate();
+        this.toastService.showSuccess('Categoria criada com sucesso!');
         this.categoryAdded.emit(newCategory);
         this.closeModal();
       },
       error: (err) => {
-        this.errorMessage = err.error?.message || 'Erro ao criar a categoria. Tente novamente.';
-        console.error('Error creating category:', err);
+        this.toastService.showError('Erro ao criar a categoria. Tente novamente.');
       }
     });
   }
