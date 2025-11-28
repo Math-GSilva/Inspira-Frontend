@@ -107,7 +107,9 @@
                   [class.audio-player-wrapper]="artwork.calculatedMediaType === 'audio'"
                   plyrTitle="{{ artwork.titulo }}"
                   [plyrSources]="artwork.plyrSourcesArray"
-                  [plyrType]="artwork.plyrMediaTypeValue">   </plyr>
+                  [plyrType]="artwork.plyrMediaTypeValue"
+                  [plyrOptions]="playerOptions">   
+                </plyr>
           </div>
           <footer class="card-footer">
              <div class="actions">

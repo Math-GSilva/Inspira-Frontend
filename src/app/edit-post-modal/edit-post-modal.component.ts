@@ -4,6 +4,7 @@ import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angula
 import { finalize } from 'rxjs';
 import { ObraDeArteService } from '../features/obras-de-arte/obra-de-arte.service';
 import { ObraDeArte, UpdateObraDeArteDto } from '../core/models/obra-de-arte.model';
+import { ToastService } from '../core/services/toast.service';
 
 @Component({
   selector: 'app-edit-post-modal',
@@ -29,7 +30,8 @@ export class EditPostModalComponent implements OnInit, OnChanges {
 
   constructor(
     private fb: FormBuilder,
-    private obraDeArteService: ObraDeArteService 
+    private obraDeArteService: ObraDeArteService,
+    private toastService: ToastService
   ) {}
 
   ngOnInit(): void {
@@ -79,12 +81,12 @@ export class EditPostModalComponent implements OnInit, OnChanges {
       .pipe(finalize(() => this.isLoading = false))
       .subscribe({
         next: (updatedArtwork) => {
+          this.toastService.showSuccess('Publicação atualizada com sucesso!');
           this.saveSuccess.emit(updatedArtwork); 
           this.closeModal(); 
         },
         error: (err: any) => {
-          this.errorMessage = 'Erro ao salvar as alterações. Tente novamente.';
-          console.error(err);
+          this.toastService.showError('Erro ao atualizar a publicação. Tente novamente.');
         }
       });
   }

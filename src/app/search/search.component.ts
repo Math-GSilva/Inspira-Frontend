@@ -11,6 +11,7 @@ import { Categoria } from '../core/models/categoria.model';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatSelectModule } from '@angular/material/select';
 import { MatInputModule } from '@angular/material/input';
+import { NgSelectModule } from '@ng-select/ng-select';
 
 @Component({
   selector: 'app-search',
@@ -20,7 +21,8 @@ import { MatInputModule } from '@angular/material/input';
     ReactiveFormsModule,
     MatFormFieldModule,
     MatSelectModule,
-    MatInputModule
+    MatInputModule,
+    NgSelectModule
   ],
   templateUrl: './search.component.html',
   styleUrls: ['./search.component.scss']
@@ -29,7 +31,7 @@ export class SearchComponent implements OnInit, OnDestroy {
   @Output() closeRequest = new EventEmitter<void>();
 
   searchControl = new FormControl('');
-  categoryControl = new FormControl<string>(''); 
+  categoryControl = new FormControl<string | null>(null);
   
   results$!: Observable<UsuarioSearchResultDto[]>;
   categories$!: Observable<Categoria[]>;

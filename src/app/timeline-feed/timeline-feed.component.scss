@@ -7,6 +7,12 @@
   100% { transform: scale(1); }
 }
 
+.plyr__menu__container {
+  top: 100% !important;
+  bottom: auto !important;
+  margin-top: 8px;
+}
+
 
 .timeline-feed {
   display: flex;
@@ -18,7 +24,6 @@
   background-color: $card-bg-color;
   border: 1px solid $border-color;
   border-radius: $border-radius-md;
-  overflow: hidden;
 }
 
 .card-header {
@@ -238,7 +243,7 @@
     button {
       background: none;
       border: none;
-      color: #0095f6;
+      color: #d1568e;
       font-weight: 600;
       cursor: pointer;
       padding: $spacing-sm;

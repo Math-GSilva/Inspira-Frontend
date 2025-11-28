@@ -1,18 +1,20 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { of } from 'rxjs';
+import { of, Subject } from 'rxjs';
 
 import { CategoryFilterComponent } from './category-filter.component';
 import { CategoriaService } from '../features/categorias/categoria.service';
 import { Categoria } from '../core/models/categoria.model';
+import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 
 const dummyCategories: Categoria[] = [
   { id: 'cat-1', nome: 'Pintura', descricao: '' },
   { id: 'cat-2', nome: 'Escultura', descricao: '' }
 ];
 
-const mockCategoriaService = jasmine.createSpyObj('CategoriaService', {
-  getCategories: of(dummyCategories)
-});
+const mockCategoriaService = {
+  getCategories: jasmine.createSpy('getCategories').and.returnValue(of(dummyCategories)),
+  categoriesUpdated$: new Subject<void>() 
+};
 
 describe('CategoryFilterComponent', () => {
   let component: CategoryFilterComponent;
@@ -21,7 +23,7 @@ describe('CategoryFilterComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [CategoryFilterComponent],
+      imports: [CategoryFilterComponent, NoopAnimationsModule],
       providers: [
         { provide: CategoriaService, useValue: mockCategoriaService }
       ]
